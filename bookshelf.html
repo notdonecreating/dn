@@ -1,0 +1,1527 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bookshelf - DONEDL</title>
+    <link rel="icon" href="favicon5.png" type="image/png">
+
+    <!-- Hotjar Tracking Code for Site 6420331 (name missing) -->
+    <script>
+        (function(h,o,t,j,a,r){
+            h.hj=h.hj||function(){(h.hj.q=h.hj.q||[]).push(arguments)};
+            h._hjSettings={hjid:6420331,hjsv:6};
+            a=o.getElementsByTagName('head')[0];
+            r=o.createElement('script');r.async=1;
+            r.src=t+h._hjSettings.hjid+j+h._hjSettings.hjsv;
+            a.appendChild(r);
+        })(window,document,'https://static.hotjar.com/c/hotjar-','.js?sv=');
+    </script>
+
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap');
+        
+        :root {
+            --background-color: #f5f5f5;
+            --text-color: #333;
+            --border-color: #333;
+            --secondary-text-color: #666;
+            /*--shelf-color: #e0e0e0;*/
+            --shelf-color: #8B4513;
+            --wood-grain-color: #A0522D;
+            --book-hover-shadow: rgba(0,0,0,0.2);
+        }
+        
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --background-color: #1a1a1a;
+                --text-color: #e0e0e0;
+                --border-color: #e0e0e0;
+                --secondary-text-color: #aaa;
+                /*--shelf-color: #333;*/
+                --shelf-color: #654321;
+                --wood-grain-color: #8B4513;
+                --book-hover-shadow: rgba(255,255,255,0.1);
+            }
+        }
+        
+        [data-theme="light"] {
+            --background-color: #f5f5f5;
+            --text-color: #333;
+            --border-color: #333;
+            --secondary-text-color: #666;
+            /*--shelf-color: #e0e0e0;*/
+            --shelf-color: #8B4513;
+            --wood-grain-color: #A0522D;
+            --book-hover-shadow: rgba(0,0,0,0.2);
+        }
+        
+        [data-theme="dark"] {
+            --background-color: #1a1a1a;
+            --text-color: #e0e0e0;
+            --border-color: #e0e0e0;
+            --secondary-text-color: #aaa;
+            /*--shelf-color: #333;*/
+            --shelf-color: #654321;
+            --wood-grain-color: #8B4513;
+            --book-hover-shadow: rgba(255,255,255,0.1);
+        }
+        
+        body {
+            font-family: 'Space Mono', monospace;
+            margin: 0;
+            padding: 0;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            border: 1px solid var(--border-color);
+        }
+        
+        .theme-toggle {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            z-index: 2000;
+            background: var(--text-color);
+            color: var(--background-color);
+            border: 1px solid var(--border-color);
+            padding: 5px 8px;
+            font-family: 'Space Mono', monospace;
+            font-size: 12px;
+            cursor: pointer;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        
+        .header {
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 20px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            margin-bottom: 30px;
+        }
+        
+        .back-link {
+            display: inline-block;
+            margin-bottom: 20px;
+        }
+        
+        h1 {
+            font-size: 24px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+        
+        .intro-text {
+            margin: 20px 0 40px 0;
+            padding: 20px 0;
+            border-top: 1px solid var(--border-color);
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .shelf-navigation {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 40px;
+            padding: 20px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .shelf-nav-btn {
+            background: none;
+            border: 1px solid var(--border-color);
+            color: var(--text-color);
+            padding: 8px 16px;
+            font-family: 'Space Mono', monospace;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .shelf-nav-btn:hover {
+            background: var(--text-color);
+            color: var(--background-color);
+        }
+        
+        .shelf-nav-btn.active {
+            background: var(--text-color);
+            color: var(--background-color);
+        }
+       
+        .bookshelf-section {
+            position: relative; /* This is now the positioning parent */
+            margin: 0 0 0px 0;
+            display: block;
+        }
+        
+        /*
+        .bookshelf-section {
+            margin-bottom: 60px;
+            display: none;
+        }
+        
+        .bookshelf-section.active {
+            display: block;
+        }
+        */
+        
+        /*
+        .shelf-label {
+            font-size: 16px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: bold;
+            margin: 0px 0 16px 0;
+        }
+        */
+
+        .shelf-label {
+            position: absolute;
+            left: 10px;
+            bottom: 6px; /* Position it on the front edge of shelf */
+            font-size: 9px;
+            letter-spacing: 0.8px;
+            font-weight: 500;
+            font-family: 'Space Mono', monospace;
+            
+            background: linear-gradient(145deg, #c0c0c0 0%, #a8a8a8 50%, #909090 100%);
+            color: #2c2c2c;
+            border: 1px solid #808080;
+            border-radius: 1px;
+            padding: 3px 10px;
+            
+            box-shadow: 
+                0 1px 2px rgba(0, 0, 0, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.3),
+                inset 0 -1px 0 rgba(0, 0, 0, 0.1);
+            
+            z-index: 100;
+        }
+        
+        /*
+        .bookshelf {
+            position: relative;
+            background: var(--background-color);
+            border-bottom: 8px solid var(--border-color);
+            min-height: 200px;
+            overflow-x: auto;
+            overflow-y: visible;
+            padding: 0 10px 0px 10px;
+            scrollbar-width: thin;
+            scrollbar-color: var(--border-color) transparent;
+            margin-top: 0 !important;
+            display: flex;
+            align-items: flex-end;
+        } 
+        */
+        
+        .bookshelf {
+            position: relative;
+            background-color: #4f4641;
+            background-image: 
+                url('/assets/textures/wood.png'),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.02), transparent 50%, rgba(0, 0, 0, 0.06));
+            background-size: cover;
+            background-repeat: repeat;
+            background-blend-mode: multiply;
+            
+            border-bottom: 35px solid #362f2b;
+            border-top: 2px solid rgba(255, 255, 255, 0.04);
+            min-height: 230px;
+            max-height: 230px;
+            overflow-x: auto;
+            overflow-y: visible;
+            padding: 0 10px 0px 10px;
+            scrollbar-width: thin;
+            scrollbar-color: #362f2b transparent;
+            margin-top: 0 !important;
+            margin-bottom: 0 !important;
+            display: flex;
+            align-items: flex-end;
+            box-shadow:
+                inset 0 -4px 8px rgba(0, 0, 0, 0.12),
+                inset 0 4px 6px rgba(255, 255, 255, 0.04),
+                0 2px 4px rgba(0, 0, 0, 0.04);
+        }
+        
+
+        
+        .bookshelf::-webkit-scrollbar {
+            height: 6px;
+        }
+        
+        .bookshelf::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        
+        .bookshelf::-webkit-scrollbar-thumb {
+            background: var(--border-color);
+            border-radius: 3px;
+        }
+        
+        .books-container {
+            display: flex;
+            flex-wrap: nowrap;
+            align-items: flex-end;
+            gap: 2px;
+            padding-bottom: 0px;
+            min-width: max-content;
+            width: max-content;
+        }
+        
+        .book {
+            position: relative;
+            flex-shrink: 0;
+            flex-grow: 0;
+            /* Default dimensions - will be overridden by inline styles */
+            width: 40px;
+            height: 180px;
+            border: 1px solid var(#333);
+            cursor: pointer;
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 8px 4px;
+            box-sizing: border-box;
+            background: var(--background-color);
+            border-radius: 2px 2px 0 0;
+        }
+        
+        .book:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 10px 20px var(--book-hover-shadow);
+            z-index: 100;
+        }
+        
+        .book-spine-title {
+            writing-mode: vertical-rl;
+            text-orientation: mixed;
+            font-size: 9px; /* Default size restored */
+            font-weight: bold;
+            text-align: center;
+            line-height: 1.2;
+            flex-grow: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            word-break: break-word;
+        }
+        
+        .book-spine-author {
+            writing-mode: vertical-rl;
+            text-orientation: mixed;
+            font-size: 7px; /* Default size restored */
+            text-align: center;
+            margin-top: 5px;
+            line-height: 1.1;
+            overflow: hidden;
+            opacity: 0.8;
+        }
+        
+        /* Book color variations - Monochrome grey scale */
+        .book:nth-child(6n+1) { 
+            background: linear-gradient(90deg, #4a5568 0%, #2d3748 100%);
+            color: #e2e8f0;
+        }
+        .book:nth-child(6n+2) { 
+            background: linear-gradient(90deg, #2d3748 0%, #1a202c 100%);
+            color: #e2e8f0;
+        }
+        .book:nth-child(6n+3) { 
+            background: linear-gradient(90deg, #718096 0%, #4a5568 100%);
+            color: #fff;
+        }
+        .book:nth-child(6n+4) { 
+            background: linear-gradient(90deg, #a0aec0 0%, #718096 100%);
+            color: #1a202c;
+        }
+        .book:nth-child(6n+5) { 
+            background: linear-gradient(90deg, #e2e8f0 0%, #cbd5e0 100%);
+            color: #1a202c;
+        }
+        .book:nth-child(6n+6) { 
+            background: linear-gradient(90deg, #1a202c 0%, #171923 100%);
+            color: #e2e8f0;
+        }
+        
+        .book-overlay {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: var(--background-color);
+            border: 2px solid var(--border-color);
+            padding: 30px;
+            max-width: 500px;
+            width: 90vw;
+            max-height: 80vh;
+            overflow-y: auto;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s, visibility 0.3s;
+            box-shadow: 0 20px 40px var(--book-hover-shadow);
+        }
+        
+        .book-hover-overlay {
+            position: fixed;
+            bottom: 110%;
+            left: 50%;
+            transform: translateX(0%);
+            background: var(--background-color);
+            border: 2px solid var(--border-color);
+            padding: 20px;
+            width: 600px;
+            max-width: 95vw;
+            height: 120px;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s, visibility 0.3s;
+            z-index: 200;
+            box-shadow: 0 10px 30px var(--book-hover-shadow);
+            pointer-events: none;
+            overflow-y: auto;
+        }
+        
+        .book:hover .book-hover-overlay {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .book-hover-title {
+            font-style: italic;
+            color: var(--text-color);
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .book-hover-author {
+            font-style: italic;
+            color: var(--secondary-text-color);
+            margin-bottom: 10px;
+            font-size: 12px;
+        }
+        
+        .book-hover-description {
+            color: var(--text-color);
+            font-size: 12px;
+            line-height: 1.4;
+            overflow-y: auto;
+            max-height: 70px;
+        }
+        
+        .book-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .overlay-backdrop {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 999;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s, visibility 0.3s;
+        }
+        
+        .overlay-backdrop.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .overlay-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .overlay-author {
+            font-style: italic;
+            color: var(--secondary-text-color);
+            margin-bottom: 20px;
+        }
+        
+        .overlay-description {
+            line-height: 1.6;
+        }
+        
+        .close-overlay {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            color: var(--text-color);
+            font-family: 'Space Mono', monospace;
+        }
+        
+        a {
+            color: var(--text-color);
+            text-decoration: none;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 2px;
+            transition: opacity 0.3s;
+        }
+        
+        a:hover {
+            opacity: 0.7;
+        }
+        
+        .footer {
+            margin-top: 60px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border-color);
+            font-size: 0.8em;
+        }
+        
+        @media (max-width: 768px) {
+            .header {
+                grid-template-columns: 1fr;
+            }
+            
+            .book-overlay {
+                padding: 20px;
+                width: 95vw;
+            }
+            
+            .bookshelf {
+                min-height: 300px;
+            }
+            
+            .book-hover-overlay {
+                width: 320px;
+                padding: 15px;
+                height: 110px;
+            }
+            
+            .book-hover-title {
+                font-size: 12px;
+            }
+            
+            .book-hover-author {
+                font-size: 10px;
+            }
+            
+            .book-hover-description {
+                font-size: 10px;
+                max-height: 60px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="overlay-backdrop" id="overlay-backdrop"></div>
+    
+    <button class="theme-toggle" id="theme-toggle">🌙</button>
+    
+    <div class="container">
+        <div class="header">
+            <div>
+                <h1>DONEDL ARCHIVE</h1>
+                <p>Optimist / Dreamer / Aspiring Magician</p>
+            </div>
+            <div style="text-align: right;">
+                <p>Location: TBD</p>
+                <p>Contact: notdonecreating@gmail.com</p>
+            </div>
+        </div>
+        
+        <a href="/" class="back-link">← Back to Home</a>
+        
+        <h1>Bookshelf Favourites</h1>
+        <p>Literature that has shaped my thinking and perspective</p>
+        
+        <div class="intro-text">
+            This page is not a list of recommendations. It is not a list of all the books I've read or those I presently own. And for about 20% of the works here, I have never even read them to completion. But it is a list of my influences. These are works of which some aspect, or all, have served to build, transform or support my worldview. For some, particularly the fiction I mostly read as a child, it's more about the feel of it. For others, it was ideas and frameworks. Others may not take the same meaning.
+        </div>
+        
+        <!-- <div class="shelf-navigation">
+            <button class="shelf-nav-btn active" onclick="showShelf(0)">Philosophy & Meaning</button>
+            <button class="shelf-nav-btn" onclick="showShelf(1)">Technology & Society</button>
+            <button class="shelf-nav-btn" onclick="showShelf(2)">Wonder & Creativity</button>
+            <button class="shelf-nav-btn" onclick="showShelf(3)">Essays & Literary Works</button>
+            <button class="shelf-nav-btn" onclick="showShelf(4)">Poetry</button>
+            <button class="shelf-nav-btn" onclick="showShelf(5)">Fiction</button>
+        </div> -->
+        
+        <div class="bookshelf-section active">
+            <div class="bookshelf">
+                <div class="books-container">
+                    <div class="book" data-title="Man's Search for Meaning" data-author="Viktor E. Frankl" data-description="A profound exploration of finding purpose even in the most difficult circumstances. Frankl's experiences in Nazi concentration camps formed the basis for his approach to discovering meaning in all forms of existence, even the most brutal ones." data-pages="165" data-width="5.5" data-height="8.5" style="width: 22px; height: 136px;">
+                        <!--<div class="book-hover-overlay">
+                            <div class="book-hover-title">Man's Search for Meaning</div>
+                            <div class="book-hover-author">By Viktor E. Frankl</div>
+                            <div class="book-hover-description">A profound exploration of finding purpose even in the most difficult circumstances. Frankl's experiences in Nazi concentration camps formed the basis for his approach to discovering meaning in all forms of existence, even the most brutal ones.</div>
+                        </div>-->
+                        <div class="book-spine-title">Man's Search for Meaning</div>
+                        <div class="book-spine-author">Frankl</div>
+                    </div>
+                    <div class="book" data-title="The Courage to Be" data-author="Paul Tillich" data-description="An examination of anxiety and courage in the modern world. Tillich's analysis of how we face the anxiety of fate and death, emptiness and meaninglessness, and guilt and condemnation has deeply influenced my understanding of the human condition." data-pages="190" data-width="5.0" data-height="8.0" style="width: 25px; height: 128px;">
+                        <!--<div class="book-hover-overlay">
+                            <div class="book-hover-title">The Courage to Be</div>
+                            <div class="book-hover-author">By Paul Tillich</div>
+                            <div class="book-hover-description">An examination of anxiety and courage in the modern world. Tillich's analysis of how we face the anxiety of fate and death, emptiness and meaninglessness, and guilt and condemnation has deeply influenced my understanding of the human condition.</div>
+                        </div>-->
+                        <div class="book-spine-title">The Courage to Be</div>
+                        <div class="book-spine-author">Tillich</div>
+                    </div>
+                    <div class="book" data-title="The Confessions of St. Augustine" data-author="Saint Augustine" data-description="An introspective masterpiece exploring the journey from worldly desires to spiritual awakening. Augustine's candid reflections on his own struggles and transformation continue to resonate across centuries." data-pages="400" data-width="5.5" data-height="8.0" style="width: 52px; height: 128px;">
+                        <div class="book-spine-title">Confessions</div>
+                        <div class="book-spine-author">Augustine</div>
+                    </div>
+                    <div class="book" data-title="Mere Christianity" data-author="C.S. Lewis" data-description="A thoughtful defense of core Christian beliefs that transcends denominational boundaries. Lewis's logical approach and accessible metaphors make complex theological concepts remarkably clear." data-pages="227" data-width="5.25" data-height="8.0" style="width: 30px; height: 128px;">
+                        <div class="book-spine-title">Mere Christianity</div>
+                        <div class="book-spine-author">Lewis</div>
+                    </div>
+                    <div class="book" data-title="The Hero with a Thousand Faces" data-author="Joseph Campbell" data-description="A comparative exploration of mythology that reveals the common patterns in hero stories across cultures. Campbell's concept of the monomyth has influenced my understanding of narrative, meaning, and the human journey." data-pages="416" data-width="6.0" data-height="9.0" style="width: 41px; height: 144px;">
+                        <div class="book-spine-title">Hero with Thousand Faces</div>
+                        <div class="book-spine-author">Campbell</div>
+                    </div>
+                    <div class="book" data-title="Jung's Red Book" data-author="Carl Jung" data-description="A deeply personal record of Jung's confrontation with his unconscious. This visually stunning and psychologically profound work represents Jung's attempt to understand the universal patterns underlying the human psyche." data-pages="371" data-width="9.5" data-height="12.5" style="width: 48px; height: 200px;">
+                        <div class="book-spine-title">Red Book</div>
+                        <div class="book-spine-author">Jung</div>
+                    </div>
+
+                    <!-- The Screwtape Letters -->
+                    <div class="book" data-title="The Screwtape Letters" data-author="C.S. Lewis" data-description="Lewis's brilliant satire on temptation and spiritual warfare, told through letters from a senior demon to his nephew. This masterpiece of religious literature uses wit and irony to expose the subtle ways evil operates in everyday life, while illuminating the path to spiritual victory." data-pages="209" data-width="5.0" data-height="8.0" style="width: 26px; height: 128px;">
+                        <div class="book-spine-title">Screwtape Letters</div>
+                        <div class="book-spine-author">Lewis</div>
+                    </div>
+
+                    <!-- The Great Divorce -->
+                    <div class="book" data-title="The Great Divorce" data-author="C.S. Lewis" data-description="A theological fantasy about a bus ride from Hell to Heaven. Lewis explores the nature of good and evil, free will, and the ultimate choice between Heaven and Hell through vivid allegorical encounters. A profound meditation on the human condition and divine grace." data-pages="146" data-width="5.0" data-height="7.5" style="width: 19px; height: 120px;">
+                        <div class="book-spine-title">Great Divorce</div>
+                        <div class="book-spine-author">Lewis</div>
+                    </div>
+
+                    <!-- The Four Loves -->
+                    <div class="book" data-title="The Four Loves" data-author="C.S. Lewis" data-description="Lewis's examination of affection, friendship, eros, and charity—the four loves that shape human relationships. Drawing on classical sources and Christian theology, he explores how these loves can elevate or corrupt us, and how divine love transforms all human love." data-pages="170" data-width="5.0" data-height="8.0" style="width: 21px; height: 128px;">
+                        <div class="book-spine-title">Four Loves</div>
+                        <div class="book-spine-author">Lewis</div>
+                    </div>
+
+                    <!-- A Grief Observed -->
+                    <div class="book" data-title="A Grief Observed" data-author="C.S. Lewis" data-description="Lewis's raw, honest account of grief after his wife's death from cancer. Written in the white heat of loss, this book doesn't offer easy comfort but rather traces the journey through doubt, anger, and faith. A masterpiece of spiritual honesty that has comforted countless mourners." data-pages="96" data-width="4.5" data-height="7.0" style="width: 12px; height: 112px;">
+                        <div class="book-spine-title">Grief Observed</div>
+                        <div class="book-spine-author">Lewis</div>
+                    </div>
+
+                    <!-- The Problem of Pain -->
+                    <div class="book" data-title="The Problem of Pain" data-author="C.S. Lewis" data-description="Lewis's theological examination of why a good God permits suffering. With characteristic clarity and logic, he addresses one of faith's most challenging questions, exploring how pain can be compatible with divine love and how suffering can serve spiritual purposes." data-pages="192" data-width="5.0" data-height="8.0" style="width: 24px; height: 128px;">
+                        <div class="book-spine-title">Problem of Pain</div>
+                        <div class="book-spine-author">Lewis</div>
+                    </div>
+
+                    <!-- The Abolition of Man -->
+                    <div class="book" data-title="The Abolition of Man" data-author="C.S. Lewis" data-description="Lewis's philosophical defense of natural law and objective values against relativism. A prophetic critique of modern education and its tendency to 'debunk' traditional values, arguing that without objective morality, we risk creating 'men without chests'—beings lacking the moral sentiments that make us human." data-pages="128" data-width="5.0" data-height="7.5" style="width: 17px; height: 120px;">
+                        <div class="book-spine-title">Abolition of Man</div>
+                        <div class="book-spine-author">Lewis</div>
+                    </div>
+
+                    <!-- Miracles -->
+                    <div class="book" data-title="Miracles" data-author="C.S. Lewis" data-description="Lewis's philosophical defense of the possibility of miracles. Addressing modern skepticism with rigorous logic, he argues that if God exists, miracles are not only possible but expected. A sophisticated treatment of naturalism, supernaturalism, and the relationship between faith and reason." data-pages="294" data-width="5.25" data-height="8.0" style="width: 38px; height: 128px;">
+                        <div class="book-spine-title">Miracles</div>
+                        <div class="book-spine-author">Lewis</div>
+                    </div>
+
+                    <!-- The Weight of Glory -->
+                    <div class="book" data-title="The Weight of Glory" data-author="C.S. Lewis" data-description="A collection of Lewis's most profound essays and sermons, including the titular piece on longing for transcendence. These writings explore themes of glory, transposition, and the deep human desire for something beyond this world—what Lewis calls 'the inconsolable secret.'" data-pages="192" data-width="5.0" data-height="8.0" style="width: 24px; height: 128px;">
+                        <div class="book-spine-title">Weight of Glory</div>
+                        <div class="book-spine-author">Lewis</div>
+                    </div>
+
+                    <!-- Nicomachean Ethics -->
+                    <div class="book" data-title="Nicomachean Ethics" data-author="Aristotle" data-description="The foundational work of Western virtue ethics. Aristotle's systematic examination of character, virtue, and the good life remains remarkably relevant. His concept of the golden mean and analysis of friendship, courage, and practical wisdom continue to influence moral philosophy and personal development." data-pages="368" data-width="5.5" data-height="8.5" style="width: 47px; height: 136px;">
+                        <div class="book-spine-title">Nicomachean Ethics</div>
+                        <div class="book-spine-author">Aristotle</div>
+                    </div>
+
+                    <!-- Critique of Pure Reason -->
+                    <div class="book" data-title="Critique of Pure Reason" data-author="Immanuel Kant" data-description="Caveat: I recommend The Critique because its ideas form the foundation of some of my personal philosophy and those of many works that I would like to read. However, I don't fully understand direct unguided readings yet!" data-pages="785" data-width="6.0" data-height="9.0" style="width: 78px; height: 144px;">
+                        <div class="book-spine-title">Critique of Pure Reason</div>
+                        <div class="book-spine-author">Kant</div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="shelf-label">Philosophy & Meaning</div>
+        </div>
+        
+        <div class="bookshelf-section">
+            <div class="shelf-label">Society & Culture</div>
+            <div class="bookshelf">
+                <div class="books-container">
+                    <div class="book" data-title="Technopoly" data-author="Neil Postman" data-description="A prescient critique of technology's domination of culture and thought. Though written before the internet age, Postman's warnings about surrendering culture to technology feel more relevant than ever." data-pages="222" data-width="5.5" data-height="8.5" style="width: 29px; height: 136px;">
+                        <div class="book-spine-title">Technopoly</div>
+                        <div class="book-spine-author">Postman</div>
+                    </div>
+                    <div class="book" data-title="The Glass Cage" data-author="Nicholas Carr" data-description="An exploration of automation's human consequences. Carr's nuanced look at how automation changes our relationship with our work, our environment, and ourselves has influenced my thinking on how we should design technology." data-pages="276" data-width="5.75" data-height="8.5" style="width: 36px; height: 136px;">
+                        <div class="book-spine-title">Glass Cage</div>
+                        <div class="book-spine-author">Carr</div>
+                    </div>
+                    <div class="book" data-title="The World-Ending Fire" data-author="Wendell Berry" data-description="A collection of essays that articulates a profound vision of sustainable living and local economics. Berry's insights on community, agriculture, and our relationship with the land offer an alternative to technological solutionism." data-pages="340" data-width="5.5" data-height="8.25" style="width: 44px; height: 132px;">
+                        <div class="book-spine-title">World-Ending Fire</div>
+                        <div class="book-spine-author">Berry</div>
+                    </div>
+                    <!-- Amusing Ourselves to Death -->
+                    <div class="book" data-title="Amusing Ourselves to Death" data-author="Neil Postman" data-description="A prophetic critique of how television transforms public discourse into entertainment. Written in 1985, Postman's analysis of how the medium shapes the message feels even more relevant in our digital age. He argues we're living in Huxley's Brave New World rather than Orwell's 1984—undone not by oppression but by our appetite for distraction." data-pages="208" data-width="5.0" data-height="8.0" style="width: 26px; height: 128px;">
+                        <div class="book-spine-title">Amusing Ourselves to Death</div>
+                        <div class="book-spine-author">Postman</div>
+                    </div>
+
+                    <!-- The Disappearance of Childhood -->
+                    <div class="book" data-title="The Disappearance of Childhood" data-author="Neil Postman" data-description="Postman's provocative argument that childhood is a social construct created by print culture and now being eroded by television. He traces how the medium that gave us childhood—books—is being replaced by television, which exposes children to adult secrets and eliminates the knowledge gaps that defined childhood." data-pages="192" data-width="5.25" data-height="8.0" style="width: 25px; height: 128px;">
+                        <div class="book-spine-title">Disappearance of Childhood</div>
+                        <div class="book-spine-author">Postman</div>
+                    </div>
+
+                    <!-- Building a Bridge to the 18th Century -->
+                    <div class="book" data-title="Building a Bridge to the 18th Century: How the Past Can Improve Our Future" data-author="Neil Postman" data-description="Postman's final major work arguing that the Enlightenment values of the 18th century—reason, skepticism, and humane progress—offer antidotes to our current technological and cultural malaise. A thoughtful counterargument to the assumption that newer is always better." data-pages="224" data-width="5.5" data-height="8.5" style="width: 29px; height: 136px;">
+                        <div class="book-spine-title">Bridge to 18th Century</div>
+                        <div class="book-spine-author">Postman</div>
+                    </div>
+
+                    <!-- Imaginable -->
+                    <div class="book" data-title="Imaginable: How to See the Future Coming and Feel Ready for Anything" data-author="Jane McGonigal" data-description="A guide to developing 'future readiness' through imagination and scenario thinking. McGonigal, a renowned futurist and game designer, provides practical exercises to help readers think creatively about possible futures and build resilience for uncertainty. Essential reading for navigating an unpredictable world." data-pages="432" data-width="6.0" data-height="9.0" style="width: 43px; height: 144px;">
+                        <div class="book-spine-title">Imaginable</div>
+                        <div class="book-spine-author">McGonigal</div>
+                    </div>
+
+                    <!-- The Extinction of Experience -->
+                    <div class="book" data-title="The Extinction of Experience" data-author="Christine Rosen" data-description="A thoughtful examination of how digital technology is changing fundamental human experiences—from solitude to attention to memory. Rosen explores what we lose when we outsource our cognitive functions to devices and what it means for human flourishing in the digital age." data-pages="288" data-width="5.5" data-height="8.5" style="width: 37px; height: 136px;">
+                        <div class="book-spine-title">Extinction of Experience</div>
+                        <div class="book-spine-author">Rosen</div>
+                    </div>
+
+                    <!-- Burnout Society -->
+                    <div class="book" data-title="The Burnout Society" data-author="Byung-Chul Han" data-description="A powerful philosophical critique of our achievement-oriented society. Han argues that we've moved from a disciplinary society that says 'you cannot' to an achievement society that says 'you can'—creating a new form of violence through self-exploitation and burnout. A prescient analysis of modern mental health crises." data-pages="60" data-width="5.0" data-height="8.0" style="width: 8px; height: 128px;">
+                        <div class="book-spine-title">Burnout Society</div>
+                        <div class="book-spine-author">Han</div>
+                    </div>
+
+                    <!-- Smart People Should Build Things -->
+                    <div class="book" data-title="Smart People Should Build Things" data-author="Andrew Yang" data-description="Yang's passionate argument for why America's brightest minds should become entrepreneurs and creators rather than financiers and consultants. Written before his presidential run, this book outlines his vision for revitalizing American innovation and economic dynamism through hands-on value creation." data-pages="256" data-width="5.5" data-height="8.5" style="width: 33px; height: 136px;">
+                        <div class="book-spine-title">Smart People Should Build Things</div>
+                        <div class="book-spine-author">Yang</div>
+                    </div>
+
+                    <!-- Why We Make Things and Why It Matters -->
+                    <div class="book" data-title="Why We Make Things and Why It Matters" data-author="Peter Korn" data-description="A master furniture maker's meditation on craftsmanship and creativity. Korn explores the deeper meaning of making things with your hands in an increasingly digital world, arguing that craftsmanship offers a path to fulfillment and self-knowledge that knowledge work cannot provide." data-pages="208" data-width="5.25" data-height="8.0" style="width: 27px; height: 128px;">
+                        <div class="book-spine-title">Why We Make Things</div>
+                        <div class="book-spine-author">Korn</div>
+                    </div>
+
+                    <!-- The Coming of Neo-Feudalism -->
+                    <div class="book" data-title="The Coming of Neo-Feudalism" data-author="Joel Kotkin" data-description="A sobering analysis of how advanced societies are reverting to pre-modern class structures. Kotkin warns that we're creating a new feudalism with tech oligarchs as digital lords, urban elites as the new clergy, and everyone else as serfs. A call to preserve democratic capitalism and social mobility." data-pages="304" data-width="6.0" data-height="9.0" style="width: 30px; height: 144px;">
+                        <div class="book-spine-title">Coming of Neo-Feudalism</div>
+                        <div class="book-spine-author">Kotkin</div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        
+        <div class="bookshelf-section">
+            <div class="shelf-label">Wonder & Creativity</div>
+            <div class="bookshelf">
+                <div class="books-container">
+                    <div class="book" data-title="The Zen of Seeing" data-author="Frederick Franck" data-description="A meditation on seeing as a form of contemplation. Franck's approach to drawing not as a technical skill but as a way of truly seeing the world has transformed how I experience everyday life." data-pages="132" data-width="6.5" data-height="9.0" style="width: 17px; height: 144px;">
+                        <div class="book-spine-title">Zen of Seeing</div>
+                        <div class="book-spine-author">Franck</div>
+                    </div>
+                    <div class="book" data-title="The Little Prince" data-author="Antoine de Saint-Exupéry" data-description="A deceptively simple tale that contains profound truths about human connection. The fox's lesson that 'what is essential is invisible to the eye' remains one of the most important principles in my life." data-pages="96" data-width="5.0" data-height="7.5" style="width: 13px; height: 120px;">
+                        <div class="book-spine-title">Little Prince</div>
+                        <div class="book-spine-author">Saint-Exupéry</div>
+                    </div>
+                    <div class="book" data-title="The Artist's Way" data-author="Julia Cameron" data-description="A spiritual path to higher creativity through practical exercises and insights. Cameron's morning pages and artist dates have become essential tools for reconnecting with my creative self." data-pages="272" data-width="5.5" data-height="8.5" style="width: 35px; height: 136px;">
+                        <div class="book-spine-title">Artist's Way</div>
+                        <div class="book-spine-author">Cameron</div>
+                    </div>
+                    
+                    <!-- On Looking -->
+                    <div class="book" data-title="On Looking" data-author="Alexandra Horowitz" data-description="A delightful exploration of attention and perception through walking tours with experts who see the world differently. Horowitz accompanies a geologist, artist, doctor, and others to discover how much we miss in our everyday environments. A wonderful training in the art of noticing." data-pages="304" data-width="5.5" data-height="8.5" style="width: 39px; height: 136px;">
+                        <div class="book-spine-title">On Looking</div>
+                        <div class="book-spine-author">Horowitz</div>
+                    </div>
+
+                    <!-- Unreasonable Hospitality -->
+                    <div class="book" data-title="Unreasonable Hospitality" data-author="Will Guidara" data-description="The former co-owner of Eleven Madison Park shares how going above and beyond reasonable expectations creates transformative experiences. Guidara's philosophy of 'unreasonable hospitality' applies far beyond restaurants, offering insights into creating meaningful connections and memorable moments in any field." data-pages="256" data-width="5.5" data-height="8.5" style="width: 33px; height: 136px;">
+                        <div class="book-spine-title">Unreasonable Hospitality</div>
+                        <div class="book-spine-author">Guidara</div>
+                    </div>
+
+                    <!-- The Enchanted Life -->
+                    <div class="book" data-title="The Enchanted Life" data-author="Sharon Blackie" data-description="A call to reclaim wonder and meaning in our disenchanted world. Blackie draws on Celtic wisdom, mythology, and psychology to show how we can cultivate enchantment through deep connection to place, story, and the more-than-human world. A guide to finding magic in everyday life." data-pages="320" data-width="5.25" data-height="8.0" style="width: 42px; height: 128px;">
+                        <div class="book-spine-title">Enchanted Life</div>
+                        <div class="book-spine-author">Blackie</div>
+                    </div>
+
+                    <!-- Enchantment -->
+                    <div class="book" data-title="Enchantment: Awakening Wonder in an Anxious Age" data-author="Katherine May" data-description="May's exploration of how to find wonder and meaning in difficult times. Through personal narrative and cultural analysis, she examines how enchantment—moments of profound connection and awe—can serve as antidotes to anxiety and despair. A lyrical meditation on reclaiming wonder." data-pages="288" data-width="5.5" data-height="8.5" style="width: 37px; height: 136px;">
+                        <div class="book-spine-title">Enchantment</div>
+                        <div class="book-spine-author">May</div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        
+        <div class="bookshelf-section">
+            <div class="shelf-label">Essays & Literary Works</div>
+            <div class="bookshelf">
+                <div class="books-container">
+                    <div class="book" data-title="A Room of One's Own" data-author="Virginia Woolf" data-description="My introduction to Woolf's brilliant prose. Beyond its feminist themes, this book contains underappreciated gems that form a decent base of my worldview—not what I expected from the premise." data-pages="112" data-width="5.0" data-height="7.75" style="width: 15px; height: 124px;">
+                        <div class="book-spine-title">Room of One's Own</div>
+                        <div class="book-spine-author">Woolf</div>
+                    </div>
+                    <div class="book" data-title="The Common Reader" data-author="Virginia Woolf" data-description="A collection of essays that demonstrate Woolf's extraordinary insight into literature and life. Her ability to inhabit the minds of authors across centuries continues to astound me." data-pages="267" data-width="5.25" data-height="8.0" style="width: 35px; height: 128px;">
+                        <div class="book-spine-title">Common Reader</div>
+                        <div class="book-spine-author">Woolf</div>
+                    </div>
+                    <div class="book" data-title="Emerson's Essays" data-author="Ralph Waldo Emerson" data-description="A treasure trove of wisdom on self-reliance, nature, and the human spirit. There's so much in here that even reading just one essay can be transformative." data-pages="320" data-width="5.5" data-height="8.0" style="width: 42px; height: 128px;">
+                        <div class="book-spine-title">Essays</div>
+                        <div class="book-spine-author">Emerson</div>
+                    </div>
+                    <!-- Oeuvres by Levé -->
+                    <div class="book" data-title="Œuvres" data-author="Édouard Levé" data-description="A conceptual masterpiece that describes artworks the author imagined but never created. Levé's deadpan catalog of hypothetical projects—from impossible photographs to imaginary novels—explores the relationship between idea and execution, art and life. A haunting meditation on creativity, possibility, and the works that exist only in our minds." data-pages="128" data-width="5.0" data-height="7.5" style="width: 17px; height: 120px;">
+                        <div class="book-spine-title">Œuvres</div>
+                        <div class="book-spine-author">Levé</div>
+                    </div>
+                    <div class="book" data-title="Lost in Thought" data-author="Zena Hitz" data-description="A defense of intellectual life for its own sake. Hitz's exploration of how learning can be a refuge and source of dignity has affirmed my belief in the inherent value of contemplation." data-pages="208" data-width="5.5" data-height="8.25" style="width: 27px; height: 132px;">
+                        <div class="book-spine-title">Lost in Thought</div>
+                        <div class="book-spine-author">Hitz</div>
+                    </div>
+                    <div class="book" data-title="The Intellectual Life" data-author="A.G. Sertillanges" data-description="A guide to cultivating a life of the mind that balances intellectual pursuit with spiritual growth. Sertillanges' practical wisdom on reading, writing, and thinking has shaped my approach to scholarship." data-pages="296" data-width="5.25" data-height="8.0" style="width: 39px; height: 128px;">
+                        <div class="book-spine-title">Intellectual Life</div>
+                        <div class="book-spine-author">Sertillanges</div>
+                    </div>
+                    <!-- Montaigne's Essays -->
+                    <div class="book" data-title="Montaigne's Essays" data-author="Michel de Montaigne" data-description="The foundational work of the personal essay as a literary form. Montaigne's candid self-examination and philosophical reflections on human nature, friendship, and mortality established the essay as a vehicle for intimate thought. His motto 'Que sais-je?' (What do I know?) captures his skeptical, humanistic approach to understanding the world." data-pages="1344" data-width="6.5" data-height="9.5" style="width: 134px; height: 152px;">
+                        <div class="book-spine-title">Montaigne's Essays</div>
+                        <div class="book-spine-author">Montaigne</div>
+                    </div>
+
+                    <!-- The David Foster Wallace Reader -->
+                    <div class="book" data-title="The David Foster Wallace Reader" data-author="David Foster Wallace" data-description="A comprehensive introduction to one of America's most brilliant and complex writers. This massive collection spans Wallace's career from early stories to excerpts from Infinite Jest, showcasing his unparalleled ability to capture the anxiety and longing of contemporary life with both intellectual rigor and deep compassion." data-pages="976" data-width="6.0" data-height="9.0" style="width: 98px; height: 144px;">
+                        <div class="book-spine-title">David Foster Wallace Reader</div>
+                        <div class="book-spine-author">Wallace</div>
+                    </div>
+
+                    <!-- The Journals of Sylvia Plath -->
+                    <div class="book" data-title="The Journals of Sylvia Plath" data-author="Sylvia Plath" data-description="The intimate record of one of the 20th century's most powerful poets. These journals reveal Plath's brilliant mind grappling with art, identity, and the complexities of being a woman writer in the 1950s. Her raw honesty about creativity, depression, and ambition makes this essential reading for understanding her poetry and the artistic process." data-pages="732" data-width="6.0" data-height="9.0" style="width: 73px; height: 144px;">
+                        <div class="book-spine-title">Journals of Sylvia Plath</div>
+                        <div class="book-spine-author">Plath</div>
+                    </div>
+
+                    <!-- Walden -->
+                    <div class="book" data-title="Walden" data-author="Henry David Thoreau" data-description="The classic account of simple living in natural surroundings. Thoreau's experiment at Walden Pond produced this meditation on self-reliance, nature, and the good life that continues to inspire readers seeking alternatives to materialist culture. A foundational text of American environmentalism and individualism." data-pages="384" data-width="5.5" data-height="8.5" style="width: 49px; height: 136px;">
+                        <div class="book-spine-title">Walden</div>
+                        <div class="book-spine-author">Thoreau</div>
+                    </div>
+
+                    <!-- Essays by Thoreau -->
+                    <div class="book" data-title="Essays by Thoreau" data-author="Henry David Thoreau" data-description="Essential essays including 'Civil Disobedience,' 'Life Without Principle,' and 'Walking.' Thoreau's philosophical writings on resistance, nature, and authentic living laid groundwork for environmental and social justice movements. His call to live deliberately and resist unjust government remains powerfully relevant." data-pages="512" data-width="5.5" data-height="8.5" style="width: 65px; height: 136px;">
+                        <div class="book-spine-title">Essays by Thoreau</div>
+                        <div class="book-spine-author">Thoreau</div>
+                    </div>
+
+                    <!-- The Universe in Verse -->
+                    <div class="book" data-title="The Universe in Verse" data-author="Maria Popova" data-description="A celebration of the intersection between science and poetry. Popova curates a stunning collection that reveals how poets and scientists share a common quest to understand our place in the cosmos. This book shows how wonder, curiosity, and beauty unite the seemingly disparate worlds of art and science." data-pages="304" data-width="6.0" data-height="9.0" style="width: 30px; height: 144px;">
+                        <div class="book-spine-title">Universe in Verse</div>
+                        <div class="book-spine-author">Popova</div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        
+        <div class="bookshelf-section">
+            <div class="shelf-label">Poetry</div>
+            <div class="bookshelf">
+                <div class="books-container">
+                    <div class="book" data-title="Leaves of Grass" data-author="Walt Whitman" data-description="A revolutionary collection that celebrates the individual and the interconnectedness of all life. Whitman's democratic vision and embrace of the body, soul, and natural world continue to resonate deeply with me." data-pages="432" data-width="6.0" data-height="9.0" style="width: 43px; height: 144px;">
+                        <div class="book-spine-title">Leaves of Grass</div>
+                        <div class="book-spine-author">Whitman</div>
+                    </div>
+                    <div class="book" data-title="Howl" data-author="Allen Ginsberg" data-description="A raw, unfiltered cry against conformity and materialism. Ginsberg's passionate defense of those who live outside conventional boundaries challenged me to question societal norms." data-pages="64" data-width="5.5" data-height="8.0" style="width: 8px; height: 128px;">
+                        <div class="book-spine-title">Howl</div>
+                        <div class="book-spine-author">Ginsberg</div>
+                    </div>
+                    <!-- Complete Poetical Works of William Wordsworth -->
+                    <div class="book" data-title="The Complete Poetical Works of William Wordsworth" data-author="William Wordsworth" data-description="The comprehensive collection of England's great Romantic poet, including 'I Wandered Lonely as a Cloud,' 'Tintern Abbey,' and 'The Prelude.' Wordsworth's celebration of nature and the human spirit helped define Romantic poetry. His belief in the healing power of nature and the dignity of common people continues to inspire." data-pages="928" data-width="5.5" data-height="8.0" style="width: 120px; height: 128px;">
+                        <div class="book-spine-title">Complete Wordsworth</div>
+                        <div class="book-spine-author">Wordsworth</div>
+                    </div>
+
+                    <!-- Complete Poems of Emily Dickinson -->
+                    <div class="book" data-title="The Complete Poems of Emily Dickinson" data-author="Emily Dickinson" data-description="The collected works of America's most enigmatic poet, whose compressed, intense verses explore death, immortality, love, and nature with unprecedented psychological insight. Dickinson's unique voice—mysterious, profound, and startlingly modern—changed poetry forever from her secluded life in Amherst." data-pages="770" data-width="5.0" data-height="8.0" style="width: 96px; height: 128px;">
+                        <div class="book-spine-title">Complete Dickinson</div>
+                        <div class="book-spine-author">Dickinson</div>
+                    </div>
+
+                    <!-- Child by Mimi Khalvati -->
+                    <div class="book" data-title="Child" data-author="Mimi Khalvati" data-description="A contemporary poetry collection that explores themes of identity, displacement, and belonging with the perspective of an Iranian-British poet. Khalvati's work bridges cultures and generations, examining what it means to be caught between worlds while finding beauty in the spaces between languages and traditions." data-pages="80" data-width="5.0" data-height="7.5" style="width: 11px; height: 120px;">
+                        <div class="book-spine-title">Child</div>
+                        <div class="book-spine-author">Khalvati</div>
+                    </div>
+
+                    <!-- Complete Collected Poems of Maya Angelou -->
+                    <div class="book" data-title="Complete Collected Poems of Maya Angelou" data-author="Maya Angelou" data-description="The powerful poetic voice of one of America's most beloved writers, combining personal experience with universal themes of resilience, love, and human dignity. Angelou's poems celebrate the strength found in survival and the beauty discovered in the face of adversity." data-pages="320" data-width="5.25" data-height="8.0" style="width: 42px; height: 128px;">
+                        <div class="book-spine-title">Collected Angelou</div>
+                        <div class="book-spine-author">Angelou</div>
+                    </div>
+
+                    <!-- The Works of Alfred Lord Tennyson -->
+                    <div class="book" data-title="The Works of Alfred Lord Tennyson" data-author="Alfred Lord Tennyson" data-description="The complete works of Victorian England's Poet Laureate, including 'The Lady of Shalott,' 'Ulysses,' and 'In Memoriam.' Tennyson's melodious verse captures both the grandeur and the anxieties of the Victorian age, while his mastery of form and language made him one of the most quoted poets in English." data-pages="1050" data-width="6.0" data-height="9.0" style="width: 105px; height: 144px;">
+                        <div class="book-spine-title">Works of Tennyson</div>
+                        <div class="book-spine-author">Tennyson</div>
+                    </div>
+
+                    <!-- Collected Poems of Elizabeth Barrett Browning -->
+                    <div class="book" data-title="The Collected Poems of Elizabeth Barrett Browning" data-author="Elizabeth Barrett Browning" data-description="The passionate and socially conscious verse of one of the Victorian era's most accomplished poets. From 'Sonnets from the Portuguese' expressing her love for Robert Browning to her advocacy for abolition and women's rights, her poetry combines personal intimacy with political conviction." data-pages="445" data-width="5.25" data-height="8.0" style="width: 58px; height: 128px;">
+                        <div class="book-spine-title">Collected Barrett Browning</div>
+                        <div class="book-spine-author">Browning</div>
+                    </div>
+
+                    <!-- The Works of John Keats -->
+                    <div class="book" data-title="The Works of John Keats" data-author="John Keats" data-description="The luminous poetry of Romanticism's brightest star, cut short at age 25. Keats's odes, including 'Ode to a Nightingale' and 'Ode on a Grecian Urn,' achieve a perfect balance of sensuous beauty and philosophical depth. His letters reveal a poetic mind grappling with beauty, truth, and mortality." data-pages="520" data-width="5.5" data-height="8.5" style="width: 67px; height: 136px;">
+                        <div class="book-spine-title">Works of Keats</div>
+                        <div class="book-spine-author">Keats</div>
+                    </div>
+
+                    <!-- Complete Poems of D.H. Lawrence -->
+                    <div class="book" data-title="Complete Poems of D.H. Lawrence" data-author="D.H. Lawrence" data-description="The passionate and often controversial verse of the author of 'Lady Chatterley's Lover.' Lawrence's poetry explores the primal connections between humans and nature, love and desire, with an intensity that matches his fiction. His later poems, written while dying of tuberculosis, are particularly moving." data-pages="1050" data-width="5.75" data-height="8.5" style="width: 135px; height: 136px;">
+                        <div class="book-spine-title">Complete Lawrence</div>
+                        <div class="book-spine-author">Lawrence</div>
+                    </div>
+
+                    <!-- Collected Poems of Thomas Hardy -->
+                    <div class="book" data-title="Collected Poems of Thomas Hardy" data-author="Thomas Hardy" data-description="The profound and often melancholy poetry of the great Victorian novelist. Hardy's verses explore fate, love, and the passage of time with the same psychological insight he brought to his novels. His late-life devotion to poetry produced some of the most moving elegies in English literature." data-pages="1000" data-width="6.0" data-height="9.0" style="width: 100px; height: 144px;">
+                        <div class="book-spine-title">Collected Hardy</div>
+                        <div class="book-spine-author">Hardy</div>
+                    </div>
+
+                    <!-- Selected Poetry and Prose of Shelley -->
+                    <div class="book" data-title="Selected Poetry and Prose of Shelley" data-author="Percy Bysshe Shelley" data-description="The revolutionary verse and prose of Romanticism's most radical voice. Shelley's poetry combines political passion with lyric beauty, from 'Ozymandias' to 'To a Skylark.' His atheism and anarchism, as well as his personal scandals, made him a controversial figure whose influence on poetry was nonetheless profound." data-pages="656" data-width="5.5" data-height="8.25" style="width: 85px; height: 132px;">
+                        <div class="book-spine-title">Selected Shelley</div>
+                        <div class="book-spine-author">Shelley</div>
+                    </div>
+
+                    <!-- Selected Poems of Lord Byron -->
+                    <div class="book" data-title="Selected Poems of Lord Byron" data-author="Lord Byron" data-description="The scandalous and brilliant verse of Romanticism's most notorious figure. Byron's poetry, from the brooding 'Childe Harold's Pilgrimage' to the satirical 'Don Juan,' captures the Romantic hero's passion and cynicism. His life was as dramatic as his verse, making him a legend across Europe." data-pages="480" data-width="5.25" data-height="8.0" style="width: 63px; height: 128px;">
+                        <div class="book-spine-title">Selected Byron</div>
+                        <div class="book-spine-author">Byron</div>
+                    </div>
+
+                    <!-- Selected Poems of William Blake -->
+                    <div class="book" data-title="Selected Poems of William Blake" data-author="William Blake" data-description="The visionary poetry of England's most mystical artist-poet. Blake's 'Songs of Innocence and Experience' and prophetic books create a unique mythology of spiritual rebellion. His integration of text and image in illuminated manuscripts makes him unlike any other poet in English literature." data-pages="320" data-width="5.0" data-height="8.0" style="width: 40px; height: 128px;">
+                        <div class="book-spine-title">Selected Blake</div>
+                        <div class="book-spine-author">Blake</div>
+                    </div>
+
+                    <!-- Cicadas Serenade by Antonio Eramo -->
+                    <div class="book" data-title="Cicadas Serenade" data-author="Antonio Eramo" data-description="A contemporary poetry collection that captures the music of nature and memory. Eramo's verses explore the intersection of sound and silence, the natural world and human consciousness. His work finds profound meaning in the small moments and seasonal rhythms that connect us to the larger patterns of existence." data-pages="120" data-width="5.0" data-height="7.5" style="width: 16px; height: 120px;">
+                        <div class="book-spine-title">Cicadas Serenade</div>
+                        <div class="book-spine-author">Eramo</div>
+                    </div>
+
+                    <!-- Information Desk by Robyn Schiff -->
+                    <div class="book" data-title="Information Desk" data-author="Robyn Schiff" data-description="A contemporary poetry collection that interrogates our relationship with information, consumerism, and modern life. Schiff's work combines intellectual rigor with emotional depth, examining how we navigate a world saturated with data while searching for genuine human connection and meaning." data-pages="96" data-width="5.0" data-height="7.5" style="width: 13px; height: 120px;">
+                        <div class="book-spine-title">Information Desk</div>
+                        <div class="book-spine-author">Schiff</div>
+                    </div>
+
+                    <!-- To 2040 by Jorie Graham -->
+                    <div class="book" data-title="To 2040" data-author="Jorie Graham" data-description="A urgent and prescient poetry collection addressing climate change and environmental crisis. Graham's complex, layered verse grapples with humanity's relationship to the natural world and our responsibility to future generations. Her work combines ecological awareness with profound philosophical inquiry." data-pages="128" data-width="5.25" data-height="8.0" style="width: 17px; height: 128px;">
+                        <div class="book-spine-title">To 2040</div>
+                        <div class="book-spine-author">Graham</div>
+                    </div>
+
+                    <!-- Kaddish by Allen Ginsberg -->
+                    <div class="book" data-title="Kaddish" data-author="Allen Ginsberg" data-description="Ginsberg's powerful elegy for his mother, Naomi, combining Jewish mourning traditions with Beat poetry's raw emotional honesty. This long poem confronts mental illness, family trauma, and the immigrant experience with unflinching directness. A companion piece to 'Howl' that shows Ginsberg's range and emotional depth." data-pages="64" data-width="5.0" data-height="7.5" style="width: 9px; height: 120px;">
+                        <div class="book-spine-title">Kaddish</div>
+                        <div class="book-spine-author">Ginsberg</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="bookshelf-section">
+            <div class="shelf-label">AGGLOMERATION, CREATIVITY & PROGRESS SECTION</div>
+            <div class="bookshelf">
+                <div class="books-container">
+                    <!-- You're Invited -->
+                    <div class="book" data-title="You're Invited: The Art and Science of Cultivating Influence" data-author="Jon Levy" data-description="A behavioral scientist's guide to building meaningful connections and influence through strategic relationship-building. Levy reveals how successful people create networks not through networking events, but by bringing people together around shared experiences and genuine value creation." data-pages="272" data-width="5.5" data-height="8.5" style="width: 35px; height: 136px;">
+                        <div class="book-spine-title">You're Invited</div>
+                        <div class="book-spine-author">Levy</div>
+                    </div>
+
+                    <!-- Group Genius -->
+                    <div class="book" data-title="Group Genius: The Creative Power of Collaboration" data-author="Keith Sawyer" data-description="A groundbreaking exploration of how innovation actually happens through collaboration, not solitary genius. Drawing on research with jazz ensembles and improv groups, Sawyer reveals the secrets of group flow and how teams can achieve collective creativity that exceeds individual capabilities." data-pages="274" data-width="5.5" data-height="8.5" style="width: 35px; height: 136px;">
+                        <div class="book-spine-title">Group Genius</div>
+                        <div class="book-spine-author">Sawyer</div>
+                    </div>
+
+                    <!-- Impact Networks -->
+                    <div class="book" data-title="Impact Networks: Create Connection, Spark Collaboration, and Catalyze Systemic Change" data-author="David Ehrlichman" data-description="A practical guide to building networks that create lasting social change. Ehrlichman shows how loosely connected groups can achieve more than traditional organizations through strategic collaboration, shared purpose, and distributed leadership. Essential for anyone working on complex social challenges." data-pages="240" data-width="5.5" data-height="8.5" style="width: 31px; height: 136px;">
+                        <div class="book-spine-title">Impact Networks</div>
+                        <div class="book-spine-author">Ehrlichman</div>
+                    </div>
+
+                    <!-- Start-up Nation -->
+                    <div class="book" data-title="Start-up Nation: The Story of Israel's Economic Miracle" data-author="Dan Senor and Saul Singer" data-description="The remarkable story of how Israel became a global innovation hub despite its small size and challenging circumstances. Senor and Singer explore the cultural, military, and institutional factors that created an entrepreneurial ecosystem producing more start-ups per capita than anywhere else in the world." data-pages="304" data-width="6.0" data-height="9.0" style="width: 30px; height: 144px;">
+                        <div class="book-spine-title">Start-up Nation</div>
+                        <div class="book-spine-author">Senor & Singer</div>
+                    </div>
+
+                    <!-- The Florentines -->
+                    <div class="book" data-title="The Florentines: From Dante to Galileo" data-author="Paul Strathern" data-description="A vivid portrait of the Renaissance city-state that produced an unprecedented concentration of genius. Strathern chronicles how Florence's unique culture of competition, patronage, and civic pride fostered extraordinary achievements in art, literature, science, and politics that transformed Western civilization." data-pages="512" data-width="6.0" data-height="9.0" style="width: 51px; height: 144px;">
+                        <div class="book-spine-title">The Florentines</div>
+                        <div class="book-spine-author">Strathern</div>
+                    </div>
+
+                    <!-- The Medici Effect -->
+                    <div class="book" data-title="The Medici Effect: What Elephants and Epidemics Can Teach Us About Innovation" data-author="Frans Johansson" data-description="How breakthrough innovations emerge at the intersection of different fields, cultures, and disciplines. Named after the Medici family's role in fostering Renaissance innovation, this book shows how diversity and cross-pollination of ideas create the conditions for revolutionary breakthroughs." data-pages="224" data-width="5.5" data-height="8.5" style="width: 29px; height: 136px;">
+                        <div class="book-spine-title">Medici Effect</div>
+                        <div class="book-spine-author">Johansson</div>
+                    </div>
+
+                    <!-- Range -->
+                    <div class="book" data-title="Range: Why Generalists Triumph in a Specialized World" data-author="David Epstein" data-description="A compelling argument against early specialization and for the power of broad experience. Epstein shows how generalists often outperform specialists in complex, unpredictable fields by bringing diverse perspectives and analogical thinking to problems that narrow expertise cannot solve." data-pages="352" data-width="6.0" data-height="9.0" style="width: 35px; height: 144px;">
+                        <div class="book-spine-title">Range</div>
+                        <div class="book-spine-author">Epstein</div>
+                    </div>
+
+                    <!-- Loonshots -->
+                    <div class="book" data-title="Loonshots: How to Nurture the Crazy Ideas That Win Wars, Cure Diseases, and Transform Industries" data-author="Safi Bahcall" data-description="A physicist-entrepreneur's guide to nurturing breakthrough innovations. Bahcall reveals the organizational dynamics that allow 'loonshots'—wild ideas that seem crazy but change the world—to survive and thrive. A fascinating blend of physics, history, and management insights." data-pages="368" data-width="6.0" data-height="9.0" style="width: 37px; height: 144px;">
+                        <div class="book-spine-title">Loonshots</div>
+                        <div class="book-spine-author">Bahcall</div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!--
+        <div class="bookshelf-section">
+            <div class="shelf-label">SAMPLE SHELF</div>
+            <div class="bookshelf">
+                <div class="books-container">
+                    <div class="book" data-title="The Midnight Library" data-author="Matt Haig" data-description="A favorite of my youth that explores the infinite possibilities of life through the story of a library between life and death. It made me consider how seemingly small choices can lead to vastly different lives." data-pages="288" data-width="5.25" data-height="8.0" style="width: 38px; height: 128px;">
+                        <div class="book-spine-title">Midnight Library</div>
+                        <div class="book-spine-author">Haig</div>
+                    </div>
+                    <div class="book" data-title="The Raven Cycle Series" data-author="Maggie Stiefvater" data-description="Another favorite from my youth that made the world around me feel a little more magical. These books awakened my appreciation for the mystical possibilities hidden in ordinary places." data-pages="1200" data-width="5.5" data-height="8.25" style="width: 156px; height: 132px;">
+                        <div class="book-spine-title">Raven Cycle</div>
+                        <div class="book-spine-author">Stiefvater</div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        -->
+
+        <div class="bookshelf-section">
+            <div class="shelf-label">Gathering</div>
+            <div class="bookshelf">
+                <div class="books-container">
+                    <!-- The Art of Gathering -->
+                    <div class="book" data-title="The Art of Gathering: How We Meet and Why It Matters" data-author="Priya Parker" data-description="A master facilitator's guide to creating meaningful, transformative gatherings. Parker argues that most of our meetings and events are bland and unproductive because we focus on logistics rather than purpose. Her human-centered approach shows how to design gatherings that create genuine connection and lasting impact." data-pages="320" data-width="6.0" data-height="9.0" style="width: 32px; height: 144px;">
+                        <div class="book-spine-title">Art of Gathering</div>
+                        <div class="book-spine-author">Parker</div>
+                    </div>
+
+                    <!-- The 2-Hour Cocktail Party -->
+                    <div class="book" data-title="The 2-Hour Cocktail Party: How to Build Big Relationships with Small Gatherings" data-author="Nick Gray" data-description="A practical, step-by-step guide to hosting successful social gatherings that actually bring people together. Gray's formula for intimate cocktail parties provides a framework for creating meaningful connections in an age of digital isolation, with specific tactics for introverts and natural hosts alike." data-pages="256" data-width="5.5" data-height="8.5" style="width: 33px; height: 136px;">
+                        <div class="book-spine-title">2-Hour Cocktail Party</div>
+                        <div class="book-spine-author">Gray</div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="bookshelf-section">
+            <div class="shelf-label">Other Biography & History</div>
+            <div class="bookshelf">
+                <div class="books-container">
+                    <div class="book" data-title="Leonardo da Vinci" data-author="Walter Isaacson" data-description="A comprehensive biography that explores da Vinci's extraordinary curiosity and creativity. Isaacson's portrayal of Leonardo's integration of art and science continues to inspire my approach to learning." data-pages="624" data-width="6.5" data-height="9.5" style="width: 65px; height: 152px;">
+                        <div class="book-spine-title">Leonardo da Vinci</div>
+                        <div class="book-spine-author">Isaacson</div>
+                    </div>
+                    <!-- Love, Pamela -->
+                    <div class="book" data-title="Love, Pamela: A Memoir" data-author="Pamela Anderson" data-description="A surprisingly literary and introspective memoir that reclaims Anderson's narrative from tabloid caricature. Blending prose with original poetry, she reveals the thoughtful, nature-loving person behind the Baywatch icon. A candid exploration of fame, family, activism, and finding authenticity in a world that wanted to define her." data-pages="240" data-width="6.0" data-height="9.0" style="width: 24px; height: 144px;">
+                        <div class="book-spine-title">Love, Pamela</div>
+                        <div class="book-spine-author">Anderson</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="bookshelf-section">
+            <div class="shelf-label">MISCELLANEOUS TECH, BUSINESS, DEVELOPMENT, SELF-HELP</div>
+            <div class="bookshelf">
+                <div class="books-container">
+                    <div class="book" data-title="Zero to One" data-author="Peter Thiel" data-description="A contrarian perspective on innovation and startup building. Thiel's emphasis on creating new categories rather than competing in existing ones has shaped my thinking about genuine progress." data-pages="210" data-width="5.5" data-height="8.25" style="width: 27px; height: 132px;">
+                        <div class="book-spine-title">Zero to One</div>
+                        <div class="book-spine-author">Thiel</div>
+                    </div>
+                    <div class="book" data-title="The Prosperity Paradox" data-author="Clayton M. Christensen, Efosa Ojomo, and Karen Dillon" data-description="A fresh approach to addressing poverty through market-creating innovations. The authors' focus on developing solutions from within rather than imposing external aid has influenced my thinking on sustainable development." data-pages="304" data-width="6.0" data-height="9.0" style="width: 30px; height: 144px;">
+                        <div class="book-spine-title">Prosperity Paradox</div>
+                        <div class="book-spine-author">Christensen</div>
+                    </div>
+                    <div class="book" data-title="Deep Work" data-author="Cal Newport" data-description="A compelling case for focused, distraction-free work in an increasingly fragmented world. Newport's practical strategies for cultivating depth have improved both my productivity and satisfaction." data-pages="304" data-width="5.5" data-height="8.5" style="width: 40px; height: 136px;">
+                        <div class="book-spine-title">Deep Work</div>
+                        <div class="book-spine-author">Newport</div>
+                    </div>
+                    <div class="book" data-title="Range" data-author="David Epstein" data-description="A counterintuitive exploration of how generalists often thrive in a specialized world. Epstein's research on the benefits of diverse experiences has validated my own nonlinear path." data-pages="352" data-width="6.0" data-height="9.0" style="width: 35px; height: 144px;">
+                        <div class="book-spine-title">Range</div>
+                        <div class="book-spine-author">Epstein</div>
+                    </div>
+                    <!-- Co-Intelligence -->
+                    <div class="book" data-title="Co-Intelligence: Living and Working with AI" data-author="Ethan Mollick" data-description="The definitive guide to working with AI as a collaborator rather than a replacement. Wharton professor Mollick cuts through the hype and fear to show how to engage with AI as co-worker, teacher, and coach. Essential reading for anyone wanting to understand how to thrive in the age of artificial intelligence." data-pages="256" data-width="5.5" data-height="8.25" style="width: 33px; height: 132px;">
+                        <div class="book-spine-title">Co-Intelligence</div>
+                        <div class="book-spine-author">Mollick</div>
+                    </div>
+
+                    <!-- Building Social Business -->
+                    <div class="book" data-title="Building Social Business: The New Kind of Capitalism That Serves Humanity's Most Pressing Needs" data-author="Muhammad Yunus" data-description="The Nobel Peace Prize winner's vision for social business—companies designed to solve social problems rather than maximize profit. Yunus shows how market mechanisms can address poverty, healthcare, and education while creating sustainable enterprises that benefit society. A blueprint for capitalism with a conscience." data-pages="256" data-width="5.5" data-height="8.5" style="width: 33px; height: 136px;">
+                        <div class="book-spine-title">Building Social Business</div>
+                        <div class="book-spine-author">Yunus</div>
+                    </div>
+
+                    <!-- Build -->
+                    <div class="book" data-title="Build: An Unorthodox Guide to Making Things Worth Making" data-author="Tony Fadell" data-description="The creator of the iPod and iPhone shares hard-won wisdom about building products that matter. Fadell's opinionated guide covers everything from team dynamics to product decisions, offering candid insights into what it really takes to create transformative technology. A masterclass in product development from one of its greatest practitioners." data-pages="352" data-width="6.0" data-height="9.0" style="width: 35px; height: 144px;">
+                        <div class="book-spine-title">Build</div>
+                        <div class="book-spine-author">Fadell</div>
+                    </div>
+
+                    <!-- A Pattern Language -->
+                    <div class="book" data-title="A Pattern Language: Towns, Buildings, Construction" data-author="Christopher Alexander" data-description="A revolutionary approach to architecture and urban planning that identifies the patterns that make spaces feel alive and human. Alexander's 253 patterns, from city design to room layouts, offer a timeless framework for creating environments that support human flourishing. Influential far beyond architecture, inspiring everyone from software developers to community organizers." data-pages="1171" data-width="7.0" data-height="10.0" style="width: 117px; height: 160px;">
+                        <div class="book-spine-title">A Pattern Language</div>
+                        <div class="book-spine-author">Alexander</div>
+                    </div>
+
+                    <!-- The Gifts of Imperfection -->
+                    <div class="book" data-title="The Gifts of Imperfection" data-author="Brené Brown" data-description="A guide to cultivating courage, compassion, and connection through embracing vulnerability and imperfection. Brown's research-based approach shows how perfectionism blocks creativity and joy, while authenticity and self-compassion lead to what she calls 'wholehearted living.' Essential reading for anyone seeking to live more authentically." data-pages="240" data-width="5.5" data-height="8.5" style="width: 31px; height: 136px;">
+                        <div class="book-spine-title">Gifts of Imperfection</div>
+                        <div class="book-spine-author">Brown</div>
+                    </div>
+
+                    <!-- Originals -->
+                    <div class="book" data-title="Originals: How Non-Conformists Move the World" data-author="Adam Grant" data-description="An exploration of how ordinary people champion new ideas and drive creative change. Grant reveals the surprising habits of original thinkers—from procrastinating strategically to voicing dissent constructively. Drawing on psychology research and compelling stories, he shows how anyone can become more original and effective at promoting innovative ideas." data-pages="326" data-width="6.0" data-height="9.0" style="width: 33px; height: 144px;">
+                        <div class="book-spine-title">Originals</div>
+                        <div class="book-spine-author">Grant</div>
+                    </div>
+
+                    <!-- Introspect -->
+                    <div class="book" data-title="Introspect" data-author="Visakan Veerasamy" data-description="A collection of insights on self-awareness, personal growth, and understanding the patterns that shape our thinking. Veerasamy's observations on attention, habits, and mental models offer a practical guide to examining your inner life and making intentional changes. A modern take on the ancient practice of self-reflection." data-pages="288" data-width="5.5" data-height="8.5" style="width: 37px; height: 136px;">
+                        <div class="book-spine-title">Introspect</div>
+                        <div class="book-spine-author">Veerasamy</div>
+                    </div>
+
+                    <!-- How to Live on 24 Hours a Day -->
+                    <div class="book" data-title="How to Live on 24 Hours a Day" data-author="Arnold Bennett" data-description="A timeless guide to making the most of your limited time, written in 1910 but remarkably relevant today. Bennett's practical philosophy focuses on using the hours outside of work to develop yourself intellectually and spiritually. A compact classic on time management and intentional living that influenced countless productivity thinkers." data-pages="96" data-width="4.5" data-height="7.0" style="width: 12px; height: 112px;">
+                        <div class="book-spine-title">How to Live on 24 Hours a Day</div>
+                        <div class="book-spine-author">Bennett</div>
+                    </div>
+
+                    <!-- Designing for People -->
+                    <div class="book" data-title="Designing for People" data-author="Henry Dreyfuss" data-description="The foundational text of human-centered design from one of America's greatest industrial designers. Dreyfuss introduced the idea that products should adapt to people, not the other way around. His principles for ergonomic, intuitive design—from telephones to tractors—established the field of user experience design decades before the term existed." data-pages="240" data-width="5.5" data-height="8.5" style="width: 31px; height: 136px;">
+                        <div class="book-spine-title">Designing for People</div>
+                        <div class="book-spine-author">Dreyfuss</div>
+                    </div>
+
+                    <!-- Finite and Infinite Games -->
+                    <div class="book" data-title="Finite and Infinite Games" data-author="James P. Carse" data-description="A philosophical exploration of two kinds of games: finite games played to win, and infinite games played to continue playing. Carse's profound meditation on competition, purpose, and meaning has influenced fields from business strategy to personal development. A short but transformative book about how we choose to engage with life." data-pages="160" data-width="5.0" data-height="8.0" style="width: 20px; height: 128px;">
+                        <div class="book-spine-title">Finite and Infinite Games</div>
+                        <div class="book-spine-author">Carse</div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="bookshelf-section">
+            <div class="shelf-label">Fiction</div>
+            <div class="bookshelf">
+                <div class="books-container">
+                    <div class="book" data-title="The Midnight Library" data-author="Matt Haig" data-description="A favorite of my youth that explores the infinite possibilities of life through the story of a library between life and death. It made me consider how seemingly small choices can lead to vastly different lives." data-pages="288" data-width="5.25" data-height="8.0" style="width: 38px; height: 128px;">
+                        <div class="book-spine-title">Midnight Library</div>
+                        <div class="book-spine-author">Haig</div>
+                    </div>
+                    <div class="book" data-title="The Raven Cycle Series" data-author="Maggie Stiefvater" data-description="Another favorite from my youth that made the world around me feel a little more magical. These books awakened my appreciation for the mystical possibilities hidden in ordinary places." data-pages="1200" data-width="5.5" data-height="8.25" style="width: 156px; height: 132px;">
+                        <div class="book-spine-title">Raven Cycle</div>
+                        <div class="book-spine-author">Stiefvater</div>
+                    </div>
+                    <div class="book" data-title="Life After Life" data-author="Kate Atkinson" data-description="A novel about a woman who lives her life repeatedly, making different choices each time. Its exploration of how small decisions can have enormous consequences has stayed with me." data-pages="544" data-width="6.0" data-height="9.25" style="width: 55px; height: 148px;">
+                        <!--<div class="book-hover-overlay">
+                            <div class="book-hover-title">Life After Life</div>
+                            <div class="book-hover-author">By Kate Atkinson</div>
+                            <div class="book-hover-description">A novel about a woman who lives her life repeatedly, making different choices each time. Its exploration of how small decisions can have enormous consequences has stayed with me.</div>
+                        </div>-->
+                        <div class="book-spine-title">Life After Life</div>
+                        <div class="book-spine-author">Atkinson</div>
+                    </div>
+                    <div class="book" data-title="Eleanor Oliphant is Completely Fine" data-author="Gail Honeyman" data-description="A touching story about loneliness, trauma, and the healing power of connection. Eleanor's journey from isolation to community resonated deeply with my understanding of human relationships." data-pages="336" data-width="5.25" data-height="8.0" style="width: 44px; height: 128px;">
+                        <div class="book-spine-title">Eleanor Oliphant</div>
+                        <div class="book-spine-author">Honeyman</div>
+                    </div>
+                    <div class="book" data-title="The Alchemist" data-author="Paulo Coelho" data-description="I read this when I was 12 and feeling depressed, and it made things feel meaningful. The simple fable about following one's dreams contains wisdom that spoke to me during a difficult time." data-pages="163" data-width="5.0" data-height="8.0" style="width: 21px; height: 128px;">
+                        <div class="book-spine-title">The Alchemist</div>
+                        <div class="book-spine-author">Coelho</div>
+                    </div>
+                    <div class="book" data-title="Anne of Green Gables" data-author="L.M. Montgomery" data-description="Just magic. Anne's imaginative spirit and ability to find wonder in everyday life continue to inspire me to look at the world with fresh eyes." data-pages="320" data-width="5.0" data-height="7.5" style="width: 43px; height: 120px;">
+                        <div class="book-spine-title">Anne of Green Gables</div>
+                        <div class="book-spine-author">Montgomery</div>
+                    </div>
+                    <div class="book" data-title="Purple Hibiscus" data-author="Chimamanda Ngozi Adichie" data-description="A powerful coming-of-age story set in postcolonial Nigeria. Adichie's nuanced portrayal of family, faith, and political turmoil offers insights into the complexity of Nigerian society." data-pages="307" data-width="5.5" data-height="8.25" style="width: 40px; height: 132px;">
+                        <div class="book-spine-title">Purple Hibiscus</div>
+                        <div class="book-spine-author">Adichie</div>
+                    </div>
+                    <div class="book" data-title="Fine Boys" data-author="Eghosa Imasuen" data-description="A compelling novel about university life in Nigeria during the 1990s. Its authentic depiction of friendship, cult violence, and resilience provides a window into a specific moment in Nigerian history." data-pages="256" data-width="5.25" data-height="8.0" style="width: 34px; height: 128px;">
+                        <div class="book-spine-title">Fine Boys</div>
+                        <div class="book-spine-author">Imasuen</div>
+                    </div>
+
+                    <!-- Addie LaRue -->
+                    <div class="book" data-title="The Invisible Life of Addie LaRue" data-author="V.E. Schwab" data-description="A haunting fantasy about a young woman who makes a Faustian bargain for immortality in 1714 France, but is cursed to be forgotten by everyone she meets. Similar vibes to The Midnight Library with gorgeous prose and a centuries-spanning story. The audiobook performance was exceptional, bringing Addie's voice to life across three hundred years of longing to be remembered." data-pages="560" data-width="6.0" data-height="9.0" style="width: 56px; height: 144px;">
+                        <div class="book-spine-title">Invisible Life of Addie LaRue</div>
+                        <div class="book-spine-author">Schwab</div>
+                    </div>
+
+                    <!-- Lord of the Rings -->
+                    <div class="book" data-title="The Lord of the Rings" data-author="J.R.R. Tolkien" data-description="The epic fantasy trilogy that defined the genre. From the Shire to Mount Doom, this masterwork of imagination creates an entire world of hobbits, elves, dwarves, and wizards in the ultimate battle between good and evil. A heroic romance that has captivated readers for generations and remains one of the best-selling novels ever written." data-pages="1216" data-width="5.0" data-height="8.0" style="width: 152px; height: 128px;">
+                        <div class="book-spine-title">Lord of the Rings</div>
+                        <div class="book-spine-author">Tolkien</div>
+                    </div>
+
+                    <!-- The Hobbit -->
+                    <div class="book" data-title="The Hobbit" data-author="J.R.R. Tolkien" data-description="The charming prelude to The Lord of the Rings, following Bilbo Baggins on his unexpected journey with thirteen dwarves to reclaim their homeland from the dragon Smaug. A delightful adventure that introduces us to Middle-earth through the eyes of a reluctant hero who discovers courage he never knew he had." data-pages="310" data-width="5.0" data-height="8.0" style="width: 39px; height: 128px;">
+                        <div class="book-spine-title">The Hobbit</div>
+                        <div class="book-spine-author">Tolkien</div>
+                    </div>
+
+                    <!-- The Lion, the Witch and the Wardrobe -->
+                    <div class="book" data-title="The Lion, the Witch and the Wardrobe" data-author="C.S. Lewis" data-description="The magical entrance to Narnia through an old wardrobe opens a world of talking animals, mythical creatures, and the eternal struggle between good and evil. Lewis's allegory of sacrifice and redemption wrapped in an enchanting children's fantasy that speaks to readers of all ages." data-pages="206" data-width="5.0" data-height="7.5" style="width: 27px; height: 120px;">
+                        <div class="book-spine-title">Lion Witch Wardrobe</div>
+                        <div class="book-spine-author">Lewis</div>
+                    </div>
+
+                    <!-- The Divine Comedy -->
+                    <div class="book" data-title="The Divine Comedy" data-author="Dante Alighieri" data-description="Dante's monumental journey through Hell, Purgatory, and Paradise remains one of literature's greatest achievements. This epic poem explores sin, redemption, and divine love through vivid imagery and profound philosophical insight. A cornerstone of Western literature that continues to influence writers and thinkers centuries later." data-pages="798" data-width="6.0" data-height="9.0" style="width: 80px; height: 144px;">
+                        <div class="book-spine-title">Divine Comedy</div>
+                        <div class="book-spine-author">Dante</div>
+                    </div>
+
+                    <!-- Pride and Prejudice -->
+                    <div class="book" data-title="Pride and Prejudice" data-author="Jane Austen" data-description="Austen's wit and social commentary shine in this tale of Elizabeth Bennet and Mr. Darcy. A perfect exploration of love, class, and personal growth set in Regency England. The novel's examination of first impressions and the danger of prejudice remains as relevant today as when it was written." data-pages="432" data-width="5.0" data-height="8.0" style="width: 54px; height: 128px;">
+                        <div class="book-spine-title">Pride and Prejudice</div>
+                        <div class="book-spine-author">Austen</div>
+                    </div>
+
+                    <!-- Pride and Prejudice and Zombies -->
+                    <div class="book" data-title="Pride and Prejudice and Zombies" data-author="Seth Grahame-Smith" data-description="A delightfully absurd mashup that adds zombie mayhem to Austen's classic romance. Elizabeth Bennet is not only accomplished in literature and music but also in the deadly arts of zombie combat. A clever parody that somehow manages to honor both its source material and the zombie genre." data-pages="320" data-width="5.25" data-height="8.0" style="width: 42px; height: 128px;">
+                        <div class="book-spine-title">Pride Prejudice Zombies</div>
+                        <div class="book-spine-author">Grahame-Smith</div>
+                    </div>
+
+                    <!-- The Secret History -->
+                    <div class="book" data-title="The Secret History" data-author="Donna Tartt" data-description="A dark academic thriller about a group of classics students at an elite Vermont college whose pursuit of beauty and truth leads to murder. Tartt's debut novel is a haunting exploration of morality, friendship, and the dangerous allure of ancient Greek philosophy brought into modern life." data-pages="559" data-width="6.0" data-height="9.0" style="width: 56px; height: 144px;">
+                        <div class="book-spine-title">Secret History</div>
+                        <div class="book-spine-author">Tartt</div>
+                    </div>
+
+                    <!-- The Iliad -->
+                    <div class="book" data-title="The Iliad" data-author="Homer" data-description="The foundational epic of Western literature, chronicling the final year of the Trojan War. Homer's masterpiece explores themes of honor, rage, love, and mortality through the story of Achilles and the siege of Troy. This ancient work continues to resonate with its profound insights into human nature and the cost of war." data-pages="704" data-width="5.5" data-height="8.5" style="width: 91px; height: 136px;">
+                        <div class="book-spine-title">The Iliad</div>
+                        <div class="book-spine-author">Homer</div>
+                    </div>
+
+                    <!-- On the Road -->
+                    <div class="book" data-title="On the Road" data-author="Jack Kerouac" data-description="The defining novel of the Beat Generation, following Sal Paradise and Dean Moriarty as they crisscross America in search of experience and meaning. Kerouac's spontaneous prose captures the restless energy of post-war America and the eternal quest for freedom and authentic experience." data-pages="320" data-width="5.25" data-height="8.0" style="width: 42px; height: 128px;">
+                        <div class="book-spine-title">On the Road</div>
+                        <div class="book-spine-author">Kerouac</div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        
+        <div class="footer">
+            <p>This website is a gateway to my projects and thoughts | Created 2025</p>
+            <p>
+                <a href="#">Substack</a> •
+                <a href="https://x.com/doughneigh?s=21">Twitter</a> •
+                <a href="mailto:notdonecreating@gmail.com">Email</a>
+            </p>
+        </div>
+    </div>
+    
+    <div class="book-overlay" id="book-overlay">
+        <button class="close-overlay" id="close-overlay">×</button>
+        <div class="overlay-title" id="overlay-title"></div>
+        <div class="overlay-author" id="overlay-author"></div>
+        <div class="overlay-description" id="overlay-description"></div>
+    </div>
+    
+    <script>
+        // Calculate appropriate font sizes and padding based on book dimensions
+        function setBookFontSizes() {
+            const books = document.querySelectorAll('.book');
+            
+            books.forEach(book => {
+                const width = parseInt(book.style.width) || 40;
+                const height = parseInt(book.style.height) || 180;
+                const titleElement = book.querySelector('.book-spine-title');
+                const authorElement = book.querySelector('.book-spine-author');
+                
+                if (titleElement && authorElement) {
+                    const titleText = titleElement.textContent;
+                    const authorText = authorElement.textContent;
+                    
+                    // Maximum font sizes - NEVER exceed these
+                    const maxTitleSize = 9;
+                    const maxAuthorSize = 7;
+                    
+                    // Adjust padding based on book width
+                    let leftRightPadding, topBottomPadding;
+                    let titleSize, authorSize;
+                    
+                    if (width <= 10) {
+                        // Ultra-thin books like Howl (8px) - minimal padding, readable fonts
+                        leftRightPadding = '1px';
+                        topBottomPadding = '2px';
+                        titleSize = Math.min(maxTitleSize, 5);
+                        authorSize = Math.min(maxAuthorSize, 4);
+                    } else if (width <= 15) {
+                        // Very thin books like Little Prince (13px) - reduced padding
+                        leftRightPadding = '2px';
+                        topBottomPadding = '4px';
+                        titleSize = Math.min(maxTitleSize, 6);
+                        authorSize = Math.min(maxAuthorSize, 5);
+                    } else if (width <= 25) {
+                        // Small books - slightly reduced padding
+                        leftRightPadding = '3px';
+                        topBottomPadding = '6px';
+                        const titleLengthFactor = Math.min(1, 40 / titleText.length);
+                        const authorLengthFactor = Math.min(1, 15 / authorText.length);
+                        
+                        titleSize = Math.min(maxTitleSize, Math.max(6, 8 * titleLengthFactor));
+                        authorSize = Math.min(maxAuthorSize, Math.max(5, 6 * authorLengthFactor));
+                    } else {
+                        // Normal and large books - default padding, only scale for long text
+                        leftRightPadding = '4px';
+                        topBottomPadding = '8px';
+                        const titleLengthFactor = Math.min(1, 40 / titleText.length);
+                        const authorLengthFactor = Math.min(1, 15 / authorText.length);
+                        
+                        titleSize = Math.min(maxTitleSize, maxTitleSize * titleLengthFactor);
+                        authorSize = Math.min(maxAuthorSize, maxAuthorSize * authorLengthFactor);
+                    }
+                    
+                    // Apply padding adjustments for smaller books
+                    if (width <= 25) {
+                        book.style.padding = `${topBottomPadding} ${leftRightPadding}`;
+                        book.style.boxSizing = 'border-box';
+                    }
+                    
+                    // Always apply font sizes for smaller books, conditionally for larger ones
+                    if (width <= 25) {
+                        titleElement.style.fontSize = `${titleSize}px`;
+                        authorElement.style.fontSize = `${authorSize}px`;
+                        console.log(`Small book: ${titleText}, width: ${width}px, padding: ${leftRightPadding}, titleSize: ${titleSize}px`);
+                    } else {
+                        // Only apply if different from default for larger books
+                        if (titleSize < maxTitleSize) {
+                            titleElement.style.fontSize = `${titleSize}px`;
+                        }
+                        if (authorSize < maxAuthorSize) {
+                            authorElement.style.fontSize = `${authorSize}px`;
+                        }
+                    }
+                }
+            });
+        }
+
+        // Define functions immediately - no waiting
+        /*
+        function showShelf(index) {
+            console.log('showShelf called with index:', index);
+            
+            var shelves = document.querySelectorAll('.bookshelf-section');
+            var buttons = document.querySelectorAll('.shelf-nav-btn');
+            
+            // Hide all shelves and deactivate all buttons
+            for (var i = 0; i < shelves.length; i++) {
+                shelves[i].classList.remove('active');
+            }
+            for (var i = 0; i < buttons.length; i++) {
+                buttons[i].classList.remove('active');
+            }
+            
+            // Show selected shelf and activate button
+            if (shelves[index]) {
+                shelves[index].classList.add('active');
+            }
+            if (buttons[index]) {
+                buttons[index].classList.add('active');
+            }
+            
+            // Recalculate font sizes when switching shelves
+            setTimeout(setBookFontSizes, 10);
+        }
+        */
+
+        function openBookOverlay(title, author, description) {
+            var overlay = document.getElementById('book-overlay');
+            var backdrop = document.getElementById('overlay-backdrop');
+            var overlayTitle = document.getElementById('overlay-title');
+            var overlayAuthor = document.getElementById('overlay-author');
+            var overlayDescription = document.getElementById('overlay-description');
+            
+            if (overlayTitle) overlayTitle.textContent = title;
+            if (overlayAuthor) overlayAuthor.textContent = 'By ' + author;
+            if (overlayDescription) overlayDescription.textContent = description;
+            
+            if (overlay) overlay.classList.add('active');
+            if (backdrop) backdrop.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+        
+        function closeOverlay() {
+            var overlay = document.getElementById('book-overlay');
+            var backdrop = document.getElementById('overlay-backdrop');
+            
+            if (overlay) overlay.classList.remove('active');
+            if (backdrop) backdrop.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+        
+        function toggleTheme() {
+            const html = document.documentElement;
+            const currentTheme = html.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            
+            console.log('Toggling from', currentTheme, 'to', newTheme);
+            
+            html.setAttribute('data-theme', newTheme);
+            
+            const themeToggle = document.getElementById('theme-toggle');
+            if (themeToggle) {
+                themeToggle.textContent = newTheme === 'dark' ? '☀️' : '🌙';
+            }
+        }
+    </script>
+    
+    <script>
+        // Theme toggle functionality
+        function setTheme(theme) {
+            document.documentElement.setAttribute('data-theme', theme);
+        }
+        
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        setTheme(prefersDark ? 'dark' : 'light');
+        
+        const themeToggle = document.getElementById('theme-toggle');
+        if (themeToggle) {
+            themeToggle.addEventListener('click', () => {
+                const currentTheme = document.documentElement.getAttribute('data-theme');
+                const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+                setTheme(newTheme);
+                updateToggleText();
+            });
+        }
+        
+        function updateToggleText() {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            themeToggle.textContent = currentTheme === 'dark' ? '☀️' : '🌙';
+        }
+        
+        updateToggleText();
+        
+        // Shelf navigation functionality
+        const shelves = document.querySelectorAll('.bookshelf-section');
+        const navButtons = document.querySelectorAll('.shelf-nav-btn');
+        
+        navButtons.forEach((button, index) => {
+            button.addEventListener('click', () => {
+                // Remove active class from all shelves and buttons
+                shelves.forEach(shelf => shelf.classList.remove('active'));
+                navButtons.forEach(btn => btn.classList.remove('active'));
+                
+                // Add active class to clicked button and corresponding shelf
+                button.classList.add('active');
+                shelves[index].classList.add('active');
+                
+                // Recalculate font sizes when switching shelves
+                setTimeout(setBookFontSizes, 10);
+            });
+        });
+        
+        // Book overlay functionality
+        const books = document.querySelectorAll('.book');
+        const overlay = document.getElementById('book-overlay');
+        const backdrop = document.getElementById('overlay-backdrop');
+        const closeBtn = document.getElementById('close-overlay');
+        const overlayTitle = document.getElementById('overlay-title');
+        const overlayAuthor = document.getElementById('overlay-author');
+        const overlayDescription = document.getElementById('overlay-description');
+        
+        books.forEach(book => {
+            book.addEventListener('click', () => {
+                const title = book.getAttribute('data-title');
+                const author = book.getAttribute('data-author');
+                const description = book.getAttribute('data-description');
+                
+                overlayTitle.textContent = title;
+                overlayAuthor.textContent = `By ${author}`;
+                overlayDescription.textContent = description;
+                
+                overlay.classList.add('active');
+                backdrop.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            });
+        });
+        
+        function closeOverlay() {
+            overlay.classList.remove('active');
+            backdrop.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+        
+        closeBtn.addEventListener('click', closeOverlay);
+        backdrop.addEventListener('click', closeOverlay);
+        
+        // Close overlay on escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeOverlay();
+            }
+        });
+        
+        // Initialize font sizes - run at the very end after all DOM elements are ready
+        setBookFontSizes();
+    </script>
+</body>
+</html>

@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Archive</title>
+    <link rel="icon" href="favicon5.png" type="image/png">
+
+    <!-- Hotjar Tracking Code for Site 6420331 (name missing) -->
+    <script>
+        (function(h,o,t,j,a,r){
+            h.hj=h.hj||function(){(h.hj.q=h.hj.q||[]).push(arguments)};
+            h._hjSettings={hjid:6420331,hjsv:6};
+            a=o.getElementsByTagName('head')[0];
+            r=o.createElement('script');r.async=1;
+            r.src=t+h._hjSettings.hjid+j+h._hjSettings.hjsv;
+            a.appendChild(r);
+        })(window,document,'https://static.hotjar.com/c/hotjar-','.js?sv=');
+    </script>
+
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap');
+        
+        :root {
+            --background-color: #f5f5f5;
+            --text-color: #333;
+            --border-color: #333;
+            --secondary-text-color: #666;
+        }
+        
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --background-color: #1a1a1a;
+                --text-color: #e0e0e0;
+                --border-color: #e0e0e0;
+                --secondary-text-color: #aaa;
+            }
+        }
+        
+        [data-theme="light"] {
+            --background-color: #f5f5f5;
+            --text-color: #333;
+            --border-color: #333;
+            --secondary-text-color: #666;
+        }
+        
+        [data-theme="dark"] {
+            --background-color: #1a1a1a;
+            --text-color: #e0e0e0;
+            --border-color: #e0e0e0;
+            --secondary-text-color: #aaa;
+        }
+        
+        body {
+            font-family: 'Space Mono', monospace;
+            margin: 0;
+            padding: 0;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            display: grid;
+            grid-template-columns: 1fr;
+            grid-gap: 20px;
+            border: 1px solid var(--border-color);
+        }
+        
+        .theme-toggle {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            z-index: 1000;
+            background: var(--text-color);
+            color: var(--background-color);
+            border: 1px solid var(--border-color);
+            padding: 5px 8px;
+            font-family: 'Space Mono', monospace;
+            font-size: 12px;
+            cursor: pointer;
+            transition: background-color 0.3s, color 0.3s;
+            opacity: 1; /* Changed from 0.6 to 1 to make it fully opaque */
+        }
+        
+        .theme-toggle:hover {
+            opacity: 1; /* This can stay the same */
+        }
+        
+        .header {
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 20px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+        }
+        
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-gap: 20px;
+        }
+        
+        .left-section {
+            border-right: 1px solid var(--border-color);
+            padding-right: 20px;
+        }
+        
+        .right-section {
+            padding-left: 20px;
+        }
+        
+        .project {
+            margin-bottom: 40px;
+            border-bottom: 1px dotted var(--border-color);
+            padding-bottom: 20px;
+        }
+        
+        .project:last-child {
+            border-bottom: none;
+        }
+        
+        .footer {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border-color);
+            font-size: 0.8em;
+        }
+        
+        h1 {
+            font-size: 24px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+        
+        h2 {
+            font-size: 18px;
+            text-transform: uppercase;
+        }
+        
+        h3 {
+            font-size: 16px;
+        }
+        
+        a {
+            color: var(--text-color);
+            text-decoration: none;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 2px;
+            transition: opacity 0.3s;
+        }
+        
+        a:hover {
+            opacity: 0.7;
+        }
+        
+        .statement {
+            text-align: center;
+            margin: 40px 0;
+            font-size: 24px;
+            line-height: 1.4;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .divider {
+            text-align: center;
+            margin: 20px 0;
+        }
+        
+        .project-title {
+            font-weight: bold;
+            text-transform: uppercase;
+            margin-bottom: 5px;
+        }
+        
+        .project-category {
+            font-style: italic;
+            color: var(--secondary-text-color);
+            margin-bottom: 10px;
+        }
+        
+        .project-description {
+            margin-bottom: 15px;
+        }
+        
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .left-section {
+                border-right: none;
+                padding-right: 0;
+                border-bottom: 1px solid #333;
+                padding-bottom: 20px;
+            }
+            
+            .right-section {
+                padding-left: 0;
+            }
+            
+            .header {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .additional-links {
+            margin: 30px 0;
+            padding: 0 20px;
+        }
+        
+        .additional-links ul li {
+            margin-bottom: 15px;
+        }
+        
+        .pixel-art {
+            font-family: monospace;
+            white-space: pre;
+            line-height: 1.2;
+            font-size: 14px;
+            text-align: center;
+            margin: 30px auto;
+        }
+        
+        .featured-text {
+            font-size: 22px;
+            text-align: left;
+            line-height: 1.3;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div>
+                <h1>DONEDL ARCHIVE</h1>
+                <p>Optimist / Dreamer / Aspiring Magician</p>
+            </div>
+            <div style="text-align: right;">
+                <p>Location: TBD</p>
+                <p>Contact: notdonecreating@gmail.com</p>
+            </div>
+        </div>
+        
+        <div class="pixel-art">
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+▓                ▓
+▓     VIVE      ▓
+▓     SICUT     ▓
+▓     POETA     ▓
+▓                ▓
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+        </div>
+        
+        <div class="statement">
+            Our humanity is beautiful thing worth conserving. Our present technological trajectory has unfortunately degraded our humanness far more than it's enhanced it. Recognition of this fact and effort will turn this around. And a rejection of technology isn’t the only answer.
+        </div>
+        
+        <div class="divider">• • • • • • • • • • • • • • • • • • • • • • • • •</div>
+        
+        <div class="main-content">
+            <div class="left-section">
+                <div class="project">
+                    <div class="project-title">Yaptitude</div>
+                    <div class="project-category">Mobile App</div>
+                    <div class="project-description">
+                        A platform for Gen Z and Gen Alpha to learn and practice social skills. Provides the "scripts" that many youth missed learning and a safe environment to practice interpersonal communication.
+                    </div>
+                    <a href="https://www.yaptitude.com">View Website →</a>
+                </div>
+                
+                <div class="project">
+                    <div class="project-title">Wiki on "Magic"</div>
+                    <div class="project-category">Life Philosophy</div>
+                    <div class="project-description">
+                        An exploration of "magic", not in the woo-woo sense, but as the experience of reality and wonder that most people primarily experience in childhood. Translating years of notes into a wiki explaining the concept, how it's reflected in reality, and how to use it to improve one's life and life’s work. It’s still unclear what I'm working towards here.
+                    </div>
+                    <a href="https://www.notion.so/Magic-1e9c2e7c13568046aeadfebbd7842cc6?pvs=4">Read Wiki →</a>
+                </div>
+                
+                <div class="project">
+                    <div class="project-title">Substack</div>
+                    <div class="project-category">Essays</div>
+                    <div class="project-description">
+                        A collection of essays exploring technology, humanity, finding wonder in the modern world, and methods for enhancing our lived experience. Reflections on techno-optimism and human potential.
+                    </div>
+                    <a href="#">Read Essays →</a>
+                </div>
+            </div>
+            
+            <div class="right-section">
+                <div class="project">
+                    <div class="project-title">Corridor</div>
+                    <div class="project-category">Community Building</div>
+                    <div class="project-description">
+                        A curated network for gathering interesting people for memorable gatherings and meaningful connections. A space where bold, conscientious dreamers can find each other.
+                    </div>
+                    <a href="https://qualtricsxmqqxbc922b.qualtrics.com/jfe/form/SV_1AkOWAU9qkNAonk">Join Corridor →</a>
+                </div>
+                
+                <div class="project">
+                    <div class="project-title">Unnamed Microgrant Program</div>
+                    <div class="project-category">Nigerian Youth Development</div>
+                    <div class="project-description">
+                        A microgrant initiative providing stipends to young Nigerian students and NYSCers pursuing creative, technological, research, and venture projects. Recipients share their progress throughout the program period.
+                    </div>
+                    <a href="https://www.notion.so/Miniforge-1e96bd18910480319813f490163e7039">Program Landing Page →</a>
+                </div>
+                
+                <div class="project">
+                    <div class="project-title">Oeuvres</div>
+                    <div class="project-category">Works Not-Yet-In-Progress</div>
+                    <div class="project-description">
+                        Projects beyond my present priorities that I hope to make happen someday (or that someone else makes them happen!)
+                    </div>
+                    <a href="oeuvres">Browse Oeuvres →</a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="divider">• • • • • • • • • • • • • • • • • • • • • • • • •</div>
+        
+        <div class="additional-links">
+            <h3>Other</h3>
+            <ul style="list-style-type: none; padding-left: 0;">
+                <li><a href="bookshelf">Bookshelf Favourites</a> - Literature that has shaped my thinking and perspective</li>
+                <li><a href="#">Moonshot Goals</a> - Ambitious targets I aim to achieve with my time here</li>
+                <li><a href="#">Index Centum</a> - Documentation of things I am doing 100+ times for excellence</li>
+                <li><a href="#">Creative Artifacts</a> - A collection of miscellaneous creations, experiments, and creative works that don't fit neatly into specific categories. Explorations at the intersection of technology, art, and philosophy. </li>
+            </ul>
+        </div>
+        
+        <div class="footer">
+            <p>This website is a gateway to my projects and thoughts | Created 2025</p>
+            <p>
+                <a href="#">Substack</a> •
+                <a href="https://x.com/doughneigh?s=21">Twitter</a> •
+                <a href="notdonecreating@gmail.com">Email</a>
+            </p>
+        </div>
+    </div>
+    
+    <button class="theme-toggle" id="theme-toggle">Toggle Dark Mode</button>
+    
+    <script>
+        // Function to set the theme
+        function setTheme(theme) {
+            document.documentElement.setAttribute('data-theme', theme);
+            // Try to use localStorage but fallback gracefully if unavailable
+            try {
+                localStorage.setItem('theme', theme);
+            } catch (e) {
+                console.log('localStorage not available, theme preference will not persist');
+            }
+        }
+        
+        // Check for saved theme preference or use system preference
+        let savedTheme = null;
+        try {
+            savedTheme = localStorage.getItem('theme');
+        } catch (e) {
+            console.log('localStorage not available, using system preference only');
+        }
+        
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        
+        if (savedTheme) {
+            setTheme(savedTheme);
+        } else if (prefersDark) {
+            setTheme('dark');
+        } else {
+            setTheme('light');
+        }
+        
+        // Toggle theme button
+        const themeToggle = document.getElementById('theme-toggle');
+        themeToggle.addEventListener('click', () => {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            setTheme(newTheme);
+            
+            // Update button text
+            updateToggleText();
+        });
+        
+        // Set initial button text
+        function updateToggleText() {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            themeToggle.textContent = currentTheme === 'dark' ? '☀️' : '🌙';
+        }
+        
+        // Call once on load
+        updateToggleText();
+    </script>
+</body>
+</html>
