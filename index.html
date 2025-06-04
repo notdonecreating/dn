@@ -73,11 +73,11 @@
             font-size: 12px;
             cursor: pointer;
             transition: background-color 0.3s, color 0.3s;
-            opacity: 1; /* Changed from 0.6 to 1 to make it fully opaque */
+            opacity: 1;
         }
         
         .theme-toggle:hover {
-            opacity: 1; /* This can stay the same */
+            opacity: 1;
         }
         
         .header {
@@ -177,27 +177,6 @@
             margin-bottom: 15px;
         }
         
-        @media (max-width: 768px) {
-            .main-content {
-                grid-template-columns: 1fr;
-            }
-            
-            .left-section {
-                border-right: none;
-                padding-right: 0;
-                border-bottom: 1px solid #333;
-                padding-bottom: 20px;
-            }
-            
-            .right-section {
-                padding-left: 0;
-            }
-            
-            .header {
-                grid-template-columns: 1fr;
-            }
-        }
-        
         .additional-links {
             margin: 30px 0;
             padding: 0 20px;
@@ -214,6 +193,7 @@
             font-size: 14px;
             text-align: left;
             margin: 30px auto;
+            overflow-x: auto;
         }
         
         .featured-text {
@@ -221,6 +201,67 @@
             text-align: left;
             line-height: 1.3;
             margin: 20px 0;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+                margin: 0 10px;
+            }
+            
+            .main-content {
+                grid-template-columns: 1fr;
+                grid-gap: 0;
+            }
+            
+            .left-section {
+                border-right: none;
+                padding-right: 0;
+                border-bottom: 1px solid var(--border-color);
+                padding-bottom: 20px;
+                margin-bottom: 20px;
+            }
+            
+            .right-section {
+                padding-left: 0;
+            }
+            
+            .header {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+            
+            .header > div:last-child {
+                text-align: center;
+                margin-top: 10px;
+            }
+            
+            .statement {
+                font-size: 18px;
+                margin: 20px 0;
+                padding: 0 10px;
+            }
+            
+            .pixel-art {
+                font-size: 8px;
+                margin: 20px 0;
+                text-align: center;
+            }
+            
+            .additional-links {
+                padding: 0 10px;
+            }
+            
+            h1 {
+                font-size: 20px;
+            }
+            
+            .theme-toggle {
+                top: 5px;
+                right: 5px;
+                padding: 3px 6px;
+                font-size: 10px;
+            }
         }
     </style>
 </head>
@@ -252,7 +293,7 @@ __/__/_______/___/__\___\.~-^=-=~=^=.___________________________________________
         </div>
         
         <div class="statement">
-            Our humanity is beautiful thing worth conserving. Our present technological trajectory has unfortunately degraded our humanness far more than it's enhanced it. Recognition of this fact and effort will turn this around. And a rejection of technology isn’t the only answer.
+            Our humanity is beautiful thing worth conserving. Our present technological trajectory has unfortunately degraded our humanness far more than it's enhanced it. Recognition of this fact and effort will turn this around. And a rejection of technology isn't the only answer.
         </div>
         
         <div class="divider">• • • • • • • • • • • • • • • • • • • • • • • • •</div>
@@ -273,7 +314,7 @@ __/__/_______/___/__\___\.~-^=-=~=^=.___________________________________________
                     <div class="project-title">Wiki on "Magic"</div>
                     <div class="project-category">Life Philosophy</div>
                     <div class="project-description">
-                        An exploration of "magic", not in the woo-woo sense, but as the experience of reality and wonder that most people primarily experience in childhood. Translating years of notes into a wiki explaining the concept, how it's reflected in reality, and how to use it to improve one's life and life’s work. It’s still unclear what I'm working towards here.
+                        An exploration of "magic", not in the woo-woo sense, but as the experience of reality and wonder that most people primarily experience in childhood. Translating years of notes into a wiki explaining the concept, how it's reflected in reality, and how to use it to improve one's life and life's work. It's still unclear what I'm working towards here.
                     </div>
                     <a href="https://www.notion.so/Magic-1e9c2e7c13568046aeadfebbd7842cc6?pvs=4">Read Wiki →</a>
                 </div>
