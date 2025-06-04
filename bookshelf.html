@@ -158,24 +158,23 @@
             color: var(--background-color);
         }
        
+       /*
         .bookshelf-section {
-            position: relative; /* This is now the positioning parent */
+            position: relative;
             margin: 0 0 0px 0;
-            display: block;
-        }
-        
-        /*
-        .bookshelf-section {
-            margin-bottom: 60px;
-            display: none;
-        }
-        
-        .bookshelf-section.active {
             display: block;
         }
         */
         
-        /*
+        .bookshelf-section {
+            margin-bottom: 60px;
+            /*display: none;*/
+        }
+        
+        .bookshelf-section.active {
+            /*display: block;*/
+        }
+        
         .shelf-label {
             font-size: 16px;
             text-transform: uppercase;
@@ -183,12 +182,12 @@
             font-weight: bold;
             margin: 0px 0 16px 0;
         }
-        */
-
+        
+        /*
         .shelf-label {
             position: absolute;
             left: 10px;
-            bottom: 6px; /* Position it on the front edge of shelf */
+            bottom: 6px;
             font-size: 9px;
             letter-spacing: 0.8px;
             font-weight: 500;
@@ -207,13 +206,13 @@
             
             z-index: 100;
         }
+        */
         
-        /*
         .bookshelf {
             position: relative;
             background: var(--background-color);
             border-bottom: 8px solid var(--border-color);
-            min-height: 200px;
+            min-height: 230px;
             overflow-x: auto;
             overflow-y: visible;
             padding: 0 10px 0px 10px;
@@ -222,9 +221,9 @@
             margin-top: 0 !important;
             display: flex;
             align-items: flex-end;
-        } 
-        */
+        }
         
+         /*
         .bookshelf {
             position: relative;
             background-color: #4f4641;
@@ -253,7 +252,8 @@
                 inset 0 4px 6px rgba(255, 255, 255, 0.04),
                 0 2px 4px rgba(0, 0, 0, 0.04);
         }
-        
+         
+         */
 
         
         .bookshelf::-webkit-scrollbar {
@@ -667,7 +667,6 @@
         </div>
         
         <div class="bookshelf-section">
-            <div class="shelf-label">Society & Culture</div>
             <div class="bookshelf">
                 <div class="books-container">
                     <div class="book" data-title="Technopoly" data-author="Neil Postman" data-description="A prescient critique of technology's domination of culture and thought. Though written before the internet age, Postman's warnings about surrendering culture to technology feel more relevant than ever." data-pages="222" data-width="5.5" data-height="8.5" style="width: 29px; height: 136px;">
@@ -738,10 +737,10 @@
 
                 </div>
             </div>
+            <div class="shelf-label">Society & Culture</div>
         </div>
         
         <div class="bookshelf-section">
-            <div class="shelf-label">Wonder & Creativity</div>
             <div class="bookshelf">
                 <div class="books-container">
                     <div class="book" data-title="The Zen of Seeing" data-author="Frederick Franck" data-description="A meditation on seeing as a form of contemplation. Franck's approach to drawing not as a technical skill but as a way of truly seeing the world has transformed how I experience everyday life." data-pages="132" data-width="6.5" data-height="9.0" style="width: 17px; height: 144px;">
@@ -783,10 +782,10 @@
 
                 </div>
             </div>
+            <div class="shelf-label">Wonder & Creativity</div>
         </div>
         
         <div class="bookshelf-section">
-            <div class="shelf-label">Essays & Literary Works</div>
             <div class="bookshelf">
                 <div class="books-container">
                     <div class="book" data-title="A Room of One's Own" data-author="Virginia Woolf" data-description="My introduction to Woolf's brilliant prose. Beyond its feminist themes, this book contains underappreciated gems that form a decent base of my worldview—not what I expected from the premise." data-pages="112" data-width="5.0" data-height="7.75" style="width: 15px; height: 124px;">
@@ -852,10 +851,10 @@
 
                 </div>
             </div>
+            <div class="shelf-label">Essays & Literary Works</div>
         </div>
         
         <div class="bookshelf-section">
-            <div class="shelf-label">Poetry</div>
             <div class="bookshelf">
                 <div class="books-container">
                     <div class="book" data-title="Leaves of Grass" data-author="Walt Whitman" data-description="A revolutionary collection that celebrates the individual and the interconnectedness of all life. Whitman's democratic vision and embrace of the body, soul, and natural world continue to resonate deeply with me." data-pages="432" data-width="6.0" data-height="9.0" style="width: 43px; height: 144px;">
@@ -961,12 +960,13 @@
                         <div class="book-spine-title">Kaddish</div>
                         <div class="book-spine-author">Ginsberg</div>
                     </div>
+                    
                 </div>
             </div>
+            <div class="shelf-label">Poetry</div>
         </div>
         
         <div class="bookshelf-section">
-            <div class="shelf-label">AGGLOMERATION, CREATIVITY & PROGRESS SECTION</div>
             <div class="bookshelf">
                 <div class="books-container">
                     <!-- You're Invited -->
@@ -1019,6 +1019,7 @@
 
                 </div>
             </div>
+            <div class="shelf-label">AGGLOMERATION, CREATIVITY & PROGRESS SECTION</div>
         </div>
 
         <!--
@@ -1041,7 +1042,6 @@
         -->
 
         <div class="bookshelf-section">
-            <div class="shelf-label">Gathering</div>
             <div class="bookshelf">
                 <div class="books-container">
                     <!-- The Art of Gathering -->
@@ -1058,10 +1058,10 @@
 
                 </div>
             </div>
+            <div class="shelf-label">Gathering</div>
         </div>
 
         <div class="bookshelf-section">
-            <div class="shelf-label">Other Biography & History</div>
             <div class="bookshelf">
                 <div class="books-container">
                     <div class="book" data-title="Leonardo da Vinci" data-author="Walter Isaacson" data-description="A comprehensive biography that explores da Vinci's extraordinary curiosity and creativity. Isaacson's portrayal of Leonardo's integration of art and science continues to inspire my approach to learning." data-pages="624" data-width="6.5" data-height="9.5" style="width: 65px; height: 152px;">
@@ -1073,12 +1073,13 @@
                         <div class="book-spine-title">Love, Pamela</div>
                         <div class="book-spine-author">Anderson</div>
                     </div>
+                    
                 </div>
             </div>
+            <div class="shelf-label">Other Biography & History</div>
         </div>
 
         <div class="bookshelf-section">
-            <div class="shelf-label">MISCELLANEOUS TECH, BUSINESS, DEVELOPMENT, SELF-HELP</div>
             <div class="bookshelf">
                 <div class="books-container">
                     <div class="book" data-title="Zero to One" data-author="Peter Thiel" data-description="A contrarian perspective on innovation and startup building. Thiel's emphasis on creating new categories rather than competing in existing ones has shaped my thinking about genuine progress." data-pages="210" data-width="5.5" data-height="8.25" style="width: 27px; height: 132px;">
@@ -1159,10 +1160,10 @@
 
                 </div>
             </div>
+            <div class="shelf-label">MISCELLANEOUS NONFICTION</div>
         </div>
 
         <div class="bookshelf-section">
-            <div class="shelf-label">Fiction</div>
             <div class="bookshelf">
                 <div class="books-container">
                     <div class="book" data-title="The Midnight Library" data-author="Matt Haig" data-description="A favorite of my youth that explores the infinite possibilities of life through the story of a library between life and death. It made me consider how seemingly small choices can lead to vastly different lives." data-pages="288" data-width="5.25" data-height="8.0" style="width: 38px; height: 128px;">
@@ -1265,6 +1266,7 @@
 
                 </div>
             </div>
+            <div class="shelf-label">Fiction</div>
         </div>
 
         
