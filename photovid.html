@@ -437,11 +437,11 @@
                             <div class="control-group">
                                 <label for="gridTextPosition">Position:</label>
                                 <select id="gridTextPosition">
-                                    <option value="bottom">Bottom</option>
                                     <option value="top">Top</option>
+                                    <option value="mid-top">Mid Top</option>
                                     <option value="center">Center</option>
-                                    <option value="bottom-left">Bottom Left</option>
-                                    <option value="bottom-right">Bottom Right</option>
+                                    <option value="mid-bottom">Mid Bottom</option>
+                                    <option value="bottom">Bottom</option>
                                 </select>
                             </div>
                         </div>
@@ -532,11 +532,11 @@
                             <div class="control-group">
                                 <label for="videoTextPosition">Position:</label>
                                 <select id="videoTextPosition">
-                                    <option value="bottom">Bottom</option>
                                     <option value="top">Top</option>
+                                    <option value="mid-top">Mid Top</option>
                                     <option value="center">Center</option>
-                                    <option value="bottom-left">Bottom Left</option>
-                                    <option value="bottom-right">Bottom Right</option>
+                                    <option value="mid-bottom">Mid Bottom</option>
+                                    <option value="bottom">Bottom</option>
                                 </select>
                             </div>
                         </div>
@@ -585,6 +585,7 @@
         class SlideshowVideoTool {
             constructor() {
                 this.videoImages = [];
+                this.gridImages = [];
                 this.videoFrames = [];
                 this.generatedGrids = [];
                 this.videoBlob = null;
@@ -620,14 +621,7 @@
                 
                 document.getElementById('generateVideo').addEventListener('click', this.generateVideo.bind(this));
                 document.getElementById('downloadVideo').addEventListener('click', this.downloadVideo.bind(this));
-                
-                // Make sure MP4 button exists before adding listener
-                const mp4Button = document.getElementById('downloadVideoMP4');
-                if (mp4Button) {
-                    mp4Button.addEventListener('click', this.downloadVideoMP4.bind(this));
-                } else {
-                    console.error('MP4 download button not found!');
-                }
+                document.getElementById('downloadVideoMP4').addEventListener('click', this.downloadVideoMP4.bind(this));
 
                 // Text style change events
                 document.getElementById('gridTextStyle').addEventListener('change', (e) => this.updateTextStylePreview('grid'));
@@ -901,7 +895,7 @@
                 ctx.textAlign = 'center';
                 ctx.textBaseline = 'middle';
 
-                // Calculate position
+                // Calculate position - always horizontally centered
                 let textX = width / 2;
                 let textY = height / 2;
                 
@@ -909,17 +903,16 @@
                     case 'top':
                         textY = fontSize + 20;
                         break;
+                    case 'mid-top':
+                        textY = height * 0.25;
+                        break;
+                    case 'center':
+                        textY = height / 2;
+                        break;
+                    case 'mid-bottom':
+                        textY = height * 0.75;
+                        break;
                     case 'bottom':
-                        textY = height - fontSize - 20;
-                        break;
-                    case 'bottom-left':
-                        ctx.textAlign = 'left';
-                        textX = 20;
-                        textY = height - fontSize - 20;
-                        break;
-                    case 'bottom-right':
-                        ctx.textAlign = 'right';
-                        textX = width - 20;
                         textY = height - fontSize - 20;
                         break;
                 }
@@ -933,13 +926,16 @@
                         case 'top':
                             bannerY = 0;
                             break;
+                        case 'mid-top':
+                            bannerY = (height * 0.25) - (bannerHeight / 2);
+                            break;
                         case 'center':
                             bannerY = (height - bannerHeight) / 2;
                             break;
+                        case 'mid-bottom':
+                            bannerY = (height * 0.75) - (bannerHeight / 2);
+                            break;
                         case 'bottom':
-                        case 'bottom-left':
-                        case 'bottom-right':
-                        default:
                             bannerY = height - bannerHeight;
                             break;
                     }
@@ -950,10 +946,6 @@
                     
                     // Reset text position for banner
                     textY = bannerY + bannerHeight / 2;
-                    if (position === 'bottom-left' || position === 'bottom-right') {
-                        ctx.textAlign = 'center';
-                        textX = width / 2;
-                    }
                 } else if (useBackground && textStyle !== 'snapchat') {
                     // Other background styles (Instagram, Plain)
                     const textMetrics = ctx.measureText(text);
@@ -963,15 +955,8 @@
                     
                     ctx.fillStyle = 'rgba(0,0,0,0.7)';
                     
-                    let bgX, bgY;
-                    if (ctx.textAlign === 'center') {
-                        bgX = textX - textWidth/2 - padding;
-                    } else if (ctx.textAlign === 'left') {
-                        bgX = textX - padding;
-                    } else {
-                        bgX = textX - textWidth - padding;
-                    }
-                    bgY = textY - textHeight/2 - padding;
+                    const bgX = textX - textWidth/2 - padding;
+                    const bgY = textY - textHeight/2 - padding;
                     
                     ctx.fillRect(bgX, bgY, textWidth + padding*2, textHeight + padding*2);
                 }
@@ -1001,39 +986,15 @@
             }
 
             async downloadAllGrids() {
-                this.showStatus('gridStatus', 'Preparing ZIP file...', 'info');
+                this.showStatus('gridStatus', 'Preparing download...', 'info');
                 
-                // Simple zip creation without external library
-                const zip = await this.createZipFile();
-                
+                // Download each grid individually since we can't create a proper ZIP in browser
                 for (const grid of this.generatedGrids) {
-                    const dataURL = grid.canvas.toDataURL('image/png');
-                    const base64Data = dataURL.split(',')[1];
-                    zip.file(`grid-${grid.index + 1}.png`, base64Data, {base64: true});
+                    this.downloadCanvas(grid.canvas, `grid-${grid.index + 1}.png`);
+                    await new Promise(resolve => setTimeout(resolve, 100));
                 }
                 
-                const content = await zip.generateAsync({type: 'blob'});
-                const link = document.createElement('a');
-                link.href = URL.createObjectURL(content);
-                link.download = 'all-grids.zip';
-                link.click();
-                
                 this.showStatus('gridStatus', 'All grids downloaded!', 'success');
-            }
-
-            async createZipFile() {
-                // Simple implementation - in real app you'd use JSZip
-                return {
-                    files: {},
-                    file: function(name, data, options) {
-                        this.files[name] = {data, options};
-                    },
-                    generateAsync: async function({type}) {
-                        // For demo purposes, just download the first grid
-                        // In real implementation, this would create proper ZIP
-                        return new Blob(['ZIP file would be generated here'], {type: 'application/zip'});
-                    }
-                };
             }
 
             async generateVideo() {
@@ -1058,7 +1019,7 @@
                     this.drawImageWithMode(ctx, this.videoImages[i], 0, 0, width, height, 'cover');
                     this.addTextOverlay(ctx, 'video', width, height);
                     
-                    // Use high quality PNG for no quality loss in grids
+                    // Use high quality PNG for no quality loss
                     frameDataUrls.push(canvas.toDataURL('image/png'));
                     
                     this.updateProgress('videoProgressFill', (i + 1) / this.videoImages.length * 50);
@@ -1069,11 +1030,13 @@
                 this.showStatus('videoStatus', 'Encoding video...', 'info');
                 this.videoBlob = await this.createVideoFromFrames(frameDataUrls, frameDuration, width, height);
                 
+                // Show download buttons
                 this.playVideoPreview(canvas, frameDataUrls, frameDuration);
                 document.getElementById('videoPreview').style.display = 'block';
                 document.getElementById('downloadVideo').style.display = 'inline-block';
+                document.getElementById('downloadVideoMP4').style.display = 'inline-block';
                 this.hideProgress('videoProgress');
-                this.showStatus('videoStatus', 'Video created! Click Download MP4 to save.', 'success');
+                this.showStatus('videoStatus', 'Video created! Download as WebM or MP4.', 'success');
             }
 
             async createVideoFromFrames(frameDataUrls, frameDuration, width, height) {
@@ -1131,63 +1094,6 @@
                 });
             }
 
-            async convertWebMToMP4(webmBlob) {
-                try {
-                    // Use a simple conversion method
-                    // In a real app, you'd use FFmpeg.js or similar
-                    const canvas = document.createElement('canvas');
-                    const video = document.createElement('video');
-                    
-                    return new Promise((resolve) => {
-                        video.src = URL.createObjectURL(webmBlob);
-                        video.onloadedmetadata = () => {
-                            canvas.width = video.videoWidth;
-                            canvas.height = video.videoHeight;
-                            
-                            const ctx = canvas.getContext('2d');
-                            const stream = canvas.captureStream(30);
-                            
-                            const mediaRecorder = new MediaRecorder(stream, {
-                                mimeType: 'video/mp4;codecs=h264',
-                                videoBitsPerSecond: 8000000
-                            });
-                            
-                            const chunks = [];
-                            mediaRecorder.ondataavailable = e => chunks.push(e.data);
-                            mediaRecorder.onstop = () => {
-                                const mp4Blob = new Blob(chunks, { type: 'video/mp4' });
-                                resolve(mp4Blob);
-                            };
-                            
-                            mediaRecorder.start();
-                            video.play();
-                            
-                            const drawVideoFrame = () => {
-                                if (!video.ended) {
-                                    ctx.drawImage(video, 0, 0);
-                                    requestAnimationFrame(drawVideoFrame);
-                                } else {
-                                    mediaRecorder.stop();
-                                }
-                            };
-                            
-                            video.onplay = drawVideoFrame;
-                            
-                            // Fallback: stop after reasonable duration
-                            setTimeout(() => {
-                                if (mediaRecorder.state === 'recording') {
-                                    mediaRecorder.stop();
-                                }
-                            }, 10000);
-                        };
-                    });
-                } catch (error) {
-                    console.error('MP4 conversion failed:', error);
-                    // Return the original WebM as fallback
-                    return webmBlob;
-                }
-            }
-
             getVideoDimensions(format) {
                 switch (format) {
                     case '9:16': return [720, 1280]; // TikTok/Stories
@@ -1227,7 +1133,7 @@
 
             async downloadVideo() {
                 if (!this.videoBlob) {
-                    this.showStatus('videoStatus', 'No WebM video available to download', 'error');
+                    this.showStatus('videoStatus', 'No video available to download', 'error');
                     return;
                 }
 
@@ -1240,17 +1146,19 @@
             }
 
             async downloadVideoMP4() {
-                if (!this.videoMP4Blob) {
-                    this.showStatus('videoStatus', 'No MP4 video available to download', 'error');
+                if (!this.videoBlob) {
+                    this.showStatus('videoStatus', 'No video available to download', 'error');
                     return;
                 }
 
+                // For now, download the WebM file with .mp4 extension
+                // Note: For true MP4 conversion, you would need a library like FFmpeg.js
                 const link = document.createElement('a');
-                link.href = URL.createObjectURL(this.videoMP4Blob);
+                link.href = URL.createObjectURL(this.videoBlob);
                 link.download = 'flash-cut-video.mp4';
                 link.click();
                 
-                this.showStatus('videoStatus', 'MP4 video downloaded!', 'success');
+                this.showStatus('videoStatus', 'Video downloaded! Note: This is WebM format renamed to .mp4. For true MP4 conversion, use a video converter.', 'info');
             }
 
             downloadCanvas(canvas, filename) {
