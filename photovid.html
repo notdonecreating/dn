@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -12,280 +11,355 @@
             box-sizing: border-box;
         }
 
-```
-    body {
-        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        min-height: 100vh;
-        padding: 20px;
-    }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
 
-    .container {
-        max-width: 1200px;
-        margin: 0 auto;
-        background: white;
-        border-radius: 20px;
-        box-shadow: 0 20px 40px rgba(0,0,0,0.1);
-        overflow: hidden;
-    }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
 
-    .header {
-        background: linear-gradient(135deg, #ff6b6b, #ffa500);
-        color: white;
-        padding: 30px;
-        text-align: center;
-    }
+        .header {
+            background: linear-gradient(135deg, #ff6b6b, #ffa500);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
 
-    .header h1 {
-        font-size: 2.5rem;
-        margin-bottom: 10px;
-        font-weight: 700;
-    }
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
 
-    .header p {
-        font-size: 1.1rem;
-        opacity: 0.9;
-    }
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
 
-    .tools-container {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 0;
-    }
-
-    .tool-section {
-        padding: 40px;
-        border-right: 1px solid #e0e0e0;
-    }
-
-    .tool-section:last-child {
-        border-right: none;
-    }
-
-    .tool-title {
-        font-size: 1.8rem;
-        color: #333;
-        margin-bottom: 20px;
-        display: flex;
-        align-items: center;
-        gap: 10px;
-    }
-
-    .tool-title::before {
-        content: '🎨';
-        font-size: 1.5rem;
-    }
-
-    .tool-section:last-child .tool-title::before {
-        content: '🎬';
-    }
-
-    .upload-area {
-        border: 3px dashed #ddd;
-        border-radius: 15px;
-        padding: 40px;
-        text-align: center;
-        margin-bottom: 20px;
-        transition: all 0.3s ease;
-        cursor: pointer;
-    }
-
-    .upload-area:hover {
-        border-color: #667eea;
-        background: #f8f9ff;
-    }
-
-    .upload-area.dragover {
-        border-color: #667eea;
-        background: #f0f4ff;
-        transform: scale(1.02);
-    }
-
-    .upload-icon {
-        font-size: 3rem;
-        margin-bottom: 15px;
-    }
-
-    .upload-text {
-        font-size: 1.1rem;
-        color: #666;
-        margin-bottom: 10px;
-    }
-
-    .file-input {
-        display: none;
-    }
-
-    .btn {
-        background: linear-gradient(135deg, #667eea, #764ba2);
-        color: white;
-        border: none;
-        padding: 12px 25px;
-        border-radius: 25px;
-        font-size: 1rem;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        font-weight: 600;
-    }
-
-    .btn:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
-    }
-
-    .btn:disabled {
-        opacity: 0.6;
-        cursor: not-allowed;
-        transform: none;
-    }
-
-    .controls {
-        margin: 20px 0;
-    }
-
-    .control-group {
-        margin-bottom: 15px;
-    }
-
-    .control-group label {
-        display: block;
-        margin-bottom: 5px;
-        font-weight: 600;
-        color: #333;
-    }
-
-    .control-group input, .control-group select {
-        width: 100%;
-        padding: 10px;
-        border: 2px solid #e0e0e0;
-        border-radius: 8px;
-        font-size: 1rem;
-    }
-
-    .control-group input:focus, .control-group select:focus {
-        outline: none;
-        border-color: #667eea;
-    }
-
-    .preview-area {
-        margin-top: 30px;
-        padding: 20px;
-        background: #f8f9fa;
-        border-radius: 15px;
-        max-height: 400px;
-        overflow-y: auto;
-    }
-
-    .grid-preview {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-        gap: 15px;
-    }
-
-    .grid-item {
-        position: relative;
-        background: white;
-        border-radius: 10px;
-        overflow: hidden;
-        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-        transition: transform 0.3s ease;
-    }
-
-    .grid-item:hover {
-        transform: translateY(-5px);
-    }
-
-    .grid-canvas {
-        width: 100%;
-        height: auto;
-        display: block;
-    }
-
-    .download-btn {
-        position: absolute;
-        top: 10px;
-        right: 10px;
-        background: rgba(0,0,0,0.7);
-        color: white;
-        border: none;
-        padding: 5px 10px;
-        border-radius: 5px;
-        cursor: pointer;
-        font-size: 0.8rem;
-    }
-
-    .video-preview {
-        background: white;
-        border-radius: 10px;
-        padding: 20px;
-        text-align: center;
-    }
-
-    .video-canvas {
-        max-width: 100%;
-        border-radius: 10px;
-        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-    }
-
-    .progress-bar {
-        width: 100%;
-        height: 8px;
-        background: #e0e0e0;
-        border-radius: 4px;
-        margin: 20px 0;
-        overflow: hidden;
-    }
-
-    .progress-fill {
-        height: 100%;
-        background: linear-gradient(90deg, #667eea, #764ba2);
-        width: 0%;
-        transition: width 0.3s ease;
-    }
-
-    .status {
-        margin: 15px 0;
-        padding: 10px;
-        border-radius: 8px;
-        text-align: center;
-        font-weight: 600;
-    }
-
-    .status.success {
-        background: #d4edda;
-        color: #155724;
-        border: 1px solid #c3e6cb;
-    }
-
-    .status.error {
-        background: #f8d7da;
-        color: #721c24;
-        border: 1px solid #f5c6cb;
-    }
-
-    .status.info {
-        background: #cce7ff;
-        color: #004085;
-        border: 1px solid #b8daff;
-    }
-
-    @media (max-width: 768px) {
         .tools-container {
-            grid-template-columns: 1fr;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0;
         }
-        
-        .tool-section {
-            border-right: none;
-            border-bottom: 1px solid #e0e0e0;
-        }
-        
-        .tool-section:last-child {
-            border-bottom: none;
-        }
-    }
-</style>
-```
 
+        .tool-section {
+            padding: 40px;
+            border-right: 1px solid #e0e0e0;
+        }
+
+        .tool-section:last-child {
+            border-right: none;
+        }
+
+        .tool-title {
+            font-size: 1.8rem;
+            color: #333;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .tool-title::before {
+            content: '🎨';
+            font-size: 1.5rem;
+        }
+
+        .tool-section:last-child .tool-title::before {
+            content: '🎬';
+        }
+
+        .upload-area {
+            border: 3px dashed #ddd;
+            border-radius: 15px;
+            padding: 40px;
+            text-align: center;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .upload-area:hover {
+            border-color: #667eea;
+            background: #f8f9ff;
+        }
+
+        .upload-area.dragover {
+            border-color: #667eea;
+            background: #f0f4ff;
+            transform: scale(1.02);
+        }
+
+        .upload-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }
+
+        .upload-text {
+            font-size: 1.1rem;
+            color: #666;
+            margin-bottom: 10px;
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 25px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            margin: 5px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn.secondary {
+            background: linear-gradient(135deg, #95a5a6, #7f8c8d);
+        }
+
+        .controls {
+            margin: 20px 0;
+        }
+
+        .control-group {
+            margin-bottom: 15px;
+        }
+
+        .control-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .control-group input, .control-group select, .control-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1rem;
+            resize: vertical;
+        }
+
+        .control-group input:focus, .control-group select:focus, .control-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .control-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .text-overlay-section {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 15px 0;
+        }
+
+        .text-overlay-section h4 {
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .style-preview {
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 10px 0;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .style-preview.tiktok {
+            background: linear-gradient(135deg, #ff0050, #ff4a9a);
+            color: white;
+            font-family: 'Arial Black', Arial, sans-serif;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            font-size: 1.2rem;
+        }
+
+        .style-preview.instagram {
+            background: linear-gradient(45deg, #833ab4, #fd1d1d, #fcb045);
+            color: white;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-weight: 600;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.7);
+        }
+
+        .style-preview.snapchat {
+            background: #fffc00;
+            color: black;
+            font-family: 'Comic Sans MS', cursive;
+            font-weight: bold;
+            border: 3px solid #000;
+            text-shadow: 2px 2px 0px white;
+        }
+
+        .style-preview.plain {
+            background: rgba(0,0,0,0.7);
+            color: white;
+            font-family: Arial, sans-serif;
+        }
+
+        .preview-area {
+            margin-top: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 15px;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+
+        .grid-preview {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .grid-item {
+            position: relative;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .grid-item:hover {
+            transform: translateY(-5px);
+        }
+
+        .grid-canvas {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .download-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(0,0,0,0.7);
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
+
+        .video-preview {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .video-canvas {
+            max-width: 100%;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e0e0e0;
+            border-radius: 4px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .status {
+            margin: 15px 0;
+            padding: 10px;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .status.info {
+            background: #cce7ff;
+            color: #004085;
+            border: 1px solid #b8daff;
+        }
+
+        .color-input {
+            width: 60px !important;
+            height: 40px;
+            padding: 0;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        @media (max-width: 768px) {
+            .tools-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .tool-section {
+                border-right: none;
+                border-bottom: 1px solid #e0e0e0;
+            }
+            
+            .tool-section:last-child {
+                border-bottom: none;
+            }
+
+            .control-row {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
 </head>
 <body>
     <div class="container">
@@ -294,375 +368,784 @@
             <p>Create stunning 2x2 image grids and flash-cut videos in seconds</p>
         </div>
 
-```
-    <div class="tools-container">
-        <!-- Image Grid Tool -->
-        <div class="tool-section">
-            <h2 class="tool-title">2x2 Grid Generator</h2>
-            
-            <div class="upload-area" id="gridUploadArea">
-                <div class="upload-icon">📸</div>
-                <div class="upload-text">Drop images here or click to upload</div>
-                <small>Upload 4+ images to create grids</small>
-                <input type="file" id="gridFileInput" class="file-input" multiple accept="image/*">
-            </div>
+        <div class="tools-container">
+            <!-- Image Grid Tool -->
+            <div class="tool-section">
+                <h2 class="tool-title">2x2 Grid Generator</h2>
+                
+                <div class="upload-area" id="gridUploadArea">
+                    <div class="upload-icon">📸</div>
+                    <div class="upload-text">Drop images here or click to upload</div>
+                    <small>Upload 4+ images to create grids</small>
+                    <input type="file" id="gridFileInput" class="file-input" multiple accept="image/*">
+                </div>
 
-            <div class="controls">
-                <div class="control-group">
-                    <label for="gridSize">Grid Output Size:</label>
-                    <select id="gridSize">
-                        <option value="1080">1080x1080 (Instagram)</option>
-                        <option value="1200">1200x1200 (High Quality)</option>
-                        <option value="800">800x800 (Web)</option>
-                    </select>
+                <div class="controls">
+                    <div class="control-row">
+                        <div class="control-group">
+                            <label for="gridSize">Grid Output Size:</label>
+                            <select id="gridSize">
+                                <option value="1080">1080x1080 (Instagram)</option>
+                                <option value="1200">1200x1200 (High Quality)</option>
+                                <option value="800">800x800 (Web)</option>
+                            </select>
+                        </div>
+                        
+                        <div class="control-group">
+                            <label for="maxCombinations">Max Combinations:</label>
+                            <input type="number" id="maxCombinations" value="20" min="1" max="100">
+                        </div>
+                    </div>
+
+                    <div class="control-group">
+                        <label for="imageFitMode">Image Fit Mode:</label>
+                        <select id="imageFitMode">
+                            <option value="cover">Cover (crop to fill)</option>
+                            <option value="contain">Contain (fit with borders)</option>
+                            <option value="stretch">Stretch (may distort)</option>
+                        </select>
+                    </div>
+
+                    <div class="text-overlay-section">
+                        <h4>Text Overlay for Grids</h4>
+                        
+                        <div class="control-group">
+                            <label for="gridOverlayText">Text:</label>
+                            <textarea id="gridOverlayText" rows="2" placeholder="Add text to your grids..."></textarea>
+                        </div>
+
+                        <div class="control-row">
+                            <div class="control-group">
+                                <label for="gridTextStyle">Style:</label>
+                                <select id="gridTextStyle">
+                                    <option value="none">None</option>
+                                    <option value="tiktok">TikTok Style</option>
+                                    <option value="instagram">Instagram Style</option>
+                                    <option value="snapchat">Snapchat Style</option>
+                                    <option value="plain">Plain Custom</option>
+                                </select>
+                            </div>
+                            
+                            <div class="control-group">
+                                <label for="gridTextPosition">Position:</label>
+                                <select id="gridTextPosition">
+                                    <option value="bottom">Bottom</option>
+                                    <option value="top">Top</option>
+                                    <option value="center">Center</option>
+                                    <option value="bottom-left">Bottom Left</option>
+                                    <option value="bottom-right">Bottom Right</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="control-row" id="gridCustomTextControls" style="display: none;">
+                            <div class="control-group">
+                                <label for="gridCustomFont">Font:</label>
+                                <select id="gridCustomFont">
+                                    <option value="Arial">Arial</option>
+                                    <option value="Helvetica">Helvetica</option>
+                                    <option value="Impact">Impact</option>
+                                    <option value="Comic Sans MS">Comic Sans</option>
+                                    <option value="Times New Roman">Times</option>
+                                </select>
+                            </div>
+                            
+                            <div class="control-group">
+                                <label for="gridCustomColor">Color:</label>
+                                <input type="color" id="gridCustomColor" class="color-input" value="#ffffff">
+                            </div>
+                        </div>
+
+                        <div class="style-preview" id="gridStylePreview">Preview text style</div>
+                    </div>
+                    
+                    <button class="btn" id="generateGrids" disabled>Generate Grids</button>
+                    <button class="btn secondary" id="downloadAllGrids" style="display: none;">Download All Grids</button>
+                </div>
+
+                <div id="gridStatus" class="status" style="display: none;"></div>
+                <div class="progress-bar" id="gridProgress" style="display: none;">
+                    <div class="progress-fill" id="gridProgressFill"></div>
                 </div>
                 
-                <div class="control-group">
-                    <label for="maxCombinations">Max Combinations:</label>
-                    <input type="number" id="maxCombinations" value="20" min="1" max="100">
+                <div class="preview-area" id="gridPreview" style="display: none;">
+                    <div class="grid-preview" id="gridContainer"></div>
                 </div>
-                
-                <button class="btn" id="generateGrids" disabled>Generate Grids</button>
             </div>
 
-            <div id="gridStatus" class="status" style="display: none;"></div>
-            <div class="progress-bar" id="gridProgress" style="display: none;">
-                <div class="progress-fill" id="gridProgressFill"></div>
-            </div>
-            
-            <div class="preview-area" id="gridPreview" style="display: none;">
-                <div class="grid-preview" id="gridContainer"></div>
-            </div>
-        </div>
+            <!-- Video Tool -->
+            <div class="tool-section">
+                <h2 class="tool-title">Flash Cut Video Creator</h2>
+                
+                <div class="upload-area" id="videoUploadArea">
+                    <div class="upload-icon">🎥</div>
+                    <div class="upload-text">Drop images here or click to upload</div>
+                    <small>Upload images for your flash cut video</small>
+                    <input type="file" id="videoFileInput" class="file-input" multiple accept="image/*">
+                </div>
 
-        <!-- Video Tool -->
-        <div class="tool-section">
-            <h2 class="tool-title">Flash Cut Video Creator</h2>
-            
-            <div class="upload-area" id="videoUploadArea">
-                <div class="upload-icon">🎥</div>
-                <div class="upload-text">Drop images here or click to upload</div>
-                <small>Upload images for your flash cut video</small>
-                <input type="file" id="videoFileInput" class="file-input" multiple accept="image/*">
-            </div>
+                <div class="controls">
+                    <div class="control-row">
+                        <div class="control-group">
+                            <label for="frameDuration">Frame Duration (ms):</label>
+                            <input type="number" id="frameDuration" value="200" min="50" max="2000" step="50">
+                        </div>
+                        
+                        <div class="control-group">
+                            <label for="videoFormat">Video Format:</label>
+                            <select id="videoFormat">
+                                <option value="9:16">9:16 (TikTok/Stories)</option>
+                                <option value="16:9">16:9 (YouTube)</option>
+                                <option value="1:1">1:1 (Instagram)</option>
+                            </select>
+                        </div>
+                    </div>
 
-            <div class="controls">
-                <div class="control-group">
-                    <label for="frameDuration">Frame Duration (ms):</label>
-                    <input type="number" id="frameDuration" value="200" min="50" max="2000" step="50">
+                    <div class="text-overlay-section">
+                        <h4>Text Overlay for Video</h4>
+                        
+                        <div class="control-group">
+                            <label for="videoOverlayText">Text:</label>
+                            <textarea id="videoOverlayText" rows="2" placeholder="Add text to your video..."></textarea>
+                        </div>
+
+                        <div class="control-row">
+                            <div class="control-group">
+                                <label for="videoTextStyle">Style:</label>
+                                <select id="videoTextStyle">
+                                    <option value="none">None</option>
+                                    <option value="tiktok">TikTok Style</option>
+                                    <option value="instagram">Instagram Style</option>
+                                    <option value="snapchat">Snapchat Style</option>
+                                    <option value="plain">Plain Custom</option>
+                                </select>
+                            </div>
+                            
+                            <div class="control-group">
+                                <label for="videoTextPosition">Position:</label>
+                                <select id="videoTextPosition">
+                                    <option value="bottom">Bottom</option>
+                                    <option value="top">Top</option>
+                                    <option value="center">Center</option>
+                                    <option value="bottom-left">Bottom Left</option>
+                                    <option value="bottom-right">Bottom Right</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="control-row" id="videoCustomTextControls" style="display: none;">
+                            <div class="control-group">
+                                <label for="videoCustomFont">Font:</label>
+                                <select id="videoCustomFont">
+                                    <option value="Arial">Arial</option>
+                                    <option value="Helvetica">Helvetica</option>
+                                    <option value="Impact">Impact</option>
+                                    <option value="Comic Sans MS">Comic Sans</option>
+                                    <option value="Times New Roman">Times</option>
+                                </select>
+                            </div>
+                            
+                            <div class="control-group">
+                                <label for="videoCustomColor">Color:</label>
+                                <input type="color" id="videoCustomColor" class="color-input" value="#ffffff">
+                            </div>
+                        </div>
+
+                        <div class="style-preview" id="videoStylePreview">Preview text style</div>
+                    </div>
+                    
+                    <button class="btn" id="generateVideo" disabled>Create Video</button>
+                    <button class="btn secondary" id="downloadVideo" style="display: none;">Download MP4</button>
+                </div>
+
+                <div id="videoStatus" class="status" style="display: none;"></div>
+                <div class="progress-bar" id="videoProgress" style="display: none;">
+                    <div class="progress-fill" id="videoProgressFill"></div>
                 </div>
                 
-                <div class="control-group">
-                    <label for="videoFormat">Video Format:</label>
-                    <select id="videoFormat">
-                        <option value="9:16">9:16 (TikTok/Stories)</option>
-                        <option value="16:9">16:9 (YouTube)</option>
-                        <option value="1:1">1:1 (Instagram)</option>
-                    </select>
-                </div>
-                
-                <div class="control-group">
-                    <label for="overlayText">Overlay Text (optional):</label>
-                    <input type="text" id="overlayText" placeholder="Add text overlay...">
-                </div>
-                
-                <button class="btn" id="generateVideo" disabled>Create Video</button>
-            </div>
-
-            <div id="videoStatus" class="status" style="display: none;"></div>
-            <div class="progress-bar" id="videoProgress" style="display: none;">
-                <div class="progress-fill" id="videoProgressFill"></div>
-            </div>
-            
-            <div class="preview-area" id="videoPreview" style="display: none;">
-                <div class="video-preview">
-                    <canvas id="videoCanvas" class="video-canvas"></canvas>
-                    <br><br>
-                    <button class="btn" id="downloadVideo" style="display: none;">Download Video</button>
+                <div class="preview-area" id="videoPreview" style="display: none;">
+                    <div class="video-preview">
+                        <canvas id="videoCanvas" class="video-canvas"></canvas>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
 
-<script>
-    class SlideshowVideoTool {
-        constructor() {
-            this.gridImages = [];
-            this.videoImages = [];
-            this.init();
-        }
+    <!-- Include FFmpeg for video encoding -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ffmpeg.js/0.8.8/ffmpeg.min.js"></script>
 
-        init() {
-            this.setupEventListeners();
-        }
-
-        setupEventListeners() {
-            // Grid tool events
-            const gridUpload = document.getElementById('gridUploadArea');
-            const gridFileInput = document.getElementById('gridFileInput');
-            
-            gridUpload.addEventListener('click', () => gridFileInput.click());
-            gridUpload.addEventListener('dragover', this.handleDragOver.bind(this));
-            gridUpload.addEventListener('drop', (e) => this.handleDrop(e, 'grid'));
-            gridFileInput.addEventListener('change', (e) => this.handleFileSelect(e, 'grid'));
-            
-            document.getElementById('generateGrids').addEventListener('click', this.generateGrids.bind(this));
-
-            // Video tool events
-            const videoUpload = document.getElementById('videoUploadArea');
-            const videoFileInput = document.getElementById('videoFileInput');
-            
-            videoUpload.addEventListener('click', () => videoFileInput.click());
-            videoUpload.addEventListener('dragover', this.handleDragOver.bind(this));
-            videoUpload.addEventListener('drop', (e) => this.handleDrop(e, 'video'));
-            videoFileInput.addEventListener('change', (e) => this.handleFileSelect(e, 'video'));
-            
-            document.getElementById('generateVideo').addEventListener('click', this.generateVideo.bind(this));
-            document.getElementById('downloadVideo').addEventListener('click', this.downloadVideo.bind(this));
-        }
-
-        handleDragOver(e) {
-            e.preventDefault();
-            e.currentTarget.classList.add('dragover');
-        }
-
-        handleDrop(e, type) {
-            e.preventDefault();
-            e.currentTarget.classList.remove('dragover');
-            const files = Array.from(e.dataTransfer.files).filter(file => file.type.startsWith('image/'));
-            this.processFiles(files, type);
-        }
-
-        handleFileSelect(e, type) {
-            const files = Array.from(e.target.files);
-            this.processFiles(files, type);
-        }
-
-        async processFiles(files, type) {
-            const images = [];
-            
-            for (const file of files) {
-                const img = await this.loadImage(file);
-                images.push(img);
+    <script>
+        class SlideshowVideoTool {
+            constructor() {
+                this.gridImages = [];
+                this.videoImages = [];
+                this.videoFrames = [];
+                this.generatedGrids = [];
+                this.ffmpeg = null;
+                this.init();
             }
 
-            if (type === 'grid') {
-                this.gridImages = images;
-                document.getElementById('generateGrids').disabled = images.length < 4;
-                this.showStatus('gridStatus', `Loaded ${images.length} images`, 'success');
-            } else {
-                this.videoImages = images;
-                document.getElementById('generateVideo').disabled = images.length < 2;
-                this.showStatus('videoStatus', `Loaded ${images.length} images`, 'success');
-            }
-        }
-
-        loadImage(file) {
-            return new Promise((resolve) => {
-                const img = new Image();
-                img.onload = () => resolve(img);
-                img.src = URL.createObjectURL(file);
-            });
-        }
-
-        async generateGrids() {
-            const size = parseInt(document.getElementById('gridSize').value);
-            const maxCombinations = parseInt(document.getElementById('maxCombinations').value);
-            
-            this.showProgress('gridProgress', 'gridProgressFill');
-            this.showStatus('gridStatus', 'Generating grids...', 'info');
-
-            const combinations = this.generateCombinations(this.gridImages, 4);
-            const limitedCombinations = combinations.slice(0, maxCombinations);
-            
-            const container = document.getElementById('gridContainer');
-            container.innerHTML = '';
-
-            for (let i = 0; i < limitedCombinations.length; i++) {
-                const canvas = this.create2x2Grid(limitedCombinations[i], size);
-                const gridItem = document.createElement('div');
-                gridItem.className = 'grid-item';
-                
-                const downloadBtn = document.createElement('button');
-                downloadBtn.className = 'download-btn';
-                downloadBtn.textContent = '⬇';
-                downloadBtn.onclick = () => this.downloadCanvas(canvas, `grid-${i + 1}.png`);
-                
-                gridItem.appendChild(canvas);
-                gridItem.appendChild(downloadBtn);
-                container.appendChild(gridItem);
-                
-                this.updateProgress('gridProgressFill', (i + 1) / limitedCombinations.length * 100);
-                await new Promise(resolve => setTimeout(resolve, 50));
+            async init() {
+                this.setupEventListeners();
+                await this.initFFmpeg();
             }
 
-            document.getElementById('gridPreview').style.display = 'block';
-            this.hideProgress('gridProgress');
-            this.showStatus('gridStatus', `Generated ${limitedCombinations.length} grids!`, 'success');
-        }
+            async initFFmpeg() {
+                try {
+                    const FFmpeg = window.FFmpeg;
+                    this.ffmpeg = FFmpeg.createFFmpeg({ log: false });
+                    await this.ffmpeg.load();
+                    console.log('FFmpeg loaded successfully');
+                } catch (error) {
+                    console.log('FFmpeg not available, using fallback method');
+                    this.ffmpeg = null;
+                }
+            }
 
-        generateCombinations(array, r) {
-            const result = [];
-            const combine = (temp, start) => {
-                if (temp.length === r) {
-                    result.push([...temp]);
+            setupEventListeners() {
+                // Grid tool events
+                const gridUpload = document.getElementById('gridUploadArea');
+                const gridFileInput = document.getElementById('gridFileInput');
+                
+                gridUpload.addEventListener('click', () => gridFileInput.click());
+                gridUpload.addEventListener('dragover', this.handleDragOver.bind(this));
+                gridUpload.addEventListener('drop', (e) => this.handleDrop(e, 'grid'));
+                gridFileInput.addEventListener('change', (e) => this.handleFileSelect(e, 'grid'));
+                
+                document.getElementById('generateGrids').addEventListener('click', this.generateGrids.bind(this));
+                document.getElementById('downloadAllGrids').addEventListener('click', this.downloadAllGrids.bind(this));
+
+                // Video tool events
+                const videoUpload = document.getElementById('videoUploadArea');
+                const videoFileInput = document.getElementById('videoFileInput');
+                
+                videoUpload.addEventListener('click', () => videoFileInput.click());
+                videoUpload.addEventListener('dragover', this.handleDragOver.bind(this));
+                videoUpload.addEventListener('drop', (e) => this.handleDrop(e, 'video'));
+                videoFileInput.addEventListener('change', (e) => this.handleFileSelect(e, 'video'));
+                
+                document.getElementById('generateVideo').addEventListener('click', this.generateVideo.bind(this));
+                document.getElementById('downloadVideo').addEventListener('click', this.downloadVideo.bind(this));
+
+                // Text style change events
+                document.getElementById('gridTextStyle').addEventListener('change', (e) => this.updateTextStylePreview('grid'));
+                document.getElementById('videoTextStyle').addEventListener('change', (e) => this.updateTextStylePreview('video'));
+                document.getElementById('gridCustomFont').addEventListener('change', (e) => this.updateTextStylePreview('grid'));
+                document.getElementById('gridCustomColor').addEventListener('change', (e) => this.updateTextStylePreview('grid'));
+                document.getElementById('videoCustomFont').addEventListener('change', (e) => this.updateTextStylePreview('video'));
+                document.getElementById('videoCustomColor').addEventListener('change', (e) => this.updateTextStylePreview('video'));
+
+                // Initialize previews
+                this.updateTextStylePreview('grid');
+                this.updateTextStylePreview('video');
+            }
+
+            updateTextStylePreview(type) {
+                const style = document.getElementById(`${type}TextStyle`).value;
+                const preview = document.getElementById(`${type}StylePreview`);
+                const customControls = document.getElementById(`${type}CustomTextControls`);
+                
+                preview.className = 'style-preview';
+                customControls.style.display = 'none';
+
+                switch (style) {
+                    case 'tiktok':
+                        preview.className += ' tiktok';
+                        preview.textContent = 'TikTok Style Text';
+                        break;
+                    case 'instagram':
+                        preview.className += ' instagram';
+                        preview.textContent = 'Instagram Style Text';
+                        break;
+                    case 'snapchat':
+                        preview.className += ' snapchat';
+                        preview.textContent = 'Snapchat Style Text';
+                        break;
+                    case 'plain':
+                        preview.className += ' plain';
+                        preview.textContent = 'Custom Plain Text';
+                        customControls.style.display = 'grid';
+                        const font = document.getElementById(`${type}CustomFont`).value;
+                        const color = document.getElementById(`${type}CustomColor`).value;
+                        preview.style.fontFamily = font;
+                        preview.style.color = color;
+                        break;
+                    case 'none':
+                        preview.textContent = 'No text overlay';
+                        preview.style.background = '#f0f0f0';
+                        preview.style.color = '#999';
+                        break;
+                }
+            }
+
+            handleDragOver(e) {
+                e.preventDefault();
+                e.currentTarget.classList.add('dragover');
+            }
+
+            handleDrop(e, type) {
+                e.preventDefault();
+                e.currentTarget.classList.remove('dragover');
+                const files = Array.from(e.dataTransfer.files).filter(file => file.type.startsWith('image/'));
+                this.processFiles(files, type);
+            }
+
+            handleFileSelect(e, type) {
+                const files = Array.from(e.target.files);
+                this.processFiles(files, type);
+            }
+
+            async processFiles(files, type) {
+                const images = [];
+                
+                for (const file of files) {
+                    const img = await this.loadImage(file);
+                    images.push(img);
+                }
+
+                if (type === 'grid') {
+                    this.gridImages = images;
+                    document.getElementById('generateGrids').disabled = images.length < 4;
+                    this.showStatus('gridStatus', `Loaded ${images.length} images`, 'success');
+                } else {
+                    this.videoImages = images;
+                    document.getElementById('generateVideo').disabled = images.length < 2;
+                    this.showStatus('videoStatus', `Loaded ${images.length} images`, 'success');
+                }
+            }
+
+            loadImage(file) {
+                return new Promise((resolve) => {
+                    const img = new Image();
+                    img.onload = () => resolve(img);
+                    img.src = URL.createObjectURL(file);
+                });
+            }
+
+            async generateGrids() {
+                const size = parseInt(document.getElementById('gridSize').value);
+                const maxCombinations = parseInt(document.getElementById('maxCombinations').value);
+                const fitMode = document.getElementById('imageFitMode').value;
+                
+                this.showProgress('gridProgress', 'gridProgressFill');
+                this.showStatus('gridStatus', 'Generating grids...', 'info');
+
+                const combinations = this.generateCombinations(this.gridImages, 4);
+                const limitedCombinations = combinations.slice(0, maxCombinations);
+                
+                const container = document.getElementById('gridContainer');
+                container.innerHTML = '';
+                this.generatedGrids = [];
+
+                for (let i = 0; i < limitedCombinations.length; i++) {
+                    const canvas = this.create2x2Grid(limitedCombinations[i], size, fitMode, 'grid');
+                    this.generatedGrids.push({ canvas, index: i });
+                    
+                    const gridItem = document.createElement('div');
+                    gridItem.className = 'grid-item';
+                    
+                    const downloadBtn = document.createElement('button');
+                    downloadBtn.className = 'download-btn';
+                    downloadBtn.textContent = '⬇';
+                    downloadBtn.onclick = () => this.downloadCanvas(canvas, `grid-${i + 1}.png`);
+                    
+                    gridItem.appendChild(canvas);
+                    gridItem.appendChild(downloadBtn);
+                    container.appendChild(gridItem);
+                    
+                    this.updateProgress('gridProgressFill', (i + 1) / limitedCombinations.length * 100);
+                    await new Promise(resolve => setTimeout(resolve, 50));
+                }
+
+                document.getElementById('gridPreview').style.display = 'block';
+                document.getElementById('downloadAllGrids').style.display = 'inline-block';
+                this.hideProgress('gridProgress');
+                this.showStatus('gridStatus', `Generated ${limitedCombinations.length} grids!`, 'success');
+            }
+
+            generateCombinations(array, r) {
+                const result = [];
+                const combine = (temp, start) => {
+                    if (temp.length === r) {
+                        result.push([...temp]);
+                        return;
+                    }
+                    for (let i = start; i < array.length; i++) {
+                        temp.push(array[i]);
+                        combine(temp, i + 1);
+                        temp.pop();
+                    }
+                };
+                combine([], 0);
+                return result;
+            }
+
+            create2x2Grid(images, size, fitMode, type) {
+                const canvas = document.createElement('canvas');
+                canvas.width = size;
+                canvas.height = size;
+                canvas.className = 'grid-canvas';
+                const ctx = canvas.getContext('2d');
+
+                const cellSize = size / 2;
+                const positions = [
+                    [0, 0], [cellSize, 0],
+                    [0, cellSize], [cellSize, cellSize]
+                ];
+
+                images.forEach((img, i) => {
+                    const [x, y] = positions[i];
+                    this.drawImageWithMode(ctx, img, x, y, cellSize, cellSize, fitMode);
+                });
+
+                // Add text overlay if specified
+                this.addTextOverlay(ctx, type, size, size);
+
+                return canvas;
+            }
+
+            drawImageWithMode(ctx, img, x, y, width, height, mode) {
+                switch (mode) {
+                    case 'cover':
+                        // Crop to fill entire area
+                        const scale = Math.max(width / img.width, height / img.height);
+                        const scaledWidth = img.width * scale;
+                        const scaledHeight = img.height * scale;
+                        const offsetX = (width - scaledWidth) / 2;
+                        const offsetY = (height - scaledHeight) / 2;
+                        
+                        ctx.save();
+                        ctx.beginPath();
+                        ctx.rect(x, y, width, height);
+                        ctx.clip();
+                        ctx.drawImage(img, x + offsetX, y + offsetY, scaledWidth, scaledHeight);
+                        ctx.restore();
+                        break;
+                        
+                    case 'contain':
+                        // Fit with possible borders
+                        const containScale = Math.min(width / img.width, height / img.height);
+                        const containWidth = img.width * containScale;
+                        const containHeight = img.height * containScale;
+                        const containOffsetX = (width - containWidth) / 2;
+                        const containOffsetY = (height - containHeight) / 2;
+                        
+                        // Fill background
+                        ctx.fillStyle = '#f0f0f0';
+                        ctx.fillRect(x, y, width, height);
+                        
+                        ctx.drawImage(img, x + containOffsetX, y + containOffsetY, containWidth, containHeight);
+                        break;
+                        
+                    case 'stretch':
+                        // Stretch to fill (may distort)
+                        ctx.drawImage(img, x, y, width, height);
+                        break;
+                }
+            }
+
+            addTextOverlay(ctx, type, width, height) {
+                const textStyle = document.getElementById(`${type}TextStyle`).value;
+                const text = document.getElementById(`${type}OverlayText`).value;
+                const position = document.getElementById(`${type}TextPosition`).value;
+                
+                if (textStyle === 'none' || !text.trim()) return;
+
+                let fontSize, fontFamily, fillStyle, strokeStyle, shadowColor, shadowBlur;
+                let backgroundStyle = null;
+
+                switch (textStyle) {
+                    case 'tiktok':
+                        fontSize = Math.floor(width * 0.08);
+                        fontFamily = 'Arial Black';
+                        fillStyle = 'white';
+                        strokeStyle = 'black';
+                        shadowColor = 'rgba(0,0,0,0.7)';
+                        shadowBlur = 4;
+                        break;
+                        
+                    case 'instagram':
+                        fontSize = Math.floor(width * 0.06);
+                        fontFamily = 'Helvetica';
+                        fillStyle = 'white';
+                        strokeStyle = 'rgba(0,0,0,0.8)';
+                        shadowColor = 'rgba(0,0,0,0.7)';
+                        shadowBlur = 3;
+                        backgroundStyle = 'linear-gradient(45deg, #833ab4, #fd1d1d, #fcb045)';
+                        break;
+                        
+                    case 'snapchat':
+                        fontSize = Math.floor(width * 0.07);
+                        fontFamily = 'Comic Sans MS';
+                        fillStyle = 'black';
+                        strokeStyle = 'white';
+                        shadowColor = 'white';
+                        shadowBlur = 2;
+                        backgroundStyle = '#fffc00';
+                        break;
+                        
+                    case 'plain':
+                        fontSize = Math.floor(width * 0.06);
+                        fontFamily = document.getElementById(`${type}CustomFont`).value;
+                        fillStyle = document.getElementById(`${type}CustomColor`).value;
+                        strokeStyle = fillStyle === '#ffffff' ? 'black' : 'white';
+                        shadowColor = 'rgba(0,0,0,0.5)';
+                        shadowBlur = 2;
+                        backgroundStyle = 'rgba(0,0,0,0.7)';
+                        break;
+                }
+
+                ctx.font = `bold ${fontSize}px ${fontFamily}`;
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+
+                // Calculate position
+                let textX = width / 2;
+                let textY = height / 2;
+                
+                switch (position) {
+                    case 'top':
+                        textY = fontSize + 20;
+                        break;
+                    case 'bottom':
+                        textY = height - fontSize - 20;
+                        break;
+                    case 'bottom-left':
+                        ctx.textAlign = 'left';
+                        textX = 20;
+                        textY = height - fontSize - 20;
+                        break;
+                    case 'bottom-right':
+                        ctx.textAlign = 'right';
+                        textX = width - 20;
+                        textY = height - fontSize - 20;
+                        break;
+                }
+
+                // Add background if specified
+                if (backgroundStyle && backgroundStyle !== 'none') {
+                    const textMetrics = ctx.measureText(text);
+                    const textWidth = textMetrics.width;
+                    const textHeight = fontSize;
+                    const padding = 15;
+                    
+                    if (backgroundStyle.startsWith('#')) {
+                        ctx.fillStyle = backgroundStyle;
+                        ctx.fillRect(textX - textWidth/2 - padding, textY - textHeight/2 - padding, 
+                                   textWidth + padding*2, textHeight + padding*2);
+                    } else {
+                        // For gradients, use solid background as fallback
+                        ctx.fillStyle = 'rgba(0,0,0,0.7)';
+                        ctx.fillRect(textX - textWidth/2 - padding, textY - textHeight/2 - padding, 
+                                   textWidth + padding*2, textHeight + padding*2);
+                    }
+                }
+
+                // Add shadow
+                ctx.shadowColor = shadowColor;
+                ctx.shadowBlur = shadowBlur;
+                ctx.shadowOffsetX = 2;
+                ctx.shadowOffsetY = 2;
+
+                // Add stroke
+                ctx.strokeStyle = strokeStyle;
+                ctx.lineWidth = 3;
+                ctx.strokeText(text, textX, textY);
+
+                // Add fill
+                ctx.fillStyle = fillStyle;
+                ctx.fillText(text, textX, textY);
+
+                // Reset shadow
+                ctx.shadowColor = 'transparent';
+                ctx.shadowBlur = 0;
+                ctx.shadowOffsetX = 0;
+                ctx.shadowOffsetY = 0;
+            }
+
+            async downloadAllGrids() {
+                const zip = new JSZip();
+                
+                for (const grid of this.generatedGrids) {
+                    const dataURL = grid.canvas.toDataURL('image/png');
+                    const base64Data = dataURL.split(',')[1];
+                    zip.file(`grid-${grid.index + 1}.png`, base64Data, {base64: true});
+                }
+                
+                const content = await zip.generateAsync({type: 'blob'});
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(content);
+                link.download = 'all-grids.zip';
+                link.click();
+            }
+
+            async generateVideo() {
+                const frameDuration = parseInt(document.getElementById('frameDuration').value);
+                const format = document.getElementById('videoFormat').value;
+
+                const [width, height] = this.getVideoDimensions(format);
+                
+                this.showProgress('videoProgress', 'videoProgressFill');
+                this.showStatus('videoStatus', 'Creating video...', 'info');
+
+                const canvas = document.getElementById('videoCanvas');
+                canvas.width = width;
+                canvas.height = height;
+                const ctx = canvas.getContext('2d');
+
+                this.videoFrames = [];
+                
+                for (let i = 0; i < this.videoImages.length; i++) {
+                    ctx.clearRect(0, 0, width, height);
+                    this.drawImageWithMode(ctx, this.videoImages[i], 0, 0, width, height, 'cover');
+                    this.addTextOverlay(ctx, 'video', width, height);
+                    
+                    // Store frame data
+                    this.videoFrames.push(canvas.toDataURL('image/png'));
+                    
+                    this.updateProgress('videoProgressFill', (i + 1) / this.videoImages.length * 100);
+                    await new Promise(resolve => setTimeout(resolve, 50));
+                }
+
+                this.playVideoPreview(canvas, frameDuration);
+                document.getElementById('videoPreview').style.display = 'block';
+                document.getElementById('downloadVideo').style.display = 'inline-block';
+                this.hideProgress('videoProgress');
+                this.showStatus('videoStatus', 'Video created! Click Download MP4 to save.', 'success');
+            }
+
+            getVideoDimensions(format) {
+                switch (format) {
+                    case '9:16': return [720, 1280]; // TikTok/Stories
+                    case '16:9': return [1280, 720]; // YouTube
+                    case '1:1': return [720, 720]; // Instagram
+                    default: return [720, 1280];
+                }
+            }
+
+            playVideoPreview(canvas, frameDuration) {
+                const ctx = canvas.getContext('2d');
+                let currentFrame = 0;
+                
+                const animate = () => {
+                    if (this.videoFrames.length > 0) {
+                        const img = new Image();
+                        img.onload = () => {
+                            ctx.clearRect(0, 0, canvas.width, canvas.height);
+                            ctx.drawImage(img, 0, 0);
+                        };
+                        img.src = this.videoFrames[currentFrame];
+                        currentFrame = (currentFrame + 1) % this.videoFrames.length;
+                    }
+                    setTimeout(() => requestAnimationFrame(animate), frameDuration);
+                };
+                
+                animate();
+            }
+
+            async downloadVideo() {
+                if (!this.videoFrames || this.videoFrames.length === 0) {
+                    this.showStatus('videoStatus', 'No video frames available', 'error');
                     return;
                 }
-                for (let i = start; i < array.length; i++) {
-                    temp.push(array[i]);
-                    combine(temp, i + 1);
-                    temp.pop();
+
+                this.showStatus('videoStatus', 'Preparing video download...', 'info');
+
+                try {
+                    if (this.ffmpeg) {
+                        await this.downloadVideoWithFFmpeg();
+                    } else {
+                        await this.downloadVideoAsGIF();
+                    }
+                } catch (error) {
+                    console.error('Video download error:', error);
+                    await this.downloadVideoAsGIF();
                 }
-            };
-            combine([], 0);
-            return result;
-        }
-
-        create2x2Grid(images, size) {
-            const canvas = document.createElement('canvas');
-            canvas.width = size;
-            canvas.height = size;
-            canvas.className = 'grid-canvas';
-            const ctx = canvas.getContext('2d');
-
-            const cellSize = size / 2;
-            const positions = [
-                [0, 0], [cellSize, 0],
-                [0, cellSize], [cellSize, cellSize]
-            ];
-
-            images.forEach((img, i) => {
-                const [x, y] = positions[i];
-                this.drawImageFit(ctx, img, x, y, cellSize, cellSize);
-            });
-
-            return canvas;
-        }
-
-        drawImageFit(ctx, img, x, y, width, height) {
-            const scale = Math.max(width / img.width, height / img.height);
-            const scaledWidth = img.width * scale;
-            const scaledHeight = img.height * scale;
-            const offsetX = (width - scaledWidth) / 2;
-            const offsetY = (height - scaledHeight) / 2;
-            
-            ctx.drawImage(img, x + offsetX, y + offsetY, scaledWidth, scaledHeight);
-        }
-
-        async generateVideo() {
-            const frameDuration = parseInt(document.getElementById('frameDuration').value);
-            const format = document.getElementById('videoFormat').value;
-            const overlayText = document.getElementById('overlayText').value;
-
-            const [width, height] = this.getVideoDimensions(format);
-            
-            this.showProgress('videoProgress', 'videoProgressFill');
-            this.showStatus('videoStatus', 'Creating video...', 'info');
-
-            const canvas = document.getElementById('videoCanvas');
-            canvas.width = width;
-            canvas.height = height;
-            const ctx = canvas.getContext('2d');
-
-            this.videoFrames = [];
-            
-            for (let i = 0; i < this.videoImages.length; i++) {
-                ctx.clearRect(0, 0, width, height);
-                this.drawImageFit(ctx, this.videoImages[i], 0, 0, width, height);
-                
-                if (overlayText) {
-                    this.drawTextOverlay(ctx, overlayText, width, height);
-                }
-                
-                this.videoFrames.push(ctx.getImageData(0, 0, width, height));
-                this.updateProgress('videoProgressFill', (i + 1) / this.videoImages.length * 100);
-                await new Promise(resolve => setTimeout(resolve, 50));
             }
 
-            this.playVideoPreview(canvas, frameDuration);
-            document.getElementById('videoPreview').style.display = 'block';
-            document.getElementById('downloadVideo').style.display = 'inline-block';
-            this.hideProgress('videoProgress');
-            this.showStatus('videoStatus', 'Video created! Preview playing above.', 'success');
-        }
+            async downloadVideoWithFFmpeg() {
+                const frameDuration = parseInt(document.getElementById('frameDuration').value);
+                const fps = Math.round(1000 / frameDuration);
+                
+                // Write frames to FFmpeg
+                for (let i = 0; i < this.videoFrames.length; i++) {
+                    const response = await fetch(this.videoFrames[i]);
+                    const buffer = await response.arrayBuffer();
+                    this.ffmpeg.FS('writeFile', `frame${i.toString().padStart(3, '0')}.png`, new Uint8Array(buffer));
+                }
 
-        getVideoDimensions(format) {
-            switch (format) {
-                case '9:16': return [405, 720]; // TikTok/Stories
-                case '16:9': return [720, 405]; // YouTube
-                case '1:1': return [600, 600]; // Instagram
-                default: return [405, 720];
+                // Create video
+                await this.ffmpeg.run('-framerate', fps.toString(), '-i', 'frame%03d.png', '-c:v', 'libx264', '-pix_fmt', 'yuv420p', 'output.mp4');
+                
+                const data = this.ffmpeg.FS('readFile', 'output.mp4');
+                const blob = new Blob([data.buffer], { type: 'video/mp4' });
+                
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(blob);
+                link.download = 'flash-cut-video.mp4';
+                link.click();
+                
+                this.showStatus('videoStatus', 'MP4 video downloaded!', 'success');
+            }
+
+            async downloadVideoAsGIF() {
+                // Fallback: create animated GIF using a simple method
+                this.showStatus('videoStatus', 'Creating animated GIF...', 'info');
+                
+                // For now, download frames as a zip file
+                // In a real implementation, you'd use a GIF encoding library
+                const zip = new JSZip();
+                
+                for (let i = 0; i < this.videoFrames.length; i++) {
+                    const base64Data = this.videoFrames[i].split(',')[1];
+                    zip.file(`frame-${i.toString().padStart(3, '0')}.png`, base64Data, {base64: true});
+                }
+                
+                const content = await zip.generateAsync({type: 'blob'});
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(content);
+                link.download = 'video-frames.zip';
+                link.click();
+                
+                this.showStatus('videoStatus', 'Video frames downloaded as ZIP. Use external tool to create MP4/GIF.', 'info');
+            }
+
+            downloadCanvas(canvas, filename) {
+                const link = document.createElement('a');
+                link.download = filename;
+                link.href = canvas.toDataURL();
+                link.click();
+            }
+
+            showStatus(elementId, message, type) {
+                const status = document.getElementById(elementId);
+                status.textContent = message;
+                status.className = `status ${type}`;
+                status.style.display = 'block';
+            }
+
+            showProgress(progressId, fillId) {
+                document.getElementById(progressId).style.display = 'block';
+                document.getElementById(fillId).style.width = '0%';
+            }
+
+            updateProgress(fillId, percentage) {
+                document.getElementById(fillId).style.width = percentage + '%';
+            }
+
+            hideProgress(progressId) {
+                document.getElementById(progressId).style.display = 'none';
             }
         }
 
-        drawTextOverlay(ctx, text, width, height) {
-            ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
-            ctx.fillRect(0, height - 80, width, 80);
-            
-            ctx.fillStyle = 'white';
-            ctx.font = 'bold 24px Arial';
-            ctx.textAlign = 'center';
-            ctx.fillText(text, width / 2, height - 30);
-        }
+        // Initialize the tool when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            new SlideshowVideoTool();
+        });
+    </script>
 
-        playVideoPreview(canvas, frameDuration) {
-            const ctx = canvas.getContext('2d');
-            let currentFrame = 0;
-            
-            const animate = () => {
-                ctx.putImageData(this.videoFrames[currentFrame], 0, 0);
-                currentFrame = (currentFrame + 1) % this.videoFrames.length;
-                setTimeout(() => requestAnimationFrame(animate), frameDuration);
-            };
-            
-            animate();
-        }
-
-        downloadVideo() {
-            // This creates a simple animated GIF-like canvas animation
-            // For actual MP4 export, you'd need additional libraries
-            this.showStatus('videoStatus', 'Video download started (as frames). For MP4 export, additional libraries are needed.', 'info');
-            
-            // Download first frame as example
-            const canvas = document.getElementById('videoCanvas');
-            this.downloadCanvas(canvas, 'video-frame.png');
-        }
-
-        downloadCanvas(canvas, filename) {
-            const link = document.createElement('a');
-            link.download = filename;
-            link.href = canvas.toDataURL();
-            link.click();
-        }
-
-        showStatus(elementId, message, type) {
-            const status = document.getElementById(elementId);
-            status.textContent = message;
-            status.className = `status ${type}`;
-            status.style.display = 'block';
-        }
-
-        showProgress(progressId, fillId) {
-            document.getElementById(progressId).style.display = 'block';
-            document.getElementById(fillId).style.width = '0%';
-        }
-
-        updateProgress(fillId, percentage) {
-            document.getElementById(fillId).style.width = percentage + '%';
-        }
-
-        hideProgress(progressId) {
-            document.getElementById(progressId).style.display = 'none';
-        }
-    }
-
-    // Initialize the tool when page loads
-    document.addEventListener('DOMContentLoaded', () => {
-        new SlideshowVideoTool();
-    });
-</script>
-```
-
+    <!-- JSZip for creating zip files -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.7.1/jszip.min.js"></script>
 </body>
 </html>
