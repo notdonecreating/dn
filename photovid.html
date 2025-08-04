@@ -563,10 +563,8 @@
                     </div>
                     
                     <button class="btn" id="generateVideo" disabled>Create Video</button>
-                    <div style="margin-top: 10px;">
-                        <button class="btn secondary" id="downloadVideo" style="display: none;">Download WebM</button>
-                        <button class="btn secondary" id="downloadVideoMP4" style="display: none;">Download MP4</button>
-                    </div>
+                    <button class="btn secondary" id="downloadVideo" style="display: none;">Download WebM</button>
+                    <button class="btn secondary" id="downloadVideoMP4" style="display: none;">Download MP4</button>
                 </div>
 
                 <div id="videoStatus" class="status" style="display: none;"></div>
@@ -622,7 +620,14 @@
                 
                 document.getElementById('generateVideo').addEventListener('click', this.generateVideo.bind(this));
                 document.getElementById('downloadVideo').addEventListener('click', this.downloadVideo.bind(this));
-                document.getElementById('downloadVideoMP4').addEventListener('click', this.downloadVideoMP4.bind(this));
+                
+                // Make sure MP4 button exists before adding listener
+                const mp4Button = document.getElementById('downloadVideoMP4');
+                if (mp4Button) {
+                    mp4Button.addEventListener('click', this.downloadVideoMP4.bind(this));
+                } else {
+                    console.error('MP4 download button not found!');
+                }
 
                 // Text style change events
                 document.getElementById('gridTextStyle').addEventListener('change', (e) => this.updateTextStylePreview('grid'));
