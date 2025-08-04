@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Slideshow & Video Creator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+```
+    body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        padding: 20px;
+    }
+
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        overflow: hidden;
+    }
+
+    .header {
+        background: linear-gradient(135deg, #ff6b6b, #ffa500);
+        color: white;
+        padding: 30px;
+        text-align: center;
+    }
+
+    .header h1 {
+        font-size: 2.5rem;
+        margin-bottom: 10px;
+        font-weight: 700;
+    }
+
+    .header p {
+        font-size: 1.1rem;
+        opacity: 0.9;
+    }
+
+    .tools-container {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0;
+    }
+
+    .tool-section {
+        padding: 40px;
+        border-right: 1px solid #e0e0e0;
+    }
+
+    .tool-section:last-child {
+        border-right: none;
+    }
+
+    .tool-title {
+        font-size: 1.8rem;
+        color: #333;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .tool-title::before {
+        content: '🎨';
+        font-size: 1.5rem;
+    }
+
+    .tool-section:last-child .tool-title::before {
+        content: '🎬';
+    }
+
+    .upload-area {
+        border: 3px dashed #ddd;
+        border-radius: 15px;
+        padding: 40px;
+        text-align: center;
+        margin-bottom: 20px;
+        transition: all 0.3s ease;
+        cursor: pointer;
+    }
+
+    .upload-area:hover {
+        border-color: #667eea;
+        background: #f8f9ff;
+    }
+
+    .upload-area.dragover {
+        border-color: #667eea;
+        background: #f0f4ff;
+        transform: scale(1.02);
+    }
+
+    .upload-icon {
+        font-size: 3rem;
+        margin-bottom: 15px;
+    }
+
+    .upload-text {
+        font-size: 1.1rem;
+        color: #666;
+        margin-bottom: 10px;
+    }
+
+    .file-input {
+        display: none;
+    }
+
+    .btn {
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        color: white;
+        border: none;
+        padding: 12px 25px;
+        border-radius: 25px;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-weight: 600;
+    }
+
+    .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+    }
+
+    .btn:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+        transform: none;
+    }
+
+    .controls {
+        margin: 20px 0;
+    }
+
+    .control-group {
+        margin-bottom: 15px;
+    }
+
+    .control-group label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: 600;
+        color: #333;
+    }
+
+    .control-group input, .control-group select {
+        width: 100%;
+        padding: 10px;
+        border: 2px solid #e0e0e0;
+        border-radius: 8px;
+        font-size: 1rem;
+    }
+
+    .control-group input:focus, .control-group select:focus {
+        outline: none;
+        border-color: #667eea;
+    }
+
+    .preview-area {
+        margin-top: 30px;
+        padding: 20px;
+        background: #f8f9fa;
+        border-radius: 15px;
+        max-height: 400px;
+        overflow-y: auto;
+    }
+
+    .grid-preview {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 15px;
+    }
+
+    .grid-item {
+        position: relative;
+        background: white;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        transition: transform 0.3s ease;
+    }
+
+    .grid-item:hover {
+        transform: translateY(-5px);
+    }
+
+    .grid-canvas {
+        width: 100%;
+        height: auto;
+        display: block;
+    }
+
+    .download-btn {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background: rgba(0,0,0,0.7);
+        color: white;
+        border: none;
+        padding: 5px 10px;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 0.8rem;
+    }
+
+    .video-preview {
+        background: white;
+        border-radius: 10px;
+        padding: 20px;
+        text-align: center;
+    }
+
+    .video-canvas {
+        max-width: 100%;
+        border-radius: 10px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+
+    .progress-bar {
+        width: 100%;
+        height: 8px;
+        background: #e0e0e0;
+        border-radius: 4px;
+        margin: 20px 0;
+        overflow: hidden;
+    }
+
+    .progress-fill {
+        height: 100%;
+        background: linear-gradient(90deg, #667eea, #764ba2);
+        width: 0%;
+        transition: width 0.3s ease;
+    }
+
+    .status {
+        margin: 15px 0;
+        padding: 10px;
+        border-radius: 8px;
+        text-align: center;
+        font-weight: 600;
+    }
+
+    .status.success {
+        background: #d4edda;
+        color: #155724;
+        border: 1px solid #c3e6cb;
+    }
+
+    .status.error {
+        background: #f8d7da;
+        color: #721c24;
+        border: 1px solid #f5c6cb;
+    }
+
+    .status.info {
+        background: #cce7ff;
+        color: #004085;
+        border: 1px solid #b8daff;
+    }
+
+    @media (max-width: 768px) {
+        .tools-container {
+            grid-template-columns: 1fr;
+        }
+        
+        .tool-section {
+            border-right: none;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        .tool-section:last-child {
+            border-bottom: none;
+        }
+    }
+</style>
+```
+
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Slideshow & Video Creator</h1>
+            <p>Create stunning 2x2 image grids and flash-cut videos in seconds</p>
+        </div>
+
+```
+    <div class="tools-container">
+        <!-- Image Grid Tool -->
+        <div class="tool-section">
+            <h2 class="tool-title">2x2 Grid Generator</h2>
+            
+            <div class="upload-area" id="gridUploadArea">
+                <div class="upload-icon">📸</div>
+                <div class="upload-text">Drop images here or click to upload</div>
+                <small>Upload 4+ images to create grids</small>
+                <input type="file" id="gridFileInput" class="file-input" multiple accept="image/*">
+            </div>
+
+            <div class="controls">
+                <div class="control-group">
+                    <label for="gridSize">Grid Output Size:</label>
+                    <select id="gridSize">
+                        <option value="1080">1080x1080 (Instagram)</option>
+                        <option value="1200">1200x1200 (High Quality)</option>
+                        <option value="800">800x800 (Web)</option>
+                    </select>
+                </div>
+                
+                <div class="control-group">
+                    <label for="maxCombinations">Max Combinations:</label>
+                    <input type="number" id="maxCombinations" value="20" min="1" max="100">
+                </div>
+                
+                <button class="btn" id="generateGrids" disabled>Generate Grids</button>
+            </div>
+
+            <div id="gridStatus" class="status" style="display: none;"></div>
+            <div class="progress-bar" id="gridProgress" style="display: none;">
+                <div class="progress-fill" id="gridProgressFill"></div>
+            </div>
+            
+            <div class="preview-area" id="gridPreview" style="display: none;">
+                <div class="grid-preview" id="gridContainer"></div>
+            </div>
+        </div>
+
+        <!-- Video Tool -->
+        <div class="tool-section">
+            <h2 class="tool-title">Flash Cut Video Creator</h2>
+            
+            <div class="upload-area" id="videoUploadArea">
+                <div class="upload-icon">🎥</div>
+                <div class="upload-text">Drop images here or click to upload</div>
+                <small>Upload images for your flash cut video</small>
+                <input type="file" id="videoFileInput" class="file-input" multiple accept="image/*">
+            </div>
+
+            <div class="controls">
+                <div class="control-group">
+                    <label for="frameDuration">Frame Duration (ms):</label>
+                    <input type="number" id="frameDuration" value="200" min="50" max="2000" step="50">
+                </div>
+                
+                <div class="control-group">
+                    <label for="videoFormat">Video Format:</label>
+                    <select id="videoFormat">
+                        <option value="9:16">9:16 (TikTok/Stories)</option>
+                        <option value="16:9">16:9 (YouTube)</option>
+                        <option value="1:1">1:1 (Instagram)</option>
+                    </select>
+                </div>
+                
+                <div class="control-group">
+                    <label for="overlayText">Overlay Text (optional):</label>
+                    <input type="text" id="overlayText" placeholder="Add text overlay...">
+                </div>
+                
+                <button class="btn" id="generateVideo" disabled>Create Video</button>
+            </div>
+
+            <div id="videoStatus" class="status" style="display: none;"></div>
+            <div class="progress-bar" id="videoProgress" style="display: none;">
+                <div class="progress-fill" id="videoProgressFill"></div>
+            </div>
+            
+            <div class="preview-area" id="videoPreview" style="display: none;">
+                <div class="video-preview">
+                    <canvas id="videoCanvas" class="video-canvas"></canvas>
+                    <br><br>
+                    <button class="btn" id="downloadVideo" style="display: none;">Download Video</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    class SlideshowVideoTool {
+        constructor() {
+            this.gridImages = [];
+            this.videoImages = [];
+            this.init();
+        }
+
+        init() {
+            this.setupEventListeners();
+        }
+
+        setupEventListeners() {
+            // Grid tool events
+            const gridUpload = document.getElementById('gridUploadArea');
+            const gridFileInput = document.getElementById('gridFileInput');
+            
+            gridUpload.addEventListener('click', () => gridFileInput.click());
+            gridUpload.addEventListener('dragover', this.handleDragOver.bind(this));
+            gridUpload.addEventListener('drop', (e) => this.handleDrop(e, 'grid'));
+            gridFileInput.addEventListener('change', (e) => this.handleFileSelect(e, 'grid'));
+            
+            document.getElementById('generateGrids').addEventListener('click', this.generateGrids.bind(this));
+
+            // Video tool events
+            const videoUpload = document.getElementById('videoUploadArea');
+            const videoFileInput = document.getElementById('videoFileInput');
+            
+            videoUpload.addEventListener('click', () => videoFileInput.click());
+            videoUpload.addEventListener('dragover', this.handleDragOver.bind(this));
+            videoUpload.addEventListener('drop', (e) => this.handleDrop(e, 'video'));
+            videoFileInput.addEventListener('change', (e) => this.handleFileSelect(e, 'video'));
+            
+            document.getElementById('generateVideo').addEventListener('click', this.generateVideo.bind(this));
+            document.getElementById('downloadVideo').addEventListener('click', this.downloadVideo.bind(this));
+        }
+
+        handleDragOver(e) {
+            e.preventDefault();
+            e.currentTarget.classList.add('dragover');
+        }
+
+        handleDrop(e, type) {
+            e.preventDefault();
+            e.currentTarget.classList.remove('dragover');
+            const files = Array.from(e.dataTransfer.files).filter(file => file.type.startsWith('image/'));
+            this.processFiles(files, type);
+        }
+
+        handleFileSelect(e, type) {
+            const files = Array.from(e.target.files);
+            this.processFiles(files, type);
+        }
+
+        async processFiles(files, type) {
+            const images = [];
+            
+            for (const file of files) {
+                const img = await this.loadImage(file);
+                images.push(img);
+            }
+
+            if (type === 'grid') {
+                this.gridImages = images;
+                document.getElementById('generateGrids').disabled = images.length < 4;
+                this.showStatus('gridStatus', `Loaded ${images.length} images`, 'success');
+            } else {
+                this.videoImages = images;
+                document.getElementById('generateVideo').disabled = images.length < 2;
+                this.showStatus('videoStatus', `Loaded ${images.length} images`, 'success');
+            }
+        }
+
+        loadImage(file) {
+            return new Promise((resolve) => {
+                const img = new Image();
+                img.onload = () => resolve(img);
+                img.src = URL.createObjectURL(file);
+            });
+        }
+
+        async generateGrids() {
+            const size = parseInt(document.getElementById('gridSize').value);
+            const maxCombinations = parseInt(document.getElementById('maxCombinations').value);
+            
+            this.showProgress('gridProgress', 'gridProgressFill');
+            this.showStatus('gridStatus', 'Generating grids...', 'info');
+
+            const combinations = this.generateCombinations(this.gridImages, 4);
+            const limitedCombinations = combinations.slice(0, maxCombinations);
+            
+            const container = document.getElementById('gridContainer');
+            container.innerHTML = '';
+
+            for (let i = 0; i < limitedCombinations.length; i++) {
+                const canvas = this.create2x2Grid(limitedCombinations[i], size);
+                const gridItem = document.createElement('div');
+                gridItem.className = 'grid-item';
+                
+                const downloadBtn = document.createElement('button');
+                downloadBtn.className = 'download-btn';
+                downloadBtn.textContent = '⬇';
+                downloadBtn.onclick = () => this.downloadCanvas(canvas, `grid-${i + 1}.png`);
+                
+                gridItem.appendChild(canvas);
+                gridItem.appendChild(downloadBtn);
+                container.appendChild(gridItem);
+                
+                this.updateProgress('gridProgressFill', (i + 1) / limitedCombinations.length * 100);
+                await new Promise(resolve => setTimeout(resolve, 50));
+            }
+
+            document.getElementById('gridPreview').style.display = 'block';
+            this.hideProgress('gridProgress');
+            this.showStatus('gridStatus', `Generated ${limitedCombinations.length} grids!`, 'success');
+        }
+
+        generateCombinations(array, r) {
+            const result = [];
+            const combine = (temp, start) => {
+                if (temp.length === r) {
+                    result.push([...temp]);
+                    return;
+                }
+                for (let i = start; i < array.length; i++) {
+                    temp.push(array[i]);
+                    combine(temp, i + 1);
+                    temp.pop();
+                }
+            };
+            combine([], 0);
+            return result;
+        }
+
+        create2x2Grid(images, size) {
+            const canvas = document.createElement('canvas');
+            canvas.width = size;
+            canvas.height = size;
+            canvas.className = 'grid-canvas';
+            const ctx = canvas.getContext('2d');
+
+            const cellSize = size / 2;
+            const positions = [
+                [0, 0], [cellSize, 0],
+                [0, cellSize], [cellSize, cellSize]
+            ];
+
+            images.forEach((img, i) => {
+                const [x, y] = positions[i];
+                this.drawImageFit(ctx, img, x, y, cellSize, cellSize);
+            });
+
+            return canvas;
+        }
+
+        drawImageFit(ctx, img, x, y, width, height) {
+            const scale = Math.max(width / img.width, height / img.height);
+            const scaledWidth = img.width * scale;
+            const scaledHeight = img.height * scale;
+            const offsetX = (width - scaledWidth) / 2;
+            const offsetY = (height - scaledHeight) / 2;
+            
+            ctx.drawImage(img, x + offsetX, y + offsetY, scaledWidth, scaledHeight);
+        }
+
+        async generateVideo() {
+            const frameDuration = parseInt(document.getElementById('frameDuration').value);
+            const format = document.getElementById('videoFormat').value;
+            const overlayText = document.getElementById('overlayText').value;
+
+            const [width, height] = this.getVideoDimensions(format);
+            
+            this.showProgress('videoProgress', 'videoProgressFill');
+            this.showStatus('videoStatus', 'Creating video...', 'info');
+
+            const canvas = document.getElementById('videoCanvas');
+            canvas.width = width;
+            canvas.height = height;
+            const ctx = canvas.getContext('2d');
+
+            this.videoFrames = [];
+            
+            for (let i = 0; i < this.videoImages.length; i++) {
+                ctx.clearRect(0, 0, width, height);
+                this.drawImageFit(ctx, this.videoImages[i], 0, 0, width, height);
+                
+                if (overlayText) {
+                    this.drawTextOverlay(ctx, overlayText, width, height);
+                }
+                
+                this.videoFrames.push(ctx.getImageData(0, 0, width, height));
+                this.updateProgress('videoProgressFill', (i + 1) / this.videoImages.length * 100);
+                await new Promise(resolve => setTimeout(resolve, 50));
+            }
+
+            this.playVideoPreview(canvas, frameDuration);
+            document.getElementById('videoPreview').style.display = 'block';
+            document.getElementById('downloadVideo').style.display = 'inline-block';
+            this.hideProgress('videoProgress');
+            this.showStatus('videoStatus', 'Video created! Preview playing above.', 'success');
+        }
+
+        getVideoDimensions(format) {
+            switch (format) {
+                case '9:16': return [405, 720]; // TikTok/Stories
+                case '16:9': return [720, 405]; // YouTube
+                case '1:1': return [600, 600]; // Instagram
+                default: return [405, 720];
+            }
+        }
+
+        drawTextOverlay(ctx, text, width, height) {
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
+            ctx.fillRect(0, height - 80, width, 80);
+            
+            ctx.fillStyle = 'white';
+            ctx.font = 'bold 24px Arial';
+            ctx.textAlign = 'center';
+            ctx.fillText(text, width / 2, height - 30);
+        }
+
+        playVideoPreview(canvas, frameDuration) {
+            const ctx = canvas.getContext('2d');
+            let currentFrame = 0;
+            
+            const animate = () => {
+                ctx.putImageData(this.videoFrames[currentFrame], 0, 0);
+                currentFrame = (currentFrame + 1) % this.videoFrames.length;
+                setTimeout(() => requestAnimationFrame(animate), frameDuration);
+            };
+            
+            animate();
+        }
+
+        downloadVideo() {
+            // This creates a simple animated GIF-like canvas animation
+            // For actual MP4 export, you'd need additional libraries
+            this.showStatus('videoStatus', 'Video download started (as frames). For MP4 export, additional libraries are needed.', 'info');
+            
+            // Download first frame as example
+            const canvas = document.getElementById('videoCanvas');
+            this.downloadCanvas(canvas, 'video-frame.png');
+        }
+
+        downloadCanvas(canvas, filename) {
+            const link = document.createElement('a');
+            link.download = filename;
+            link.href = canvas.toDataURL();
+            link.click();
+        }
+
+        showStatus(elementId, message, type) {
+            const status = document.getElementById(elementId);
+            status.textContent = message;
+            status.className = `status ${type}`;
+            status.style.display = 'block';
+        }
+
+        showProgress(progressId, fillId) {
+            document.getElementById(progressId).style.display = 'block';
+            document.getElementById(fillId).style.width = '0%';
+        }
+
+        updateProgress(fillId, percentage) {
+            document.getElementById(fillId).style.width = percentage + '%';
+        }
+
+        hideProgress(progressId) {
+            document.getElementById(progressId).style.display = 'none';
+        }
+    }
+
+    // Initialize the tool when page loads
+    document.addEventListener('DOMContentLoaded', () => {
+        new SlideshowVideoTool();
+    });
+</script>
+```
+
+</body>
+</html>
