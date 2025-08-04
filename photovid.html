@@ -116,6 +116,43 @@
             display: none;
         }
 
+        .media-list {
+            margin: 20px 0;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            max-height: 200px;
+            overflow-y: auto;
+            display: none;
+        }
+
+        .media-item {
+            display: flex;
+            align-items: center;
+            padding: 8px;
+            margin-bottom: 5px;
+            background: white;
+            border-radius: 5px;
+            font-size: 0.9rem;
+        }
+
+        .media-item-icon {
+            margin-right: 10px;
+        }
+
+        .media-item-name {
+            flex: 1;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .media-item-duration {
+            color: #666;
+            font-size: 0.8rem;
+            margin-left: 10px;
+        }
+
         .btn {
             background: linear-gradient(135deg, #4285f4, #34a853);
             color: white;
@@ -178,6 +215,19 @@
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 15px;
+        }
+
+        .video-clip-section {
+            background: #e8f0fe;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border: 1px solid #aecbfa;
+        }
+
+        .video-clip-section h4 {
+            margin-bottom: 10px;
+            color: #1967d2;
         }
 
         .text-overlay-section {
@@ -498,6 +548,11 @@
                     <input type="file" id="videoFileInput" class="file-input" multiple accept="image/*,video/mp4,video/webm,video/mov,video/avi">
                 </div>
 
+                <div class="media-list" id="mediaList">
+                    <h4>Loaded Media:</h4>
+                    <div id="mediaItems"></div>
+                </div>
+
                 <div class="controls">
                     <div class="control-row">
                         <div class="control-group">
@@ -513,6 +568,22 @@
                                 <option value="1:1">1:1 (Instagram)</option>
                             </select>
                         </div>
+                    </div>
+
+                    <div class="video-clip-section">
+                        <h4>Video Clip Settings</h4>
+                        <div class="control-row">
+                            <div class="control-group">
+                                <label for="videoClipLength">Clip Length (seconds):</label>
+                                <input type="number" id="videoClipLength" value="1" min="0.5" max="10" step="0.5">
+                            </div>
+                            
+                            <div class="control-group">
+                                <label for="videoClipStart">Start Time (%):</label>
+                                <input type="number" id="videoClipStart" value="0" min="0" max="90" step="10">
+                            </div>
+                        </div>
+                        <small style="color: #666;">Extract a portion of each video. Start at 0% for beginning, 50% for middle.</small>
                     </div>
 
                     <div class="control-row">
@@ -608,11 +679,11 @@
         class SlideshowVideoTool {
             constructor() {
                 this.gridImages = [];
-                this.videoMedia = []; // Changed from videoImages to handle both images and videos
+                this.videoMedia = [];
                 this.videoFrames = [];
                 this.generatedGrids = [];
                 this.videoBlob = null;
-                this.currentVideoElements = []; // Track video elements for cleanup
+                this.mediaFiles = new Map(); // Store File objects with their URLs
                 this.init();
             }
 
@@ -718,7 +789,6 @@
             handleFileSelect(e, type) {
                 const files = Array.from(e.target.files);
                 if (type === 'video') {
-                    // Filter for both images and videos
                     const validFiles = files.filter(file => 
                         file.type.startsWith('image/') || file.type.startsWith('video/')
                     );
@@ -741,21 +811,42 @@
                     document.getElementById('generateGrids').disabled = images.length < 4;
                     this.showStatus('gridStatus', `Loaded ${images.length} images`, 'success');
                 } else {
-                    // Handle mixed media for video
+                    // Clear previous media
+                    this.clearMediaURLs();
+                    
                     this.showStatus('videoStatus', 'Loading media files...', 'info');
                     const media = [];
+                    const mediaItemsContainer = document.getElementById('mediaItems');
+                    mediaItemsContainer.innerHTML = '';
+                    
                     let loadedCount = 0;
                     
                     for (const file of files) {
                         try {
+                            const url = URL.createObjectURL(file);
+                            this.mediaFiles.set(url, file);
+                            
                             if (file.type.startsWith('image/')) {
-                                const img = await this.loadImage(file);
-                                media.push({ type: 'image', element: img, duration: null, filename: file.name });
+                                const img = await this.loadImageFromURL(url);
+                                media.push({ 
+                                    type: 'image', 
+                                    element: img, 
+                                    url: url,
+                                    filename: file.name 
+                                });
+                                this.addMediaItemToList('📷', file.name, null);
                                 loadedCount++;
                                 this.showStatus('videoStatus', `Loading... ${loadedCount}/${files.length}`, 'info');
                             } else if (file.type.startsWith('video/')) {
-                                const video = await this.loadVideo(file);
-                                media.push({ type: 'video', element: video, duration: video.duration, filename: file.name });
+                                const video = await this.loadVideoFromURL(url);
+                                media.push({ 
+                                    type: 'video', 
+                                    element: video, 
+                                    url: url,
+                                    duration: video.duration, 
+                                    filename: file.name 
+                                });
+                                this.addMediaItemToList('🎥', file.name, video.duration);
                                 loadedCount++;
                                 this.showStatus('videoStatus', `Loading... ${loadedCount}/${files.length}`, 'info');
                             }
@@ -767,10 +858,39 @@
                     
                     this.videoMedia = media;
                     document.getElementById('generateVideo').disabled = media.length < 2;
+                    document.getElementById('mediaList').style.display = media.length > 0 ? 'block' : 'none';
+                    
                     const imageCount = media.filter(m => m.type === 'image').length;
                     const videoCount = media.filter(m => m.type === 'video').length;
                     this.showStatus('videoStatus', `Loaded ${imageCount} images and ${videoCount} videos`, 'success');
                 }
+            }
+
+            addMediaItemToList(icon, filename, duration) {
+                const container = document.getElementById('mediaItems');
+                const item = document.createElement('div');
+                item.className = 'media-item';
+                
+                let durationText = '';
+                if (duration) {
+                    durationText = `<span class="media-item-duration">${duration.toFixed(1)}s</span>`;
+                }
+                
+                item.innerHTML = `
+                    <span class="media-item-icon">${icon}</span>
+                    <span class="media-item-name">${filename}</span>
+                    ${durationText}
+                `;
+                
+                container.appendChild(item);
+            }
+
+            clearMediaURLs() {
+                // Revoke all previous URLs
+                for (const [url, file] of this.mediaFiles) {
+                    URL.revokeObjectURL(url);
+                }
+                this.mediaFiles.clear();
             }
 
             loadImage(file) {
@@ -781,31 +901,31 @@
                 });
             }
 
-            loadVideo(file) {
+            loadImageFromURL(url) {
+                return new Promise((resolve) => {
+                    const img = new Image();
+                    img.onload = () => resolve(img);
+                    img.src = url;
+                });
+            }
+
+            loadVideoFromURL(url) {
                 return new Promise((resolve, reject) => {
                     const video = document.createElement('video');
                     video.preload = 'metadata';
-                    video.muted = true; // Required for autoplay in some browsers
+                    video.muted = true;
                     
-                    const handleLoadedMetadata = () => {
-                        console.log(`Video loaded: ${file.name}, duration: ${video.duration}s`);
-                        this.currentVideoElements.push(video); // Track for cleanup
-                        video.removeEventListener('loadedmetadata', handleLoadedMetadata);
-                        video.removeEventListener('error', handleError);
+                    video.addEventListener('loadedmetadata', () => {
+                        console.log(`Video loaded: duration: ${video.duration}s`);
                         resolve(video);
-                    };
+                    }, { once: true });
                     
-                    const handleError = (error) => {
+                    video.addEventListener('error', (error) => {
                         console.error('Video loading error:', error);
-                        video.removeEventListener('loadedmetadata', handleLoadedMetadata);
-                        video.removeEventListener('error', handleError);
-                        reject(new Error(`Failed to load video: ${file.name}`));
-                    };
+                        reject(new Error(`Failed to load video`));
+                    }, { once: true });
                     
-                    video.addEventListener('loadedmetadata', handleLoadedMetadata);
-                    video.addEventListener('error', handleError);
-                    
-                    video.src = URL.createObjectURL(file);
+                    video.src = url;
                     video.load();
                 });
             }
@@ -1107,6 +1227,8 @@
                 const frameDuration = parseInt(document.getElementById('frameDuration').value);
                 const format = document.getElementById('videoFormat').value;
                 const quality = this.getQualityValue();
+                const clipLength = parseFloat(document.getElementById('videoClipLength').value);
+                const clipStartPercent = parseInt(document.getElementById('videoClipStart').value) / 100;
 
                 const [width, height] = this.getVideoDimensions(format);
                 
@@ -1135,12 +1257,33 @@
                     } else if (media.type === 'video') {
                         // Handle video - extract frames
                         this.showStatus('videoStatus', `Extracting frames from video ${i + 1}/${this.videoMedia.length}...`, 'info');
-                        const videoFrames = await this.extractVideoFrames(media.element, canvas, frameDuration, ctx, width, height);
-                        frameDataUrls.push(...videoFrames);
+                        try {
+                            const videoFrames = await this.extractVideoFrames(
+                                media.element, 
+                                canvas, 
+                                frameDuration, 
+                                ctx, 
+                                width, 
+                                height, 
+                                clipLength, 
+                                clipStartPercent
+                            );
+                            frameDataUrls.push(...videoFrames);
+                        } catch (error) {
+                            console.error('Error extracting frames:', error);
+                            this.showStatus('videoStatus', `Error processing video ${i + 1}: ${error.message}`, 'error');
+                            await new Promise(resolve => setTimeout(resolve, 2000));
+                        }
                     }
                     
                     totalProgress = (i + 1) / this.videoMedia.length * 50;
                     this.updateProgress('videoProgressFill', totalProgress);
+                }
+
+                if (frameDataUrls.length === 0) {
+                    this.showStatus('videoStatus', 'No frames generated. Please check your media files.', 'error');
+                    this.hideProgress('videoProgress');
+                    return;
                 }
 
                 // Create video blob
@@ -1164,12 +1307,6 @@
                 // Clear video frames
                 this.videoFrames = [];
                 
-                // Clean up video elements
-                this.currentVideoElements.forEach(video => {
-                    URL.revokeObjectURL(video.src);
-                });
-                this.currentVideoElements = [];
-                
                 // Hide previous video
                 document.getElementById('videoPreview').style.display = 'none';
                 document.getElementById('downloadVideo').style.display = 'none';
@@ -1185,12 +1322,14 @@
                 }
             }
 
-            async extractVideoFrames(videoElement, canvas, frameDuration, ctx, width, height) {
+            async extractVideoFrames(videoElement, canvas, frameDuration, ctx, width, height, clipLength, clipStartPercent) {
                 const frames = [];
                 const videoDuration = videoElement.duration;
+                const startTime = videoDuration * clipStartPercent;
+                const endTime = Math.min(startTime + clipLength, videoDuration);
                 const fps = 1000 / frameDuration;
                 const frameInterval = 1 / fps;
-                const totalFramesToExtract = Math.min(Math.floor(videoDuration * fps), 50); // Limit frames per video
+                const totalFramesToExtract = Math.floor((endTime - startTime) * fps);
                 
                 return new Promise((resolve, reject) => {
                     let currentFrame = 0;
@@ -1201,30 +1340,37 @@
                             return;
                         }
                         
-                        const currentTime = currentFrame * frameInterval;
-                        videoElement.currentTime = currentTime;
+                        const currentTime = startTime + (currentFrame * frameInterval);
                         
-                        videoElement.onseeked = () => {
-                            try {
-                                ctx.clearRect(0, 0, width, height);
-                                this.drawImageWithMode(ctx, videoElement, 0, 0, width, height, 'cover');
-                                this.addTextOverlay(ctx, 'video', width, height);
-                                frames.push(canvas.toDataURL('image/jpeg', this.getQualityValue()));
-                                
-                                currentFrame++;
-                                setTimeout(extractFrame, 10); // Small delay for stability
-                            } catch (error) {
-                                console.error('Error extracting frame:', error);
-                                reject(error);
-                            }
-                        };
-                        
-                        videoElement.onerror = (error) => {
-                            console.error('Video seek error:', error);
-                            reject(error);
-                        };
+                        // Use a timeout to ensure the video has time to seek
+                        setTimeout(() => {
+                            videoElement.currentTime = currentTime;
+                        }, 0);
                     };
                     
+                    videoElement.onseeked = () => {
+                        try {
+                            ctx.clearRect(0, 0, width, height);
+                            this.drawImageWithMode(ctx, videoElement, 0, 0, width, height, 'cover');
+                            this.addTextOverlay(ctx, 'video', width, height);
+                            frames.push(canvas.toDataURL('image/jpeg', this.getQualityValue()));
+                            
+                            currentFrame++;
+                            
+                            // Add delay between frame extractions
+                            setTimeout(extractFrame, 50);
+                        } catch (error) {
+                            console.error('Error drawing frame:', error);
+                            reject(error);
+                        }
+                    };
+                    
+                    videoElement.onerror = (error) => {
+                        console.error('Video error:', error);
+                        reject(new Error('Video playback error'));
+                    };
+                    
+                    // Start extraction
                     extractFrame();
                 });
             }
