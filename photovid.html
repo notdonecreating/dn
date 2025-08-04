@@ -1026,9 +1026,19 @@
                     await new Promise(resolve => setTimeout(resolve, 50));
                 }
 
-                // Create video blob
-                this.showStatus('videoStatus', 'Encoding video...', 'info');
-                this.videoBlob = await this.createVideoFromFrames(frameDataUrls, frameDuration, width, height);
+                // Store frame data for later use
+                this.frameDataUrls = frameDataUrls;
+                this.frameDuration = frameDuration;
+                this.videoWidth = width;
+                this.videoHeight = height;
+
+                // Create WebM video blob
+                this.showStatus('videoStatus', 'Encoding WebM video...', 'info');
+                this.videoBlob = await this.createVideoFromFrames(frameDataUrls, frameDuration, width, height, 'webm');
+                
+                // Create MP4 video blob
+                this.showStatus('videoStatus', 'Encoding MP4 video...', 'info');
+                this.videoMP4Blob = await this.createVideoFromFrames(frameDataUrls, frameDuration, width, height, 'mp4');
                 
                 // Show download buttons
                 this.playVideoPreview(canvas, frameDataUrls, frameDuration);
@@ -1036,20 +1046,56 @@
                 document.getElementById('downloadVideo').style.display = 'inline-block';
                 document.getElementById('downloadVideoMP4').style.display = 'inline-block';
                 this.hideProgress('videoProgress');
-                this.showStatus('videoStatus', 'Video created! Download as WebM or MP4.', 'success');
+                this.showStatus('videoStatus', 'Videos created! Download as WebM or MP4.', 'success');
             }
 
-            async createVideoFromFrames(frameDataUrls, frameDuration, width, height) {
-                // Create a high-quality WebM video using MediaRecorder
+            async createVideoFromFrames(frameDataUrls, frameDuration, width, height, format = 'webm') {
                 const canvas = document.createElement('canvas');
                 canvas.width = width;
                 canvas.height = height;
                 const ctx = canvas.getContext('2d');
                 
-                const stream = canvas.captureStream(Math.round(1000 / frameDuration));
+                const fps = Math.round(1000 / frameDuration);
+                const stream = canvas.captureStream(fps);
+                
+                let mimeType, videoBitsPerSecond;
+                
+                if (format === 'mp4') {
+                    // Try different MP4 mime types based on browser support
+                    const mp4Types = [
+                        'video/mp4;codecs=h264',
+                        'video/mp4;codecs=avc1',
+                        'video/mp4',
+                        'video/x-mp4'
+                    ];
+                    
+                    for (const type of mp4Types) {
+                        if (MediaRecorder.isTypeSupported(type)) {
+                            mimeType = type;
+                            break;
+                        }
+                    }
+                    
+                    // If no MP4 support, try WebM with H.264
+                    if (!mimeType && MediaRecorder.isTypeSupported('video/webm;codecs=h264')) {
+                        mimeType = 'video/webm;codecs=h264';
+                    }
+                    
+                    // Fallback to WebM VP9 if nothing else works
+                    if (!mimeType) {
+                        console.warn('MP4 encoding not supported, falling back to WebM');
+                        mimeType = 'video/webm;codecs=vp9';
+                    }
+                    
+                    videoBitsPerSecond = 10000000; // Higher bitrate for MP4
+                } else {
+                    mimeType = 'video/webm;codecs=vp9';
+                    videoBitsPerSecond = 8000000;
+                }
+                
                 const mediaRecorder = new MediaRecorder(stream, {
-                    mimeType: 'video/webm;codecs=vp9',
-                    videoBitsPerSecond: 8000000 // High bitrate for quality
+                    mimeType: mimeType,
+                    videoBitsPerSecond: videoBitsPerSecond
                 });
                 
                 const chunks = [];
@@ -1057,7 +1103,9 @@
                 
                 return new Promise((resolve) => {
                     mediaRecorder.onstop = () => {
-                        const blob = new Blob(chunks, { type: 'video/webm' });
+                        const blob = new Blob(chunks, { 
+                            type: format === 'mp4' && mimeType.includes('mp4') ? 'video/mp4' : 'video/webm' 
+                        });
                         resolve(blob);
                     };
                     
@@ -1146,19 +1194,17 @@
             }
 
             async downloadVideoMP4() {
-                if (!this.videoBlob) {
-                    this.showStatus('videoStatus', 'No video available to download', 'error');
+                if (!this.videoMP4Blob) {
+                    this.showStatus('videoStatus', 'No MP4 video available to download', 'error');
                     return;
                 }
 
-                // For now, download the WebM file with .mp4 extension
-                // Note: For true MP4 conversion, you would need a library like FFmpeg.js
                 const link = document.createElement('a');
-                link.href = URL.createObjectURL(this.videoBlob);
+                link.href = URL.createObjectURL(this.videoMP4Blob);
                 link.download = 'flash-cut-video.mp4';
                 link.click();
                 
-                this.showStatus('videoStatus', 'Video downloaded! Note: This is WebM format renamed to .mp4. For true MP4 conversion, use a video converter.', 'info');
+                this.showStatus('videoStatus', 'MP4 video downloaded!', 'success');
             }
 
             downloadCanvas(canvas, filename) {
