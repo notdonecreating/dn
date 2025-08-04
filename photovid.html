@@ -487,9 +487,9 @@
                 
                 <div class="upload-area" id="videoUploadArea">
                     <div class="upload-icon">🎥</div>
-                    <div class="upload-text">Drop images here or click to upload</div>
-                    <small>Upload images for your flash cut video</small>
-                    <input type="file" id="videoFileInput" class="file-input" multiple accept="image/*">
+                    <div class="upload-text">Drop images & videos here or click to upload</div>
+                    <small>Upload images (JPG, PNG) and videos (MP4, WebM) for your flash cut video</small>
+                    <input type="file" id="videoFileInput" class="file-input" multiple accept="image/*,video/mp4,video/webm,video/mov,video/avi">
                 </div>
 
                 <div class="controls">
@@ -505,6 +505,25 @@
                                 <option value="9:16">9:16 (TikTok/Stories)</option>
                                 <option value="16:9">16:9 (YouTube)</option>
                                 <option value="1:1">1:1 (Instagram)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="control-row">
+                        <div class="control-group">
+                            <label for="outputFormat">Output Format:</label>
+                            <select id="outputFormat">
+                                <option value="webm">WebM (smaller, web)</option>
+                                <option value="mp4">MP4 (universal)</option>
+                            </select>
+                        </div>
+                        
+                        <div class="control-group">
+                            <label for="videoQuality">Quality:</label>
+                            <select id="videoQuality">
+                                <option value="high">High (1.0)</option>
+                                <option value="medium">Medium (0.8)</option>
+                                <option value="low">Low (0.6)</option>
                             </select>
                         </div>
                     </div>
@@ -584,10 +603,11 @@
         class SlideshowVideoTool {
             constructor() {
                 this.gridImages = [];
-                this.videoImages = [];
+                this.videoMedia = []; // Changed from videoImages to handle both images and videos
                 this.videoFrames = [];
                 this.generatedGrids = [];
                 this.videoBlob = null;
+                this.currentVideoElements = []; // Track video elements for cleanup
                 this.init();
             }
 
@@ -679,7 +699,14 @@
             handleDrop(e, type) {
                 e.preventDefault();
                 e.currentTarget.classList.remove('dragover');
-                const files = Array.from(e.dataTransfer.files).filter(file => file.type.startsWith('image/'));
+                let files;
+                if (type === 'video') {
+                    files = Array.from(e.dataTransfer.files).filter(file => 
+                        file.type.startsWith('image/') || file.type.startsWith('video/')
+                    );
+                } else {
+                    files = Array.from(e.dataTransfer.files).filter(file => file.type.startsWith('image/'));
+                }
                 this.processFiles(files, type);
             }
 
@@ -689,21 +716,32 @@
             }
 
             async processFiles(files, type) {
-                const images = [];
-                
-                for (const file of files) {
-                    const img = await this.loadImage(file);
-                    images.push(img);
-                }
-
                 if (type === 'grid') {
+                    const images = [];
+                    for (const file of files) {
+                        const img = await this.loadImage(file);
+                        images.push(img);
+                    }
                     this.gridImages = images;
                     document.getElementById('generateGrids').disabled = images.length < 4;
                     this.showStatus('gridStatus', `Loaded ${images.length} images`, 'success');
                 } else {
-                    this.videoImages = images;
-                    document.getElementById('generateVideo').disabled = images.length < 2;
-                    this.showStatus('videoStatus', `Loaded ${images.length} images`, 'success');
+                    // Handle mixed media for video
+                    const media = [];
+                    for (const file of files) {
+                        if (file.type.startsWith('image/')) {
+                            const img = await this.loadImage(file);
+                            media.push({ type: 'image', element: img, duration: null });
+                        } else if (file.type.startsWith('video/')) {
+                            const video = await this.loadVideo(file);
+                            media.push({ type: 'video', element: video, duration: video.duration });
+                        }
+                    }
+                    this.videoMedia = media;
+                    document.getElementById('generateVideo').disabled = media.length < 2;
+                    const imageCount = media.filter(m => m.type === 'image').length;
+                    const videoCount = media.filter(m => m.type === 'video').length;
+                    this.showStatus('videoStatus', `Loaded ${imageCount} images and ${videoCount} videos`, 'success');
                 }
             }
 
@@ -712,6 +750,19 @@
                     const img = new Image();
                     img.onload = () => resolve(img);
                     img.src = URL.createObjectURL(file);
+                });
+            }
+
+            loadVideo(file) {
+                return new Promise((resolve, reject) => {
+                    const video = document.createElement('video');
+                    video.onloadedmetadata = () => {
+                        this.currentVideoElements.push(video); // Track for cleanup
+                        resolve(video);
+                    };
+                    video.onerror = reject;
+                    video.src = URL.createObjectURL(file);
+                    video.load();
                 });
             }
 
@@ -1028,8 +1079,13 @@
             }
 
             async generateVideo() {
+                // Clear previous video data
+                this.clearPreviousVideo();
+                
                 const frameDuration = parseInt(document.getElementById('frameDuration').value);
                 const format = document.getElementById('videoFormat').value;
+                const outputFormat = document.getElementById('outputFormat').value;
+                const quality = this.getQualityValue();
 
                 const [width, height] = this.getVideoDimensions(format);
                 
@@ -1043,39 +1099,144 @@
 
                 // Create frames data for video
                 const frameDataUrls = [];
+                let totalProgress = 0;
                 
-                for (let i = 0; i < this.videoImages.length; i++) {
-                    ctx.clearRect(0, 0, width, height);
-                    this.drawImageWithMode(ctx, this.videoImages[i], 0, 0, width, height, 'cover');
-                    this.addTextOverlay(ctx, 'video', width, height);
+                for (let i = 0; i < this.videoMedia.length; i++) {
+                    const media = this.videoMedia[i];
                     
-                    frameDataUrls.push(canvas.toDataURL('image/jpeg', 0.8));
+                    if (media.type === 'image') {
+                        // Handle image
+                        ctx.clearRect(0, 0, width, height);
+                        this.drawImageWithMode(ctx, media.element, 0, 0, width, height, 'cover');
+                        this.addTextOverlay(ctx, 'video', width, height);
+                        frameDataUrls.push(canvas.toDataURL('image/jpeg', quality));
+                    } else if (media.type === 'video') {
+                        // Handle video - extract frames
+                        const videoFrames = await this.extractVideoFrames(media.element, canvas, frameDuration);
+                        frameDataUrls.push(...videoFrames);
+                    }
                     
-                    this.updateProgress('videoProgressFill', (i + 1) / this.videoImages.length * 50);
-                    await new Promise(resolve => setTimeout(resolve, 50));
+                    totalProgress = (i + 1) / this.videoMedia.length * 50;
+                    this.updateProgress('videoProgressFill', totalProgress);
+                    await new Promise(resolve => setTimeout(resolve, 100));
                 }
 
                 // Create video blob
                 this.showStatus('videoStatus', 'Encoding video...', 'info');
-                this.videoBlob = await this.createVideoFromFrames(frameDataUrls, frameDuration, width, height);
+                this.videoBlob = await this.createVideoFromFrames(frameDataUrls, frameDuration, width, height, outputFormat);
                 
                 this.playVideoPreview(canvas, frameDataUrls, frameDuration);
                 document.getElementById('videoPreview').style.display = 'block';
                 document.getElementById('downloadVideo').style.display = 'inline-block';
                 this.hideProgress('videoProgress');
-                this.showStatus('videoStatus', 'Video created! Click Download MP4 to save.', 'success');
+                this.showStatus('videoStatus', `${outputFormat.toUpperCase()} video created! Click Download to save.`, 'success');
             }
 
-            async createVideoFromFrames(frameDataUrls, frameDuration, width, height) {
-                // Create a simple WebM video using MediaRecorder
+            clearPreviousVideo() {
+                // Clear previous video blob
+                if (this.videoBlob) {
+                    URL.revokeObjectURL(this.videoBlob);
+                    this.videoBlob = null;
+                }
+                
+                // Clear video frames
+                this.videoFrames = [];
+                
+                // Clean up video elements
+                this.currentVideoElements.forEach(video => {
+                    URL.revokeObjectURL(video.src);
+                });
+                this.currentVideoElements = [];
+                
+                // Hide previous video
+                document.getElementById('videoPreview').style.display = 'none';
+                document.getElementById('downloadVideo').style.display = 'none';
+            }
+
+            getQualityValue() {
+                const quality = document.getElementById('videoQuality').value;
+                switch (quality) {
+                    case 'high': return 1.0;
+                    case 'medium': return 0.8;
+                    case 'low': return 0.6;
+                    default: return 0.8;
+                }
+            }
+
+            async extractVideoFrames(videoElement, canvas, frameDuration) {
+                const ctx = canvas.getContext('2d');
+                const frames = [];
+                const videoDuration = videoElement.duration;
+                const fps = 1000 / frameDuration;
+                const frameInterval = 1 / fps;
+                
+                return new Promise((resolve) => {
+                    let currentTime = 0;
+                    
+                    const extractFrame = () => {
+                        if (currentTime >= videoDuration) {
+                            resolve(frames);
+                            return;
+                        }
+                        
+                        videoElement.currentTime = currentTime;
+                        videoElement.onseeked = () => {
+                            ctx.clearRect(0, 0, canvas.width, canvas.height);
+                            this.drawImageWithMode(ctx, videoElement, 0, 0, canvas.width, canvas.height, 'cover');
+                            this.addTextOverlay(ctx, 'video', canvas.width, canvas.height);
+                            frames.push(canvas.toDataURL('image/jpeg', this.getQualityValue()));
+                            
+                            currentTime += frameInterval;
+                            setTimeout(extractFrame, 50);
+                        };
+                    };
+                    
+                    extractFrame();
+                });
+            }
+
+            async createVideoFromFrames(frameDataUrls, frameDuration, width, height, outputFormat) {
+                // Create video using MediaRecorder
                 const canvas = document.createElement('canvas');
                 canvas.width = width;
                 canvas.height = height;
                 const ctx = canvas.getContext('2d');
                 
-                const stream = canvas.captureStream(Math.round(1000 / frameDuration));
+                const fps = Math.round(1000 / frameDuration);
+                const stream = canvas.captureStream(fps);
+                
+                // Set up MediaRecorder with appropriate codec based on output format
+                let mimeType;
+                let fileExtension;
+                
+                if (outputFormat === 'mp4') {
+                    // Try different MP4 codecs in order of preference
+                    if (MediaRecorder.isTypeSupported('video/mp4;codecs=h264')) {
+                        mimeType = 'video/mp4;codecs=h264';
+                    } else if (MediaRecorder.isTypeSupported('video/mp4')) {
+                        mimeType = 'video/mp4';
+                    } else {
+                        // Fallback to WebM if MP4 not supported
+                        mimeType = 'video/webm;codecs=vp9,opus';
+                        outputFormat = 'webm';
+                        this.showStatus('videoStatus', 'MP4 not supported, using WebM instead...', 'info');
+                    }
+                    fileExtension = outputFormat === 'mp4' ? 'mp4' : 'webm';
+                } else {
+                    // WebM format
+                    if (MediaRecorder.isTypeSupported('video/webm;codecs=vp9,opus')) {
+                        mimeType = 'video/webm;codecs=vp9,opus';
+                    } else if (MediaRecorder.isTypeSupported('video/webm;codecs=vp8,opus')) {
+                        mimeType = 'video/webm;codecs=vp8,opus';
+                    } else {
+                        mimeType = 'video/webm';
+                    }
+                    fileExtension = 'webm';
+                }
+                
                 const mediaRecorder = new MediaRecorder(stream, {
-                    mimeType: 'video/webm;codecs=vp8'
+                    mimeType: mimeType,
+                    videoBitsPerFrame: width * height * 4 // High quality
                 });
                 
                 const chunks = [];
@@ -1083,13 +1244,17 @@
                 
                 return new Promise((resolve) => {
                     mediaRecorder.onstop = () => {
-                        const blob = new Blob(chunks, { type: 'video/webm' });
+                        const blob = new Blob(chunks, { type: mimeType });
+                        // Store the file extension for download
+                        blob.fileExtension = fileExtension;
                         resolve(blob);
                     };
                     
                     mediaRecorder.start();
                     
                     let frameIndex = 0;
+                    const quality = this.getQualityValue();
+                    
                     const drawFrame = () => {
                         if (frameIndex < frameDataUrls.length) {
                             const img = new Image();
@@ -1097,16 +1262,43 @@
                                 ctx.clearRect(0, 0, width, height);
                                 ctx.drawImage(img, 0, 0);
                                 frameIndex++;
+                                
+                                // Update progress
+                                this.updateProgress('videoProgressFill', 50 + (frameIndex / frameDataUrls.length * 50));
+                                
                                 setTimeout(drawFrame, frameDuration);
                             };
                             img.src = frameDataUrls[frameIndex];
                         } else {
-                            // Loop once more for better video
+                            // Loop the video a few times for better encoding
                             frameIndex = 0;
-                            setTimeout(() => {
-                                mediaRecorder.stop();
-                            }, frameDuration * frameDataUrls.length);
-                            drawFrame();
+                            let loops = 0;
+                            const maxLoops = 2;
+                            
+                            const finalLoop = () => {
+                                if (loops < maxLoops && frameIndex < frameDataUrls.length) {
+                                    const img = new Image();
+                                    img.onload = () => {
+                                        ctx.clearRect(0, 0, width, height);
+                                        ctx.drawImage(img, 0, 0);
+                                        frameIndex++;
+                                        
+                                        if (frameIndex >= frameDataUrls.length) {
+                                            frameIndex = 0;
+                                            loops++;
+                                        }
+                                        
+                                        setTimeout(finalLoop, frameDuration);
+                                    };
+                                    img.src = frameDataUrls[frameIndex];
+                                } else {
+                                    setTimeout(() => {
+                                        mediaRecorder.stop();
+                                    }, frameDuration);
+                                }
+                            };
+                            
+                            finalLoop();
                         }
                     };
                     
@@ -1151,10 +1343,14 @@
 
                 const link = document.createElement('a');
                 link.href = URL.createObjectURL(this.videoBlob);
-                link.download = 'flash-cut-video.webm';
+                
+                // Use the correct file extension based on what was actually created
+                const extension = this.videoBlob.fileExtension || 'webm';
+                link.download = `flash-cut-video.${extension}`;
+                
                 link.click();
                 
-                this.showStatus('videoStatus', 'Video downloaded!', 'success');
+                this.showStatus('videoStatus', `${extension.toUpperCase()} video downloaded!`, 'success');
             }
 
             downloadCanvas(canvas, filename) {
