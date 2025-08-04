@@ -563,8 +563,10 @@
                     </div>
                     
                     <button class="btn" id="generateVideo" disabled>Create Video</button>
-                    <button class="btn secondary" id="downloadVideo" style="display: none;">Download WebM</button>
-                    <button class="btn secondary" id="downloadVideoMP4" style="display: none;">Download MP4</button>
+                    <div style="margin-top: 10px;">
+                        <button class="btn secondary" id="downloadVideo" style="display: none;">Download WebM</button>
+                        <button class="btn secondary" id="downloadVideoMP4" style="display: none;">Download MP4</button>
+                    </div>
                 </div>
 
                 <div id="videoStatus" class="status" style="display: none;"></div>
@@ -1191,6 +1193,11 @@
             }
 
             playVideoPreview(canvas, frameDataUrls, frameDuration) {
+                // Stop any existing animation
+                if (this.videoAnimationId) {
+                    cancelAnimationFrame(this.videoAnimationId);
+                }
+                
                 const ctx = canvas.getContext('2d');
                 let currentFrame = 0;
                 
@@ -1204,7 +1211,10 @@
                         img.src = frameDataUrls[currentFrame];
                         currentFrame = (currentFrame + 1) % frameDataUrls.length;
                     }
-                    setTimeout(() => requestAnimationFrame(animate), frameDuration);
+                    
+                    setTimeout(() => {
+                        this.videoAnimationId = requestAnimationFrame(animate);
+                    }, frameDuration);
                 };
                 
                 animate();
