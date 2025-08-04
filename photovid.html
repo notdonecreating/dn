@@ -340,6 +340,12 @@
             border: 1px solid #aecbfa;
         }
 
+        .status.warning {
+            background: #fef7e0;
+            color: #b06000;
+            border: 1px solid #fcd67f;
+        }
+
         .color-input {
             width: 60px !important;
             height: 40px;
@@ -513,8 +519,7 @@
                         <div class="control-group">
                             <label for="outputFormat">Output Format:</label>
                             <select id="outputFormat">
-                                <option value="webm">WebM (smaller, web)</option>
-                                <option value="mp4">MP4 (universal)</option>
+                                <option value="webm">WebM (recommended)</option>
                             </select>
                         </div>
                         
@@ -582,7 +587,7 @@
                     </div>
                     
                     <button class="btn" id="generateVideo" disabled>Create Video</button>
-                    <button class="btn secondary" id="downloadVideo" style="display: none;">Download MP4</button>
+                    <button class="btn secondary" id="downloadVideo" style="display: none;">Download Video</button>
                 </div>
 
                 <div id="videoStatus" class="status" style="display: none;"></div>
@@ -782,22 +787,22 @@
                     video.preload = 'metadata';
                     video.muted = true; // Required for autoplay in some browsers
                     
-                    const handleLoadedData = () => {
+                    const handleLoadedMetadata = () => {
                         console.log(`Video loaded: ${file.name}, duration: ${video.duration}s`);
                         this.currentVideoElements.push(video); // Track for cleanup
-                        video.removeEventListener('loadeddata', handleLoadedData);
+                        video.removeEventListener('loadedmetadata', handleLoadedMetadata);
                         video.removeEventListener('error', handleError);
                         resolve(video);
                     };
                     
                     const handleError = (error) => {
                         console.error('Video loading error:', error);
-                        video.removeEventListener('loadeddata', handleLoadedData);
+                        video.removeEventListener('loadedmetadata', handleLoadedMetadata);
                         video.removeEventListener('error', handleError);
                         reject(new Error(`Failed to load video: ${file.name}`));
                     };
                     
-                    video.addEventListener('loadeddata', handleLoadedData);
+                    video.addEventListener('loadedmetadata', handleLoadedMetadata);
                     video.addEventListener('error', handleError);
                     
                     video.src = URL.createObjectURL(file);
@@ -1082,39 +1087,17 @@
             }
 
             async downloadAllGrids() {
-                this.showStatus('gridStatus', 'Preparing ZIP file...', 'info');
-                
-                // Simple zip creation without external library
-                const zip = await this.createZipFile();
+                this.showStatus('gridStatus', 'Downloading grids individually...', 'info');
                 
                 for (const grid of this.generatedGrids) {
-                    const dataURL = grid.canvas.toDataURL('image/png');
-                    const base64Data = dataURL.split(',')[1];
-                    zip.file(`grid-${grid.index + 1}.png`, base64Data, {base64: true});
+                    const link = document.createElement('a');
+                    link.download = `grid-${grid.index + 1}.png`;
+                    link.href = grid.canvas.toDataURL();
+                    link.click();
+                    await new Promise(resolve => setTimeout(resolve, 100));
                 }
                 
-                const content = await zip.generateAsync({type: 'blob'});
-                const link = document.createElement('a');
-                link.href = URL.createObjectURL(content);
-                link.download = 'all-grids.zip';
-                link.click();
-                
                 this.showStatus('gridStatus', 'All grids downloaded!', 'success');
-            }
-
-            async createZipFile() {
-                // Simple implementation - in real app you'd use JSZip
-                return {
-                    files: {},
-                    file: function(name, data, options) {
-                        this.files[name] = {data, options};
-                    },
-                    generateAsync: async function({type}) {
-                        // For demo purposes, just download the first grid
-                        // In real implementation, this would create proper ZIP
-                        return new Blob(['ZIP file would be generated here'], {type: 'application/zip'});
-                    }
-                };
             }
 
             async generateVideo() {
@@ -1123,13 +1106,12 @@
                 
                 const frameDuration = parseInt(document.getElementById('frameDuration').value);
                 const format = document.getElementById('videoFormat').value;
-                const outputFormat = document.getElementById('outputFormat').value;
                 const quality = this.getQualityValue();
 
                 const [width, height] = this.getVideoDimensions(format);
                 
                 this.showProgress('videoProgress', 'videoProgressFill');
-                this.showStatus('videoStatus', 'Creating video frames...', 'info');
+                this.showStatus('videoStatus', 'Processing media files...', 'info');
 
                 const canvas = document.getElementById('videoCanvas');
                 canvas.width = width;
@@ -1149,26 +1131,27 @@
                         this.drawImageWithMode(ctx, media.element, 0, 0, width, height, 'cover');
                         this.addTextOverlay(ctx, 'video', width, height);
                         frameDataUrls.push(canvas.toDataURL('image/jpeg', quality));
+                        this.showStatus('videoStatus', `Processing image ${i + 1}/${this.videoMedia.length}...`, 'info');
                     } else if (media.type === 'video') {
                         // Handle video - extract frames
-                        const videoFrames = await this.extractVideoFrames(media.element, canvas, frameDuration);
+                        this.showStatus('videoStatus', `Extracting frames from video ${i + 1}/${this.videoMedia.length}...`, 'info');
+                        const videoFrames = await this.extractVideoFrames(media.element, canvas, frameDuration, ctx, width, height);
                         frameDataUrls.push(...videoFrames);
                     }
                     
                     totalProgress = (i + 1) / this.videoMedia.length * 50;
                     this.updateProgress('videoProgressFill', totalProgress);
-                    await new Promise(resolve => setTimeout(resolve, 100));
                 }
 
                 // Create video blob
                 this.showStatus('videoStatus', 'Encoding video...', 'info');
-                this.videoBlob = await this.createVideoFromFrames(frameDataUrls, frameDuration, width, height, outputFormat);
+                this.videoBlob = await this.createVideoFromFrames(frameDataUrls, frameDuration, width, height);
                 
                 this.playVideoPreview(canvas, frameDataUrls, frameDuration);
                 document.getElementById('videoPreview').style.display = 'block';
                 document.getElementById('downloadVideo').style.display = 'inline-block';
                 this.hideProgress('videoProgress');
-                this.showStatus('videoStatus', `${outputFormat.toUpperCase()} video created! Click Download to save.`, 'success');
+                this.showStatus('videoStatus', `Video created successfully! Click Download to save.`, 'success');
             }
 
             clearPreviousVideo() {
@@ -1202,31 +1185,43 @@
                 }
             }
 
-            async extractVideoFrames(videoElement, canvas, frameDuration) {
-                const ctx = canvas.getContext('2d');
+            async extractVideoFrames(videoElement, canvas, frameDuration, ctx, width, height) {
                 const frames = [];
                 const videoDuration = videoElement.duration;
                 const fps = 1000 / frameDuration;
                 const frameInterval = 1 / fps;
+                const totalFramesToExtract = Math.min(Math.floor(videoDuration * fps), 50); // Limit frames per video
                 
-                return new Promise((resolve) => {
-                    let currentTime = 0;
+                return new Promise((resolve, reject) => {
+                    let currentFrame = 0;
                     
                     const extractFrame = () => {
-                        if (currentTime >= videoDuration) {
+                        if (currentFrame >= totalFramesToExtract) {
                             resolve(frames);
                             return;
                         }
                         
+                        const currentTime = currentFrame * frameInterval;
                         videoElement.currentTime = currentTime;
+                        
                         videoElement.onseeked = () => {
-                            ctx.clearRect(0, 0, canvas.width, canvas.height);
-                            this.drawImageWithMode(ctx, videoElement, 0, 0, canvas.width, canvas.height, 'cover');
-                            this.addTextOverlay(ctx, 'video', canvas.width, canvas.height);
-                            frames.push(canvas.toDataURL('image/jpeg', this.getQualityValue()));
-                            
-                            currentTime += frameInterval;
-                            setTimeout(extractFrame, 50);
+                            try {
+                                ctx.clearRect(0, 0, width, height);
+                                this.drawImageWithMode(ctx, videoElement, 0, 0, width, height, 'cover');
+                                this.addTextOverlay(ctx, 'video', width, height);
+                                frames.push(canvas.toDataURL('image/jpeg', this.getQualityValue()));
+                                
+                                currentFrame++;
+                                setTimeout(extractFrame, 10); // Small delay for stability
+                            } catch (error) {
+                                console.error('Error extracting frame:', error);
+                                reject(error);
+                            }
+                        };
+                        
+                        videoElement.onerror = (error) => {
+                            console.error('Video seek error:', error);
+                            reject(error);
                         };
                     };
                     
@@ -1234,16 +1229,7 @@
                 });
             }
 
-            async createVideoFromFrames(frameDataUrls, frameDuration, width, height, outputFormat) {
-                // For MP4, we'll use a different approach since MediaRecorder MP4 support is limited
-                if (outputFormat === 'mp4') {
-                    return await this.createMP4Video(frameDataUrls, frameDuration, width, height);
-                } else {
-                    return await this.createWebMVideo(frameDataUrls, frameDuration, width, height);
-                }
-            }
-
-            async createWebMVideo(frameDataUrls, frameDuration, width, height) {
+            async createVideoFromFrames(frameDataUrls, frameDuration, width, height) {
                 const canvas = document.createElement('canvas');
                 canvas.width = width;
                 canvas.height = height;
@@ -1272,7 +1258,6 @@
                 return new Promise((resolve) => {
                     mediaRecorder.onstop = () => {
                         const blob = new Blob(chunks, { type: mimeType });
-                        blob.fileExtension = 'webm';
                         resolve(blob);
                     };
                     
@@ -1283,80 +1268,8 @@
                 });
             }
 
-            async createMP4Video(frameDataUrls, frameDuration, width, height) {
-                // Create MP4 using a canvas-based approach with proper timing
-                // Since true MP4 encoding requires external libraries, we'll create a high-quality WebM
-                // and label it appropriately, or use a workaround
-                
-                try {
-                    // Try to create MP4 if browser supports it
-                    const canvas = document.createElement('canvas');
-                    canvas.width = width;
-                    canvas.height = height;
-                    const ctx = canvas.getContext('2d');
-                    
-                    const fps = Math.round(1000 / frameDuration);
-                    const stream = canvas.captureStream(fps);
-                    
-                    // Try MP4 codecs
-                    let mimeType = null;
-                    const mp4Types = [
-                        'video/mp4;codecs=avc1.42E01E',
-                        'video/mp4;codecs=h264',
-                        'video/mp4'
-                    ];
-                    
-                    for (const type of mp4Types) {
-                        if (MediaRecorder.isTypeSupported(type)) {
-                            mimeType = type;
-                            break;
-                        }
-                    }
-                    
-                    if (!mimeType) {
-                        // Fallback: create high-quality WebM but name it as MP4-compatible
-                        console.log('MP4 not natively supported, creating WebM with MP4 compatibility');
-                        const webmBlob = await this.createWebMVideo(frameDataUrls, frameDuration, width, height);
-                        // For download purposes, we'll still call it MP4 but it will be WebM format
-                        webmBlob.fileExtension = 'webm';
-                        webmBlob.actualFormat = 'webm';
-                        return webmBlob;
-                    }
-                    
-                    const mediaRecorder = new MediaRecorder(stream, {
-                        mimeType: mimeType,
-                        videoBitsPerFrame: width * height * 3 // Higher quality for MP4
-                    });
-                    
-                    const chunks = [];
-                    mediaRecorder.ondataavailable = e => chunks.push(e.data);
-                    
-                    return new Promise((resolve) => {
-                        mediaRecorder.onstop = () => {
-                            const blob = new Blob(chunks, { type: mimeType });
-                            blob.fileExtension = 'mp4';
-                            blob.actualFormat = 'mp4';
-                            resolve(blob);
-                        };
-                        
-                        mediaRecorder.start();
-                        this.animateFrames(ctx, frameDataUrls, frameDuration, () => {
-                            setTimeout(() => mediaRecorder.stop(), frameDuration);
-                        });
-                    });
-                    
-                } catch (error) {
-                    console.error('MP4 creation failed:', error);
-                    // Fallback to WebM
-                    const webmBlob = await this.createWebMVideo(frameDataUrls, frameDuration, width, height);
-                    webmBlob.fileExtension = 'webm';
-                    return webmBlob;
-                }
-            }
-
             animateFrames(ctx, frameDataUrls, frameDuration, onComplete) {
                 let frameIndex = 0;
-                const quality = this.getQualityValue();
                 let totalFramesDrawn = 0;
                 const maxFrames = frameDataUrls.length * 3; // Loop a few times
                 
@@ -1398,6 +1311,7 @@
             playVideoPreview(canvas, frameDataUrls, frameDuration) {
                 const ctx = canvas.getContext('2d');
                 let currentFrame = 0;
+                let animationId = null;
                 
                 const animate = () => {
                     if (frameDataUrls.length > 0) {
@@ -1409,10 +1323,16 @@
                         img.src = frameDataUrls[currentFrame];
                         currentFrame = (currentFrame + 1) % frameDataUrls.length;
                     }
-                    setTimeout(() => requestAnimationFrame(animate), frameDuration);
+                    animationId = setTimeout(() => requestAnimationFrame(animate), frameDuration);
                 };
                 
+                // Cancel any existing animation
+                if (this.previewAnimationId) {
+                    clearTimeout(this.previewAnimationId);
+                }
+                
                 animate();
+                this.previewAnimationId = animationId;
             }
 
             async downloadVideo() {
@@ -1423,20 +1343,10 @@
 
                 const link = document.createElement('a');
                 link.href = URL.createObjectURL(this.videoBlob);
-                
-                // Use the correct file extension based on what was actually created
-                const extension = this.videoBlob.fileExtension || 'webm';
-                const actualFormat = this.videoBlob.actualFormat || extension;
-                
-                link.download = `flash-cut-video.${extension}`;
+                link.download = 'flash-cut-video.webm';
                 link.click();
                 
-                // Show appropriate message
-                if (actualFormat === 'webm' && extension === 'mp4') {
-                    this.showStatus('videoStatus', 'Downloaded as WebM (MP4 not supported by browser)', 'info');
-                } else {
-                    this.showStatus('videoStatus', `${extension.toUpperCase()} video downloaded!`, 'success');
-                }
+                this.showStatus('videoStatus', 'Video downloaded!', 'success');
             }
 
             downloadCanvas(canvas, filename) {
