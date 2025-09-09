@@ -1,0 +1,1573 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vibe Module Tutorial Extensions</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            background: #f0f8ff;
+            color: #3c3c3c;
+            line-height: 1.4;
+        }
+
+        .phone-container {
+            max-width: 390px;
+            margin: 20px auto;
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+        }
+
+        .screen {
+            min-height: 600px;
+            padding: 20px;
+            display: none;
+        }
+
+        .screen.active {
+            display: block;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .back-btn {
+            background: none;
+            border: none;
+            font-size: 24px;
+            color: #777;
+            cursor: pointer;
+        }
+
+        .lesson-title {
+            font-size: 18px;
+            font-weight: 900;
+            color: #3c3c3c;
+        }
+
+        .progress-bar {
+            height: 8px;
+            background: #e5e5e5;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 32px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: #87ceeb;
+            transition: width 0.3s ease;
+        }
+
+        .main-content {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .statement-bubble {
+            background: #fafafa;
+            border: 3px solid #e5e5e5;
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 24px;
+            font-size: 16px;
+            font-weight: 700;
+        }
+
+        .goal-text {
+            font-size: 14px;
+            font-weight: 700;
+            color: #777;
+            margin-bottom: 24px;
+        }
+
+        /* Audio Player */
+        .audio-player {
+            background: #f0f8ff;
+            border: 3px solid #87ceeb;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .play-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #87ceeb;
+            border: none;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .audio-info {
+            flex: 1;
+            text-align: left;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .waveform {
+            height: 20px;
+            background: linear-gradient(90deg, #87ceeb 0%, #87ceeb 40%, #e5e5e5 40%, #e5e5e5 100%);
+            border-radius: 10px;
+            margin-top: 4px;
+        }
+
+        /* Response Type Buttons */
+        .response-type-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .response-type-btn {
+            background: white;
+            border: 3px solid #e5e5e5;
+            border-radius: 12px;
+            padding: 16px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.2s ease;
+        }
+
+        .response-type-btn:hover {
+            border-color: #87ceeb;
+            background: #f0f8ff;
+        }
+
+        .response-type-btn.selected {
+            background: #87ceeb;
+            border-color: #6bb6db;
+            color: white;
+        }
+
+        .response-type-btn.correct {
+            background: #7BB57B;
+            border-color: #7BB57B;
+            color: white;
+            animation: correctPulse 0.5s ease;
+        }
+
+        .response-type-btn.incorrect {
+            background: #E06B6B;
+            border-color: #E06B6B;
+            color: white;
+        }
+
+        /* Mindset Cards */
+        .mindset-comparison {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+
+        .mindset-card {
+            flex: 1;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .mindset-card.healthy {
+            background: #f0fff0;
+            border: 2px solid #7BB57B;
+            color: #2d5a2d;
+        }
+
+        .mindset-card.unhealthy {
+            background: #fff5f5;
+            border: 2px solid #E06B6B;
+            color: #5a2d2d;
+        }
+
+        .mindset-card.selected.healthy {
+            background: #7BB57B;
+            color: white;
+        }
+
+        .mindset-card.selected.unhealthy {
+            background: #E06B6B;
+            color: white;
+        }
+
+        /* Value Detection */
+        .value-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            justify-content: center;
+            margin: 24px 0;
+        }
+
+        .value-chip {
+            background: white;
+            border: 2px solid #e5e5e5;
+            border-radius: 20px;
+            padding: 8px 16px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .value-chip:hover {
+            border-color: #87ceeb;
+            background: #f0f8ff;
+        }
+
+        .value-chip.selected {
+            background: #87ceeb;
+            border-color: #6bb6db;
+            color: white;
+        }
+
+        .value-chip.correct {
+            background: #7BB57B;
+            border-color: #7BB57B;
+            color: white;
+            animation: correctPulse 0.5s ease;
+        }
+
+        @keyframes correctPulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        /* Step Builder */
+        .step-builder {
+            background: #fafafa;
+            border: 2px solid #e5e5e5;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 20px;
+        }
+
+        .step {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 8px 0;
+            border-bottom: 1px solid #e5e5e5;
+        }
+
+        .step:last-child {
+            border-bottom: none;
+        }
+
+        .step-number {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: #87ceeb;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 900;
+        }
+
+        .step-content {
+            flex: 1;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .step-button {
+            background: #87ceeb;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 4px 8px;
+            font-size: 10px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        /* Text Input */
+        .text-input {
+            width: 100%;
+            padding: 12px;
+            border: 3px solid #e5e5e5;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            transition: border-color 0.2s ease;
+        }
+
+        .text-input:focus {
+            outline: none;
+            border-color: #87ceeb;
+        }
+
+        /* Conversation History */
+        .conversation-history {
+            background: #fafafa;
+            border: 2px solid #e5e5e5;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .history-item {
+            padding: 8px;
+            margin-bottom: 8px;
+            background: white;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .history-item:hover {
+            background: #f0f8ff;
+            border: 1px solid #87ceeb;
+        }
+
+        .history-item.selected {
+            background: #87ceeb;
+            color: white;
+        }
+
+        /* Connection Meter */
+        .connection-meter {
+            background: #fafafa;
+            border: 2px solid #e5e5e5;
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 16px;
+        }
+
+        .meter-label {
+            font-size: 10px;
+            font-weight: 900;
+            text-transform: uppercase;
+            color: #777;
+            margin-bottom: 4px;
+        }
+
+        .meter-bar-container {
+            display: flex;
+            gap: 2px;
+            height: 8px;
+        }
+
+        .meter-segment {
+            flex: 1;
+            border-radius: 2px;
+            background: #e5e5e5;
+            transition: background 0.3s ease;
+        }
+
+        .meter-segment.active {
+            background: #87ceeb;
+        }
+
+        /* Bridge Builder */
+        .bridge-builder {
+            margin: 20px 0;
+        }
+
+        .viewpoint-columns {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+
+        .viewpoint {
+            flex: 1;
+            background: #fafafa;
+            border: 2px solid #e5e5e5;
+            border-radius: 8px;
+            padding: 12px;
+        }
+
+        .viewpoint-title {
+            font-size: 12px;
+            font-weight: 900;
+            margin-bottom: 8px;
+            text-align: center;
+        }
+
+        .draggable-element {
+            background: #87ceeb;
+            color: white;
+            padding: 6px;
+            margin: 4px 0;
+            border-radius: 4px;
+            font-size: 10px;
+            font-weight: 700;
+            cursor: move;
+            user-select: none;
+        }
+
+        .bridge-area {
+            background: #f0f8ff;
+            border: 3px dashed #87ceeb;
+            border-radius: 8px;
+            min-height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 700;
+            color: #87ceeb;
+            margin-bottom: 16px;
+        }
+
+        .bridge-area.drag-over {
+            background: #e0f0ff;
+            border-color: #6bb6db;
+        }
+
+        /* Support Type Selector */
+        .support-scenario {
+            background: #fff5f5;
+            border: 2px solid #E06B6B;
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 16px;
+            font-size: 12px;
+            font-weight: 700;
+            text-align: left;
+        }
+
+        .support-options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .support-option {
+            background: white;
+            border: 2px solid #e5e5e5;
+            border-radius: 8px;
+            padding: 12px;
+            text-align: center;
+            font-size: 11px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .support-option:hover {
+            border-color: #87ceeb;
+            background: #f0f8ff;
+        }
+
+        .support-option.selected {
+            background: #87ceeb;
+            border-color: #6bb6db;
+            color: white;
+        }
+
+        /* Enhancement Fields */
+        .enhancement-fields {
+            margin-bottom: 20px;
+        }
+
+        .enhancement-field {
+            margin-bottom: 12px;
+        }
+
+        .field-label {
+            font-size: 10px;
+            font-weight: 900;
+            text-transform: uppercase;
+            color: #777;
+            margin-bottom: 4px;
+            text-align: left;
+        }
+
+        .field-input {
+            width: 100%;
+            padding: 8px;
+            border: 2px solid #e5e5e5;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .field-input:focus {
+            outline: none;
+            border-color: #87ceeb;
+        }
+
+        /* Before/After Comparison */
+        .comparison {
+            display: flex;
+            gap: 8px;
+            margin: 16px 0;
+        }
+
+        .comparison-item {
+            flex: 1;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .comparison-item.before {
+            background: #fff5f5;
+            border: 2px solid #E06B6B;
+            color: #5a2d2d;
+        }
+
+        .comparison-item.after {
+            background: #f0fff0;
+            border: 2px solid #7BB57B;
+            color: #2d5a2d;
+        }
+
+        /* Buttons */
+        .primary-button {
+            background: #87ceeb;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            padding: 16px 24px;
+            font-size: 16px;
+            font-weight: 900;
+            cursor: pointer;
+            width: 100%;
+            box-shadow: 0 2px 4px rgba(107, 182, 219, 0.3);
+            transition: all 0.2s ease;
+        }
+
+        .primary-button:hover {
+            background: #6bb6db;
+            transform: translateY(-1px);
+        }
+
+        .secondary-button {
+            background: white;
+            color: #87ceeb;
+            border: 2px solid #87ceeb;
+            border-radius: 8px;
+            padding: 8px 16px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            margin: 4px;
+            transition: all 0.2s ease;
+        }
+
+        .secondary-button:hover {
+            background: #f0f8ff;
+        }
+
+        .feedback-box {
+            background: #7BB57B;
+            color: white;
+            border-radius: 8px;
+            padding: 12px;
+            margin: 16px 0;
+            font-size: 12px;
+            font-weight: 700;
+            display: none;
+        }
+
+        .feedback-box.show {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Navigation */
+        .nav-buttons {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 6px;
+            z-index: 100;
+            flex-wrap: wrap;
+            justify-content: center;
+            max-width: 350px;
+        }
+
+        .nav-btn {
+            padding: 6px 12px;
+            background: #87ceeb;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 10px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+
+        .nav-btn.active {
+            background: #6bb6db;
+        }
+
+        .nav-btn:hover {
+            background: #5aa5c8;
+        }
+    </style>
+</head>
+<body>
+    <!-- V1: Active Listening Response Trainer -->
+    <div class="phone-container">
+        <div class="screen active" id="active-listening">
+            <div class="header">
+                <button class="back-btn">←</button>
+                <div class="lesson-title">Response Type Trainer</div>
+                <div></div>
+            </div>
+            
+            <div class="progress-bar">
+                <div class="progress-fill" style="width: 10%"></div>
+            </div>
+
+            <div class="main-content">
+                <div class="goal-text">
+                    Listen to someone sharing, then select the most appropriate response type
+                </div>
+                
+                <div class="audio-player">
+                    <button class="play-btn" onclick="playAudio(1)">▶</button>
+                    <div class="audio-info">
+                        <div>Sarah sharing about her promotion</div>
+                        <div class="waveform"></div>
+                    </div>
+                </div>
+                
+                <div class="response-type-grid">
+                    <div class="response-type-btn" onclick="selectResponseType(this, 'reflect', true)">
+                        <div style="font-weight: 900; margin-bottom: 4px;">Reflect Emotion</div>
+                        <div style="font-size: 10px; opacity: 0.8;">"You sound really excited about this!"</div>
+                    </div>
+                    <div class="response-type-btn" onclick="selectResponseType(this, 'summarize', false)">
+                        <div style="font-weight: 900; margin-bottom: 4px;">Summarize Content</div>
+                        <div style="font-size: 10px; opacity: 0.8;">"So you got promoted to manager"</div>
+                    </div>
+                    <div class="response-type-btn" onclick="selectResponseType(this, 'question', false)">
+                        <div style="font-weight: 900; margin-bottom: 4px;">Ask Question</div>
+                        <div style="font-size: 10px; opacity: 0.8;">"When do you start the new role?"</div>
+                    </div>
+                    <div class="response-type-btn" onclick="selectResponseType(this, 'support', false)">
+                        <div style="font-weight: 900; margin-bottom: 4px;">Offer Support</div>
+                        <div style="font-size: 10px; opacity: 0.8;">"Let me know if you need help"</div>
+                    </div>
+                </div>
+                
+                <div class="text-input" placeholder="Now write your specific response..." id="response-input"></div>
+                
+                <div class="feedback-box" id="listening-feedback">
+                    Perfect! When someone shares exciting news, reflecting their emotion first helps them feel heard and validated.
+                </div>
+            </div>
+
+            <button class="primary-button" onclick="showScreen('rejection-mindset')" id="listening-continue" style="opacity: 0.5; pointer-events: none;">
+                Continue
+            </button>
+        </div>
+    </div>
+
+    <!-- V2: Rejection Mindset Reset -->
+    <div class="phone-container">
+        <div class="screen" id="rejection-mindset">
+            <div class="header">
+                <button class="back-btn" onclick="showScreen('active-listening')">←</button>
+                <div class="lesson-title">Mindset Reset</div>
+                <div></div>
+            </div>
+            
+            <div class="progress-bar">
+                <div class="progress-fill" style="width: 20%"></div>
+            </div>
+
+            <div class="main-content">
+                <div class="statement-bubble">
+                    Scenario: You asked someone to coffee and they said "Thanks, but I'm really busy this week"
+                </div>
+                
+                <div class="goal-text">
+                    Choose the healthier way to interpret this situation
+                </div>
+                
+                <div class="mindset-comparison">
+                    <div class="mindset-card unhealthy" onclick="selectMindset(this, false)">
+                        <div style="font-weight: 900; margin-bottom: 8px;">Unhealthy Thought</div>
+                        <div>"They obviously don't like me. I'm not interesting enough. I shouldn't have asked."</div>
+                    </div>
+                    <div class="mindset-card healthy" onclick="selectMindset(this, true)">
+                        <div style="font-weight: 900; margin-bottom: 8px;">Healthy Thought</div>
+                        <div>"People get busy. This isn't about me personally. I'm glad I took the shot."</div>
+                    </div>
+                </div>
+                
+                <div class="goal-text">
+                    Now write your own healthy reframe:
+                </div>
+                
+                <div class="text-input" placeholder="Type your healthy interpretation..." id="reframe-input"></div>
+                
+                <div style="background: #f0f8ff; padding: 12px; border-radius: 8px; font-size: 12px; font-weight: 700; margin-top: 16px; text-align: left;">
+                    <div style="font-weight: 900; margin-bottom: 8px;">💡 Reality Check Mantras:</div>
+                    <div>• You don't like everyone, not everyone has to like you</div>
+                    <div>• It's about them and their situation, not about you</div>
+                    <div>• Nobody owes you their time or attention</div>
+                </div>
+            </div>
+
+            <button class="primary-button" onclick="showScreen('value-detective')">
+                Practice Another Scenario
+            </button>
+        </div>
+    </div>
+
+    <!-- V3: Value Detective Game -->
+    <div class="phone-container">
+        <div class="screen" id="value-detective">
+            <div class="header">
+                <button class="back-btn" onclick="showScreen('rejection-mindset')">←</button>
+                <div class="lesson-title">Value Detective</div>
+                <div></div>
+            </div>
+            
+            <div class="progress-bar">
+                <div class="progress-fill" style="width: 30%"></div>
+            </div>
+
+            <div class="main-content">
+                <div class="statement-bubble">
+                    "I've been learning pottery on weekends. There's something therapeutic about working with clay and creating something beautiful with your hands."
+                </div>
+                
+                <div class="goal-text">
+                    What values can you detect? (Select all that apply)
+                </div>
+                
+                <div class="value-grid">
+                    <div class="value-chip" onclick="toggleValueDetection(this, true)">Creativity</div>
+                    <div class="value-chip" onclick="toggleValueDetection(this, false)">Competition</div>
+                    <div class="value-chip" onclick="toggleValueDetection(this, true)">Self-care</div>
+                    <div class="value-chip" onclick="toggleValueDetection(this, false)">Efficiency</div>
+                    <div class="value-chip" onclick="toggleValueDetection(this, true)">Beauty</div>
+                    <div class="value-chip" onclick="toggleValueDetection(this, true)">Mindfulness</div>
+                    <div class="value-chip" onclick="toggleValueDetection(this, false)">Achievement</div>
+                    <div class="value-chip" onclick="toggleValueDetection(this, true)">Craftsmanship</div>
+                </div>
+                
+                <div class="goal-text" style="margin-top: 24px;">
+                    Now craft a response that highlights their values:
+                </div>
+                
+                <div class="text-input" placeholder="Write a response that appreciates their values..." id="value-response"></div>
+                
+                <div class="feedback-box" id="value-feedback">
+                    Great detection! You identified their values for creativity, self-care, beauty, mindfulness, and craftsmanship. Your response shows you understand what matters to them.
+                </div>
+            </div>
+
+            <button class="primary-button" id="value-check" onclick="checkValueDetection()" style="opacity: 0.5; pointer-events: none;">
+                Check My Detection
+            </button>
+            
+            <button class="primary-button" id="value-continue" onclick="showScreen('compliment-flow')" style="display: none;">
+                Continue
+            </button>
+        </div>
+    </div>
+
+    <!-- V4: Compliment Flow Builder -->
+    <div class="phone-container">
+        <div class="screen" id="compliment-flow">
+            <div class="header">
+                <button class="back-btn" onclick="showScreen('value-detective')">←</button>
+                <div class="lesson-title">Compliment Chain</div>
+                <div></div>
+            </div>
+            
+            <div class="progress-bar">
+                <div class="progress-fill" style="width: 40%"></div>
+            </div>
+
+            <div class="main-content">
+                <div class="goal-text">
+                    Build a natural compliment chain: Compliment → Context → Positive Reinforcement
+                </div>
+                
+                <div class="step-builder">
+                    <div class="step">
+                        <div class="step-number">1</div>
+                        <div class="step-content">Choose what to compliment</div>
+                        <button class="step-button" onclick="selectComplimentTarget()">Select</button>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">2</div>
+                        <div class="step-content">Ask for context</div>
+                        <button class="step-button" onclick="craftContextQuestion()">Craft</button>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">3</div>
+                        <div class="step-content">Positive reinforcement</div>
+                        <button class="step-button" onclick="addReinforcement()">Add</button>
+                    </div>
+                </div>
+                
+                <div id="compliment-options" style="display: none;">
+                    <div class="goal-text">What would you like to compliment?</div>
+                    <div class="response-type-grid">
+                        <div class="response-type-btn" onclick="selectCompliment(this, 'presentation')">Their presentation style</div>
+                        <div class="response-type-btn" onclick="selectCompliment(this, 'creativity')">Their creative project</div>
+                        <div class="response-type-btn" onclick="selectCompliment(this, 'problem-solving')">How they solved a problem</div>
+                        <div class="response-type-btn" onclick="selectCompliment(this, 'outfit')">Their outfit choice</div>
+                    </div>
+                </div>
+                
+                <div id="context-builder" style="display: none;">
+                    <div class="text-input" placeholder="Ask about the context behind your compliment..." id="context-input"></div>
+                    <div style="font-size: 11px; font-weight: 700; color: #777; margin-bottom: 16px;">
+                        Example: "Where did you learn to present like that?" or "What inspired this approach?"
+                    </div>
+                </div>
+                
+                <div id="reinforcement-builder" style="display: none;">
+                    <div class="text-input" placeholder="Add positive reinforcement based on their response..." id="reinforcement-input"></div>
+                    <div style="font-size: 11px; font-weight: 700; color: #777; margin-bottom: 16px;">
+                        Example: "That level of dedication really shows" or "You have such a good eye for detail"
+                    </div>
+                </div>
+                
+                <div id="complete-chain" style="display: none; background: #f0fff0; border: 2px solid #7BB57B; border-radius: 8px; padding: 12px; margin-top: 16px; text-align: left;">
+                    <div style="font-weight: 900; margin-bottom: 8px; color: #2d5a2d;">Complete Compliment Chain:</div>
+                    <div id="chain-display" style="font-size: 12px; font-weight: 700; color: #2d5a2d;"></div>
+                </div>
+            </div>
+
+            <button class="primary-button" onclick="showScreen('expertise-elevator')">
+                Try Different Scenario
+            </button>
+        </div>
+    </div>
+
+    <!-- V5: Expertise Elevator -->
+    <div class="phone-container">
+        <div class="screen" id="expertise-elevator">
+            <div class="header">
+                <button class="back-btn" onclick="showScreen('compliment-flow')">←</button>
+                <div class="lesson-title">Expertise Elevator</div>
+                <div></div>
+            </div>
+            
+            <div class="progress-bar">
+                <div class="progress-fill" style="width: 50%"></div>
+            </div>
+
+            <div class="main-content">
+                <div class="statement-bubble">
+                    "I've been working on this data visualization dashboard for our team. Took me weeks to get the color coding just right."
+                </div>
+                
+                <div class="goal-text">
+                    Practice the expertise highlighting sequence
+                </div>
+                
+                <div class="step-builder">
+                    <div class="step">
+                        <div class="step-number">1</div>
+                        <div class="step-content" id="step1-content">Recognize their expertise</div>
+                        <button class="step-button" onclick="activateStep(1)">Write</button>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">2</div>
+                        <div class="step-content" id="step2-content">Show specific appreciation</div>
+                        <button class="step-button" onclick="activateStep(2)" disabled>Write</button>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">3</div>
+                        <div class="step-content" id="step3-content">Engage for advice/insight</div>
+                        <button class="step-button" onclick="activateStep(3)" disabled>Write</button>
+                    </div>
+                </div>
+                
+                <div id="expertise-input-1" style="display: none;">
+                    <div class="text-input" placeholder="Recognize their data visualization expertise..." id="expertise1"></div>
+                    <div style="font-size: 11px; color: #777; font-weight: 700;">Example: "Wow, you really know your way around data visualization"</div>
+                </div>
+                
+                <div id="expertise-input-2" style="display: none;">
+                    <div class="text-input" placeholder="Show specific appreciation for their work..." id="expertise2"></div>
+                    <div style="font-size: 11px; color: #777; font-weight: 700;">Example: "The attention to color coding shows real design thinking"</div>
+                </div>
+                
+                <div id="expertise-input-3" style="display: none;">
+                    <div class="text-input" placeholder="Ask for their expertise..." id="expertise3"></div>
+                    <div style="font-size: 11px; color: #777; font-weight: 700;">Example: "What's your process for choosing the right visualization type?"</div>
+                </div>
+                
+                <div class="connection-meter">
+                    <div class="meter-label">How valued do they feel?</div>
+                    <div class="meter-bar-container">
+                        <div class="meter-segment" id="meter1"></div>
+                        <div class="meter-segment" id="meter2"></div>
+                        <div class="meter-segment" id="meter3"></div>
+                        <div class="meter-segment" id="meter4"></div>
+                        <div class="meter-segment" id="meter5"></div>
+                    </div>
+                </div>
+            </div>
+
+            <button class="primary-button" onclick="showScreen('connection-weaving')">
+                Practice with Different Expertise
+            </button>
+        </div>
+    </div>
+
+    <!-- V6: Connection Weaving -->
+    <div class="phone-container">
+        <div class="screen" id="connection-weaving">
+            <div class="header">
+                <button class="back-btn" onclick="showScreen('expertise-elevator')">←</button>
+                <div class="lesson-title">Deeper Connection</div>
+                <div></div>
+            </div>
+            
+            <div class="progress-bar">
+                <div class="progress-fill" style="width: 60%"></div>
+            </div>
+
+            <div class="main-content">
+                <div class="goal-text">
+                    Practice weaving back to previous conversation points to build intimacy
+                </div>
+                
+                <div class="conversation-history">
+                    <div style="font-weight: 900; margin-bottom: 12px;">Earlier in your conversation:</div>
+                    <div class="history-item" onclick="selectCallback(this, 'travel')" data-topic="travel">
+                        "I've always wanted to visit Japan for the architecture"
+                    </div>
+                    <div class="history-item" onclick="selectCallback(this, 'stress')" data-topic="stress">
+                        "Work has been really stressful lately"
+                    </div>
+                    <div class="history-item" onclick="selectCallback(this, 'creativity')" data-topic="creativity">
+                        "I'm trying to be more creative in my free time"
+                    </div>
+                    <div class="history-item" onclick="selectCallback(this, 'family')" data-topic="family">
+                        "My sister just had her first baby"
+                    </div>
+                </div>
+                
+                <div class="statement-bubble">
+                    Current: "I'm thinking about taking a pottery class"
+                </div>
+                
+                <div class="goal-text">
+                    Select a previous topic and weave it into your response:
+                </div>
+                
+                <div class="text-input" placeholder="Weave to a previous conversation point..." id="callback-input"></div>
+                
+                <div id="callback-suggestions" style="display: none; background: #f0f8ff; border: 2px solid #87ceeb; border-radius: 8px; padding: 12px; margin-top: 8px; font-size: 12px; font-weight: 700;">
+                    <div id="suggestion-text"></div>
+                </div>
+                
+                <div class="connection-meter">
+                    <div class="meter-label">Connection Depth</div>
+                    <div class="meter-bar-container">
+                        <div class="meter-segment active" id="depth1"></div>
+                        <div class="meter-segment active" id="depth2"></div>
+                        <div class="meter-segment" id="depth3"></div>
+                        <div class="meter-segment" id="depth4"></div>
+                        <div class="meter-segment" id="depth5"></div>
+                    </div>
+                </div>
+            </div>
+
+            <button class="primary-button" onclick="showScreen('common-ground')">
+                Try Different Callback
+            </button>
+        </div>
+    </div>
+
+    <!-- V7: Common Ground Bridge Builder -->
+    <div class="phone-container">
+        <div class="screen" id="common-ground">
+            <div class="header">
+                <button class="back-btn" onclick="showScreen('connection-weaving')">←</button>
+                <div class="lesson-title">Bridge Builder</div>
+                <div></div>
+            </div>
+            
+            <div class="progress-bar">
+                <div class="progress-fill" style="width: 70%"></div>
+            </div>
+
+            <div class="main-content">
+                <div class="goal-text">
+                    Find common ground between different viewpoints
+                </div>
+                
+                <div class="bridge-builder">
+                    <div class="viewpoint-columns">
+                        <div class="viewpoint">
+                            <div class="viewpoint-title">Their View: "Remote work is isolating"</div>
+                            <div class="draggable-element" draggable="true" data-element="connection">Values connection</div>
+                            <div class="draggable-element" draggable="true" data-element="collaboration">Likes collaboration</div>
+                            <div class="draggable-element" draggable="true" data-element="energy">Feeds off group energy</div>
+                        </div>
+                        <div class="viewpoint">
+                            <div class="viewpoint-title">Your View: "Remote work is productive"</div>
+                            <div class="draggable-element" draggable="true" data-element="focus">Values focus time</div>
+                            <div class="draggable-element" draggable="true" data-element="flexibility">Appreciates flexibility</div>
+                            <div class="draggable-element" draggable="true" data-element="efficiency">Prioritizes efficiency</div>
+                        </div>
+                    </div>
+                    
+                    <div class="bridge-area" id="bridge-area" ondrop="bridgeDrop(event)" ondragover="allowBridgeDrop(event)">
+                        Drag shared values here to build common ground
+                    </div>
+                    
+                    <div style="font-size: 12px; font-weight: 700; margin-bottom: 8px;">Hidden common ground:</div>
+                    <div style="background: #fafafa; padding: 8px; border-radius: 6px; font-size: 11px; font-weight: 700; color: #777;">
+                        Both want to do good work and feel connected to their team
+                    </div>
+                </div>
+                
+                <div class="text-input" placeholder="Write a response that highlights common ground..." id="bridge-response" style="margin-top: 16px;"></div>
+                
+                <div class="connection-meter">
+                    <div class="meter-label">Bridge Completion</div>
+                    <div class="meter-bar-container">
+                        <div class="meter-segment" id="bridge1"></div>
+                        <div class="meter-segment" id="bridge2"></div>
+                        <div class="meter-segment" id="bridge3"></div>
+                        <div class="meter-segment" id="bridge4"></div>
+                        <div class="meter-segment" id="bridge5"></div>
+                    </div>
+                </div>
+            </div>
+
+            <button class="primary-button" onclick="showScreen('diplomatic-disagreement')">
+                Try Another Bridge
+            </button>
+        </div>
+    </div>
+
+    <!-- V8: Diplomatic Disagreement -->
+    <div class="phone-container">
+        <div class="screen" id="diplomatic-disagreement">
+            <div class="header">
+                <button class="back-btn" onclick="showScreen('common-ground')">←</button>
+                <div class="lesson-title">"Yes, But" Constructor</div>
+                <div></div>
+            </div>
+            
+            <div class="progress-bar">
+                <div class="progress-fill" style="width: 80%"></div>
+            </div>
+
+            <div class="main-content">
+                <div class="statement-bubble">
+                    "Social media is completely toxic and people should just delete all their accounts"
+                </div>
+                
+                <div class="goal-text">
+                    Practice diplomatic disagreement by finding agreement first
+                </div>
+                
+                <div style="margin-bottom: 16px;">
+                    <div style="font-size: 12px; font-weight: 700; margin-bottom: 8px; text-align: left;">Step 1: Find something you can agree with</div>
+                    <div class="text-input" placeholder="What part can you agree with?" id="agreement-input"></div>
+                    
+                    <div style="font-size: 12px; font-weight: 700; margin-bottom: 8px; text-align: left; margin-top: 12px;">Step 2: Add your perspective</div>
+                    <div class="text-input" placeholder="What's your different perspective?" id="perspective-input"></div>
+                </div>
+                
+                <div class="comparison">
+                    <div class="comparison-item before">
+                        <div style="font-weight: 900; margin-bottom: 4px;">"No, and" Approach</div>
+                        <div style="font-size: 11px;">"That's not true. Social media has lots of benefits and helps people connect."</div>
+                    </div>
+                    <div class="comparison-item after">
+                        <div style="font-weight: 900; margin-bottom: 4px;">"Yes, but" Approach</div>
+                        <div style="font-size: 11px;" id="yes-but-preview">[Your response will appear here]</div>
+                    </div>
+                </div>
+                
+                <div class="connection-meter">
+                    <div class="meter-label">Relationship Preservation</div>
+                    <div class="meter-bar-container">
+                        <div class="meter-segment" id="relationship1"></div>
+                        <div class="meter-segment" id="relationship2"></div>
+                        <div class="meter-segment" id="relationship3"></div>
+                        <div class="meter-segment" id="relationship4"></div>
+                        <div class="meter-segment" id="relationship5"></div>
+                    </div>
+                </div>
+            </div>
+
+            <button class="primary-button" onclick="showScreen('emotional-support')">
+                Try Another Disagreement
+            </button>
+        </div>
+    </div>
+
+    <!-- V9: Emotional Support Selector -->
+    <div class="phone-container">
+        <div class="screen" id="emotional-support">
+            <div class="header">
+                <button class="back-btn" onclick="showScreen('diplomatic-disagreement')">←</button>
+                <div class="lesson-title">Support Response</div>
+                <div></div>
+            </div>
+            
+            <div class="progress-bar">
+                <div class="progress-fill" style="width: 90%"></div>
+            </div>
+
+            <div class="main-content">
+                <div class="support-scenario">
+                    😟 Jamie seems frustrated and overwhelmed. Their body language shows tension, they're speaking quickly, and they keep mentioning how "everything is falling apart" with their work project.
+                </div>
+                
+                <div class="goal-text">
+                    What type of support do they need right now?
+                </div>
+                
+                <div class="support-options">
+                    <div class="support-option" onclick="selectSupport(this, 'listen', true)">
+                        <div style="font-weight: 900;">Listen & Validate</div>
+                        <div style="font-size: 10px; margin-top: 4px;">Let them vent and feel heard</div>
+                    </div>
+                    <div class="support-option" onclick="selectSupport(this, 'advice', false)">
+                        <div style="font-weight: 900;">Give Advice</div>
+                        <div style="font-size: 10px; margin-top: 4px;">Solve their problems</div>
+                    </div>
+                    <div class="support-option" onclick="selectSupport(this, 'help', false)">
+                        <div style="font-weight: 900;">Offer Practical Help</div>
+                        <div style="font-size: 10px; margin-top: 4px;">Jump in to assist</div>
+                    </div>
+                    <div class="support-option" onclick="selectSupport(this, 'ask', false)">
+                        <div style="font-weight: 900;">Ask What They Need</div>
+                        <div style="font-size: 10px; margin-top: 4px;">Let them direct</div>
+                    </div>
+                </div>
+                
+                <div class="goal-text">
+                    Now craft your supportive response:
+                </div>
+                
+                <div class="text-input" placeholder="Write your supportive response..." id="support-response"></div>
+                
+                <div style="background: #f0f8ff; padding: 12px; border-radius: 8px; font-size: 12px; font-weight: 700; margin-top: 16px; text-align: left;">
+                    <div style="font-weight: 900; margin-bottom: 8px;">💡 Support Reading Guide:</div>
+                    <div>• Venting energy = Need to be heard first</div>
+                    <div>• Asking questions = Want your input</div>
+                    <div>• Talking solutions = Ready for advice</div>
+                    <div>• Expressing helplessness = May need practical help</div>
+                </div>
+                
+                <div class="feedback-box" id="support-feedback">
+                    Perfect! When someone is overwhelmed and venting, they usually need validation first before they're ready for solutions.
+                </div>
+            </div>
+
+            <button class="primary-button" onclick="showScreen('gratitude-amplifier')" id="support-continue" style="opacity: 0.5; pointer-events: none;">
+                Continue
+            </button>
+        </div>
+    </div>
+
+    <!-- V10: Gratitude Amplifier -->
+    <div class="phone-container">
+        <div class="screen" id="gratitude-amplifier">
+            <div class="header">
+                <button class="back-btn" onclick="showScreen('emotional-support')">←</button>
+                <div class="lesson-title">Appreciation Amplifier</div>
+                <div></div>
+            </div>
+            
+            <div class="progress-bar">
+                <div class="progress-fill" style="width: 100%"></div>
+            </div>
+
+            <div class="main-content">
+                <div class="statement-bubble">
+                    Your friend helped you move apartments last weekend, spending their entire Saturday carrying boxes and assembling furniture.
+                </div>
+                
+                <div class="goal-text">
+                    Transform generic thanks into specific, meaningful appreciation
+                </div>
+                
+                <div class="enhancement-fields">
+                    <div class="enhancement-field">
+                        <div class="field-label">Specific Behavior</div>
+                        <input type="text" class="field-input" placeholder="What exactly did they do?" id="behavior-field" oninput="updateAppreciation()">
+                    </div>
+                    <div class="enhancement-field">
+                        <div class="field-label">Personal Impact</div>
+                        <input type="text" class="field-input" placeholder="How did it affect you personally?" id="impact-field" oninput="updateAppreciation()">
+                    </div>
+                    <div class="enhancement-field">
+                        <div class="field-label">Value Recognition</div>
+                        <input type="text" class="field-input" placeholder="What does this say about who they are?" id="value-field" oninput="updateAppreciation()">
+                    </div>
+                </div>
+                
+                <div class="comparison">
+                    <div class="comparison-item before">
+                        <div style="font-weight: 900; margin-bottom: 8px;">Generic Thanks</div>
+                        <div style="font-size: 12px;">"Thanks for helping me move!"</div>
+                    </div>
+                    <div class="comparison-item after">
+                        <div style="font-weight: 900; margin-bottom: 8px;">Specific Appreciation</div>
+                        <div style="font-size: 12px;" id="enhanced-appreciation">Fill in the fields to see enhanced appreciation</div>
+                    </div>
+                </div>
+                
+                <div style="background: #f0fff0; padding: 12px; border-radius: 8px; font-size: 12px; font-weight: 700; margin-top: 16px; text-align: left; color: #2d5a2d;">
+                    <div style="font-weight: 900; margin-bottom: 8px;">✨ Why Specific Appreciation Matters:</div>
+                    <div>• Shows you were paying attention</div>
+                    <div>• Makes them feel genuinely valued</div>
+                    <div>• Reinforces positive behavior</div>
+                    <div>• Deepens your relationship</div>
+                </div>
+            </div>
+
+            <button class="primary-button" onclick="showScreen('active-listening')">
+                Try Another Scenario
+            </button>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <div class="nav-buttons">
+        <button class="nav-btn active" onclick="showVibeLesson(1)">Listen</button>
+        <button class="nav-btn" onclick="showVibeLesson(2)">Reject</button>
+        <button class="nav-btn" onclick="showVibeLesson(3)">Values</button>
+        <button class="nav-btn" onclick="showVibeLesson(4)">Complmt</button>
+        <button class="nav-btn" onclick="showVibeLesson(5)">Expert</button>
+        <button class="nav-btn" onclick="showVibeLesson(6)">Connect</button>
+        <button class="nav-btn" onclick="showVibeLesson(7)">Bridge</button>
+        <button class="nav-btn" onclick="showVibeLesson(8)">Disagre</button>
+        <button class="nav-btn" onclick="showVibeLesson(9)">Support</button>
+        <button class="nav-btn" onclick="showVibeLesson(10)">Thanks</button>
+    </div>
+
+    <script>
+        let selectedResponseType = null;
+        let selectedValues = [];
+        let complimentStep = 0;
+        let expertiseStep = 0;
+        let bridgedElements = 0;
+
+        function showScreen(screenId) {
+            document.querySelectorAll('.screen').forEach(screen => {
+                screen.classList.remove('active');
+            });
+            document.getElementById(screenId).classList.add('active');
+        }
+
+        function showVibeLesson(lessonNum) {
+            document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            const screens = {
+                1: 'active-listening',
+                2: 'rejection-mindset', 
+                3: 'value-detective',
+                4: 'compliment-flow',
+                5: 'expertise-elevator',
+                6: 'connection-weaving',
+                7: 'common-ground',
+                8: 'diplomatic-disagreement',
+                9: 'emotional-support',
+                10: 'gratitude-amplifier'
+            };
+            
+            showScreen(screens[lessonNum]);
+        }
+
+        // V1: Active Listening
+        function playAudio(trackId) {
+            // Simulate audio playback
+            const playBtn = document.querySelector('.play-btn');
+            playBtn.innerHTML = '⏸';
+            
+            setTimeout(() => {
+                playBtn.innerHTML = '▶';
+            }, 3000);
+        }
+
+        function selectResponseType(element, type, isCorrect) {
+            document.querySelectorAll('.response-type-btn').forEach(btn => {
+                btn.classList.remove('selected', 'correct', 'incorrect');
+            });
+            
+            element.classList.add('selected');
+            
+            setTimeout(() => {
+                element.classList.remove('selected');
+                element.classList.add(isCorrect ? 'correct' : 'incorrect');
+                
+                if (isCorrect) {
+                    document.getElementById('listening-feedback').classList.add('show');
+                    document.getElementById('listening-continue').style.opacity = '1';
+                    document.getElementById('listening-continue').style.pointerEvents = 'auto';
+                }
+            }, 1000);
+        }
+
+        // V2: Rejection Mindset
+        function selectMindset(element, isHealthy) {
+            document.querySelectorAll('.mindset-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            
+            element.classList.add('selected');
+            
+            if (isHealthy) {
+                setTimeout(() => {
+                    element.style.animation = 'correctPulse 0.5s ease';
+                }, 500);
+            }
+        }
+
+        // V3: Value Detective
+        function toggleValueDetection(element, isCorrect) {
+            element.classList.toggle('selected');
+            
+            if (element.classList.contains('selected')) {
+                selectedValues.push({ element, isCorrect });
+            } else {
+                selectedValues = selectedValues.filter(item => item.element !== element);
+            }
+            
+            const checkBtn = document.getElementById('value-check');
+            if (selectedValues.length > 0) {
+                checkBtn.style.opacity = '1';
+                checkBtn.style.pointerEvents = 'auto';
+            }
+        }
+
+        function checkValueDetection() {
+            selectedValues.forEach(({ element, isCorrect }) => {
+                element.classList.remove('selected');
+                if (isCorrect) {
+                    element.classList.add('correct');
+                } else {
+                    element.style.background = '#E06B6B';
+                    element.style.color = 'white';
+                }
+            });
+            
+            document.getElementById('value-feedback').classList.add('show');
+            document.getElementById('value-check').style.display = 'none';
+            document.getElementById('value-continue').style.display = 'block';
+        }
+
+        // V4: Compliment Flow
+        function selectComplimentTarget() {
+            document.getElementById('compliment-options').style.display = 'block';
+            complimentStep = 1;
+        }
+
+        function selectCompliment(element, type) {
+            document.querySelectorAll('.response-type-btn').forEach(btn => {
+                btn.classList.remove('selected');
+            });
+            element.classList.add('selected');
+            
+            document.getElementById('compliment-options').style.display = 'none';
+            craftContextQuestion();
+        }
+
+        function craftContextQuestion() {
+            document.getElementById('context-builder').style.display = 'block';
+            complimentStep = 2;
+            
+            document.getElementById('context-input').addEventListener('input', function() {
+                if (this.value.length > 10) {
+                    addReinforcement();
+                }
+            });
+        }
+
+        function addReinforcement() {
+            document.getElementById('reinforcement-builder').style.display = 'block';
+            complimentStep = 3;
+            
+            document.getElementById('reinforcement-input').addEventListener('input', function() {
+                if (this.value.length > 10) {
+                    showCompleteChain();
+                }
+            });
+        }
+
+        function showCompleteChain() {
+            const compliment = document.querySelector('.response-type-btn.selected').textContent;
+            const context = document.getElementById('context-input').value;
+            const reinforcement = document.getElementById('reinforcement-input').value;
+            
+            const chain = `1. "${compliment}" → 2. "${context}" → 3. "${reinforcement}"`;
+            document.getElementById('chain-display').textContent = chain;
+            document.getElementById('complete-chain').style.display = 'block';
+        }
+
+        // V5: Expertise Elevator
+        function activateStep(stepNumber) {
+            document.getElementById(`expertise-input-${stepNumber}`).style.display = 'block';
+            
+            const input = document.getElementById(`expertise${stepNumber}`);
+            input.addEventListener('input', function() {
+                if (this.value.length > 10) {
+                    updateExpertiseMeter(stepNumber);
+                    
+                    if (stepNumber < 3) {
+                        document.querySelector(`[onclick="activateStep(${stepNumber + 1})"]`).disabled = false;
+                    }
+                }
+            });
+        }
+
+        function updateExpertiseMeter(step) {
+            for (let i = 1; i <= step; i++) {
+                document.getElementById(`meter${i}`).classList.add('active');
+            }
+        }
+
+        // V6: Connection Weaving
+        function selectCallback(element, topic) {
+            document.querySelectorAll('.history-item').forEach(item => {
+                item.classList.remove('selected');
+            });
+            element.classList.add('selected');
+            
+            const suggestions = {
+                'travel': "That sounds creative! Speaking of creativity, didn't you mention wanting to visit Japan for architecture? Pottery has such beautiful traditions there.",
+                'stress': "Pottery classes are great for stress relief - perfect timing with work being so hectic lately.",
+                'creativity': "Perfect! You mentioned wanting to be more creative. This could be exactly what you're looking for.",
+                'family': "That's exciting! Your sister just had a baby - maybe you could make something special for them."
+            };
+            
+            document.getElementById('suggestion-text').textContent = suggestions[topic];
+            document.getElementById('callback-suggestions').style.display = 'block';
+            
+            // Update connection meter
+            for (let i = 3; i <= 5; i++) {
+                document.getElementById(`depth${i}`).classList.add('active');
+            }
+        }
+
+        // V7: Bridge Builder
+        function allowBridgeDrop(ev) {
+            ev.preventDefault();
+            ev.target.classList.add('drag-over');
+        }
+
+        function bridgeDrop(ev) {
+            ev.preventDefault();
+            ev.target.classList.remove('drag-over');
+            
+            const elementType = ev.dataTransfer.getData("text");
+            if (elementType) {
+                bridgedElements++;
+                document.getElementById(`bridge${bridgedElements}`).classList.add('active');
+                
+                if (bridgedElements >= 2) {
+                    document.getElementById('bridge-area').innerHTML = 'Great! You found common ground: Both value doing meaningful work';
+                }
+            }
+        }
+
+        // V8: Diplomatic Disagreement
+        document.getElementById('agreement-input')?.addEventListener('input', updateYesBut);
+        document.getElementById('perspective-input')?.addEventListener('input', updateYesBut);
+
+        function updateYesBut() {
+            const agreement = document.getElementById('agreement-input')?.value || '';
+            const perspective = document.getElementById('perspective-input')?.value || '';
+            
+            if (agreement && perspective) {
+                const yesBut = `"Yes, ${agreement}, but ${perspective}"`;
+                document.getElementById('yes-but-preview').textContent = yesBut;
+                
+                // Update relationship meter
+                for (let i = 1; i <= 4; i++) {
+                    document.getElementById(`relationship${i}`)?.classList.add('active');
+                }
+            }
+        }
+
+        // V9: Emotional Support
+        function selectSupport(element, type, isCorrect) {
+            document.querySelectorAll('.support-option').forEach(option => {
+                option.classList.remove('selected');
+            });
+            
+            element.classList.add('selected');
+            
+            if (isCorrect) {
+                document.getElementById('support-feedback').classList.add('show');
+                document.getElementById('support-continue').style.opacity = '1';
+                document.getElementById('support-continue').style.pointerEvents = 'auto';
+            }
+        }
+
+        // V10: Gratitude Amplifier
+        function updateAppreciation() {
+            const behavior = document.getElementById('behavior-field')?.value || '';
+            const impact = document.getElementById('impact-field')?.value || '';
+            const value = document.getElementById('value-field')?.value || '';
+            
+            if (behavior && impact && value) {
+                const enhanced = `"${behavior} - ${impact}. ${value}, and I'm so grateful to have someone like you in my life."`;
+                document.getElementById('enhanced-appreciation').textContent = enhanced;
+            }
+        }
+
+        // Initialize drag and drop for bridge builder
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.draggable-element').forEach(element => {
+                element.addEventListener('dragstart', function(e) {
+                    e.dataTransfer.setData("text", element.getAttribute('data-element'));
+                });
+            });
+        });
+    </script>
+</body>
+</html>
