@@ -1,0 +1,1598 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Play Module Tutorial Extensions</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            background: #f0f8ff;
+            color: #3c3c3c;
+            line-height: 1.4;
+        }
+
+        .phone-container {
+            max-width: 390px;
+            margin: 20px auto;
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+        }
+
+        .screen {
+            min-height: 600px;
+            padding: 20px;
+            display: none;
+        }
+
+        .screen.active {
+            display: block;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .back-btn {
+            background: none;
+            border: none;
+            font-size: 24px;
+            color: #777;
+            cursor: pointer;
+        }
+
+        .lesson-title {
+            font-size: 18px;
+            font-weight: 900;
+            color: #3c3c3c;
+        }
+
+        .progress-bar {
+            height: 8px;
+            background: #e5e5e5;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 32px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: #87ceeb;
+            transition: width 0.3s ease;
+        }
+
+        .main-content {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .statement-bubble {
+            background: #fafafa;
+            border: 3px solid #e5e5e5;
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 24px;
+            font-size: 16px;
+            font-weight: 700;
+        }
+
+        .goal-text {
+            font-size: 14px;
+            font-weight: 700;
+            color: #777;
+            margin-bottom: 24px;
+        }
+
+        /* Slider Components */
+        .slider-container {
+            margin: 24px 0;
+        }
+
+        .slider {
+            width: 100%;
+            height: 8px;
+            border-radius: 4px;
+            background: #e5e5e5;
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: #87ceeb;
+            cursor: pointer;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .dynamic-display {
+            background: #f0f8ff;
+            border: 3px solid #87ceeb;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 16px 0;
+            font-size: 16px;
+            font-weight: 700;
+            min-height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        /* Context Cards */
+        .context-cards {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin: 16px 0;
+        }
+
+        .context-card {
+            background: white;
+            border: 2px solid #e5e5e5;
+            border-radius: 8px;
+            padding: 12px;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .appropriateness-meter {
+            display: flex;
+            gap: 2px;
+            margin-top: 8px;
+            align-items: center;
+        }
+
+        .meter-bar {
+            height: 6px;
+            border-radius: 3px;
+            flex: 1;
+            background: #e5e5e5;
+            transition: background 0.3s ease;
+        }
+
+        .meter-bar.excellent {
+            background: #7BB57B;
+        }
+
+        .meter-bar.good {
+            background: #ffc107;
+        }
+
+        .meter-bar.risky {
+            background: #E06B6B;
+        }
+
+        /* Text Input */
+        .text-input {
+            width: 100%;
+            padding: 12px;
+            border: 3px solid #e5e5e5;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            transition: border-color 0.2s ease;
+        }
+
+        .text-input:focus {
+            outline: none;
+            border-color: #87ceeb;
+        }
+
+        .textarea-input {
+            width: 100%;
+            padding: 12px;
+            border: 3px solid #e5e5e5;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            min-height: 80px;
+            resize: vertical;
+            font-family: inherit;
+        }
+
+        .textarea-input:focus {
+            outline: none;
+            border-color: #87ceeb;
+        }
+
+        /* Analysis Meters */
+        .analysis-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin: 16px 0;
+        }
+
+        .analysis-card {
+            background: white;
+            border: 2px solid #e5e5e5;
+            border-radius: 8px;
+            padding: 12px;
+            text-align: center;
+        }
+
+        .analysis-label {
+            font-size: 10px;
+            font-weight: 900;
+            color: #777;
+            margin-bottom: 4px;
+        }
+
+        .analysis-value {
+            font-size: 12px;
+            font-weight: 900;
+        }
+
+        .safety-good { color: #7BB57B; }
+        .safety-warning { color: #ffc107; }
+        .safety-danger { color: #E06B6B; }
+
+        /* Topic Generator */
+        .topic-display {
+            background: #87ceeb;
+            color: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 16px 0;
+            font-size: 18px;
+            font-weight: 900;
+            text-align: center;
+        }
+
+        .argument-builder {
+            background: #fafafa;
+            border: 2px solid #d5d5d5;
+            border-radius: 8px;
+            padding: 16px;
+            margin: 16px 0;
+            text-align: left;
+        }
+
+        .argument-section {
+            margin-bottom: 12px;
+        }
+
+        .section-label {
+            font-size: 12px;
+            font-weight: 900;
+            color: #777;
+            margin-bottom: 4px;
+        }
+
+        /* Personality Types */
+        .personality-selector {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin: 16px 0;
+        }
+
+        .personality-chip {
+            background: white;
+            border: 2px solid #e5e5e5;
+            border-radius: 16px;
+            padding: 6px 12px;
+            font-size: 10px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .personality-chip:hover {
+            border-color: #87ceeb;
+        }
+
+        .personality-chip.selected {
+            background: #87ceeb;
+            border-color: #6bb6db;
+            color: white;
+        }
+
+        /* Technique Selector */
+        .technique-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 8px;
+            margin: 16px 0;
+        }
+
+        .technique-card {
+            background: white;
+            border: 2px solid #e5e5e5;
+            border-radius: 8px;
+            padding: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: left;
+        }
+
+        .technique-card:hover {
+            border-color: #87ceeb;
+            background: #f0f8ff;
+        }
+
+        .technique-card.selected {
+            border-color: #87ceeb;
+            background: #f0f8ff;
+        }
+
+        .technique-title {
+            font-size: 14px;
+            font-weight: 900;
+            margin-bottom: 4px;
+        }
+
+        .technique-desc {
+            font-size: 12px;
+            color: #777;
+        }
+
+        /* Response Options */
+        .response-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin: 16px 0;
+        }
+
+        .response-option {
+            background: white;
+            border: 2px solid #e5e5e5;
+            border-radius: 8px;
+            padding: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: left;
+        }
+
+        .response-option:hover {
+            border-color: #87ceeb;
+            transform: translateY(-1px);
+        }
+
+        .response-option.selected {
+            background: #87ceeb;
+            border-color: #6bb6db;
+            color: white;
+        }
+
+        /* Buttons */
+        .primary-button {
+            background: #87ceeb;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            padding: 16px 24px;
+            font-size: 16px;
+            font-weight: 900;
+            cursor: pointer;
+            width: 100%;
+            box-shadow: 0 2px 4px rgba(107, 182, 219, 0.3);
+            transition: all 0.2s ease;
+        }
+
+        .primary-button:hover {
+            background: #6bb6db;
+            transform: translateY(-1px);
+        }
+
+        .secondary-button {
+            background: white;
+            color: #87ceeb;
+            border: 2px solid #87ceeb;
+            border-radius: 8px;
+            padding: 8px 16px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            margin: 4px;
+            transition: all 0.2s ease;
+        }
+
+        .secondary-button:hover {
+            background: #f0f8ff;
+        }
+
+        .button-row {
+            display: flex;
+            gap: 8px;
+            margin-top: 16px;
+        }
+
+        /* Feedback */
+        .feedback-box {
+            background: #7BB57B;
+            color: white;
+            border-radius: 8px;
+            padding: 12px;
+            margin: 16px 0;
+            font-size: 12px;
+            font-weight: 700;
+            display: none;
+        }
+
+        .feedback-box.show {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .feedback-box.warning {
+            background: #ffc107;
+        }
+
+        .feedback-box.danger {
+            background: #E06B6B;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Navigation */
+        .nav-buttons {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            z-index: 100;
+            max-width: 350px;
+            justify-content: center;
+        }
+
+        .nav-btn {
+            padding: 6px 12px;
+            background: #87ceeb;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 10px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .nav-btn.active {
+            background: #6bb6db;
+        }
+
+        /* Special Effects */
+        .highlight-effect {
+            animation: highlight 0.5s ease;
+        }
+
+        @keyframes highlight {
+            0% { background: #f0f8ff; }
+            50% { background: #87ceeb; color: white; }
+            100% { background: #f0f8ff; }
+        }
+    </style>
+</head>
+<body>
+    <!-- P1: Exaggeration Mastery -->
+    <div class="phone-container">
+        <div class="screen active" id="exaggeration-mastery">
+            <div class="header">
+                <button class="back-btn">←</button>
+                <div class="lesson-title">Exaggeration Dial</div>
+                <div></div>
+            </div>
+            
+            <div class="progress-bar">
+                <div class="progress-fill" style="width: 8%"></div>
+            </div>
+
+            <div class="main-content">
+                <div class="goal-text">
+                    Adjust the exaggeration level and find the sweet spot for each context
+                </div>
+                
+                <div class="statement-bubble">
+                    Base: "The movie was long"
+                </div>
+                
+                <div class="dynamic-display" id="exaggeration-text">
+                    The movie was kinda long
+                </div>
+                
+                <div class="slider-container">
+                    <input type="range" min="1" max="10" value="3" class="slider" id="exaggeration-slider" oninput="updateExaggeration(this.value)">
+                    <div style="display: flex; justify-content: space-between; font-size: 10px; font-weight: 700; color: #777; margin-top: 4px;">
+                        <span>Boring</span>
+                        <span>Sweet Spot</span>
+                        <span>Too Much</span>
+                    </div>
+                </div>
+                
+                <div class="context-cards">
+                    <div class="context-card">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <span>Close Friend:</span>
+                            <span style="font-size: 10px; font-weight: 900;" id="friend-status">GOOD</span>
+                        </div>
+                        <div class="appropriateness-meter" id="friend-meter">
+                            <div class="meter-bar good"></div>
+                            <div class="meter-bar good"></div>
+                            <div class="meter-bar good"></div>
+                            <div class="meter-bar"></div>
+                            <div class="meter-bar"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="context-card">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <span>Work Colleague:</span>
+                            <span style="font-size: 10px; font-weight: 900;" id="work-status">RISKY</span>
+                        </div>
+                        <div class="appropriateness-meter" id="work-meter">
+                            <div class="meter-bar risky"></div>
+                            <div class="meter-bar risky"></div>
+                            <div class="meter-bar"></div>
+                            <div class="meter-bar"></div>
+                            <div class="meter-bar"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <button class="primary-button" onclick="showScreen('understatement-workshop')">
+                Try Different Statement
+            </button>
+        </div>
+    </div>
+
+    <!-- P2: Understatement Workshop -->
+    <div class="phone-container">
+        <div class="screen" id="understatement-workshop">
+            <div class="header">
+                <button class="back-btn" onclick="showScreen('exaggeration-mastery')">←</button>
+                <div class="lesson-title">Understatement Comedy</div>
+                <div></div>
+            </div>
+            
+            <div class="progress-bar">
+                <div class="progress-fill" style="width: 16%"></div>
+            </div>
+
+            <div class="main-content">
+                <div class="goal-text">
+                    Turn dramatic situations into deadpan understatements
+                </div>
+                
+                <div class="statement-bubble">
+                    Dramatic situation: Concert with explosions, lasers, indoor snow, and a 50-foot robot on stage
+                </div>
+                
+                <textarea class="textarea-input" id="understatement-input" placeholder="Type your understated response here..." oninput="analyzeUnderstatement(this.value)"></textarea>
+                
+                <div class="analysis-grid">
+                    <div class="analysis-card">
+                        <div class="analysis-label">CONTRAST LEVEL</div>
+                        <div class="analysis-value" id="contrast-level">Needs More</div>
+                    </div>
+                    <div class="analysis-card">
+                        <div class="analysis-label">DEADPAN DELIVERY</div>
+                        <div class="analysis-value" id="deadpan-level">Good</div>
+                    </div>
+                </div>
+                
+                <div style="background: #f0f8ff; padding: 12px; border-radius: 8px; font-size: 12px; font-weight: 700; margin-top: 16px;">
+                    💡 <strong>Example:</strong> "Yeah, it was okay. Just a few fireworks and some background music."
+                </div>
+            </div>
+
+            <button class="primary-button" onclick="showScreen('misinterpretation-generator')">
+                Try Another Situation
+            </button>
+        </div>
+    </div>
+
+    <!-- P3: Playful Misinterpretation -->
+    <div class="phone-container">
+        <div class="screen" id="misinterpretation-generator">
+            <div class="header">
+                <button class="back-btn" onclick="showScreen('understatement-workshop')">←</button>
+                <div class="lesson-title">Misinterpretation Fun</div>
+                <div></div>
+            </div>
+            
+            <div class="progress-bar">
+                <div class="progress-fill" style="width: 25%"></div>
+            </div>
+
+            <div class="main-content">
+                <div class="goal-text">
+                    Choose your misinterpretation style and craft a playful response
+                </div>
+                
+                <div class="statement-bubble">
+                    "I'm really feeling the pressure at work lately"
+                </div>
+                
+                <div class="technique-grid">
+                    <div class="technique-card" onclick="selectTechnique(this, 'literal')">
+                        <div class="technique-title">Literal Interpretation</div>
+                        <div class="technique-desc">Take metaphors literally</div>
+                    </div>
+                    <div class="technique-card" onclick="selectTechnique(this, 'innocent')">
+                        <div class="technique-title">Innocent Confusion</div>
+                        <div class="technique-desc">Pretend to misunderstand context</div>
+                    </div>
+                    <div class="technique-card" onclick="selectTechnique(this, 'absurd')">
+                        <div class="technique-title">Absurd Assumption</div>
+                        <div class="technique-desc">Make ridiculous connections</div>
+                    </div>
+                </div>
+                
+                <textarea class="textarea-input" id="misinterpretation-input" placeholder="Craft your playful misinterpretation..." style="display: none;"></textarea>
+                
+                <div class="analysis-grid" id="misinterpretation-analysis" style="display: none;">
+                    <div class="analysis-card">
+                        <div class="analysis-label">OBVIOUSNESS</div>
+                        <div class="analysis-value safety-good" id="obviousness-level">Clear Intent</div>
+                    </div>
+                    <div class="analysis-card">
+                        <div class="analysis-label">PLAYFULNESS</div>
+                        <div class="analysis-value safety-good" id="playfulness-level">Good</div>
+                    </div>
+                </div>
+            </div>
+
+            <button class="primary-button" id="misinterpretation-continue" onclick="showScreen('reversal-trainer')" style="display: none;">
+                Try Another Statement
+            </button>
+        </div>
+    </div>
+
+    <!-- P4: Reversal Technique -->
+    <div class="phone-container">
+        <div class="screen" id="reversal-trainer">
+            <div class="header">
+                <button class="back-btn" onclick="showScreen('misinterpretation-generator')">←</button>
+                <div class="lesson-title">Playful Reversals</div>
+                <div></div>
+            </div>
+            
+            <div class="progress-bar">
+                <div class="progress-fill" style="width: 33%"></div>
+            </div>
+
+            <div class="main-content">
+                <div class="goal-text">
+                    Practice saying the opposite with obvious playfulness
+                </div>
+                
+                <div class="statement-bubble">
+                    Clear situation: Amazing concert - everyone loved it, incredible energy, best show ever
+                </div>
+                
+                <textarea class="textarea-input" id="reversal-input" placeholder="Write your playfully opposite response..." oninput="analyzeReversal(this.value)"></textarea>
+                
+                <div class="analysis-grid">
+                    <div class="analysis-card">
+                        <div class="analysis-label">TONE SAFETY</div>
+                        <div class="analysis-value safety-good" id="tone-safety">Clearly Playful</div>
+                    </div>
+                    <div class="analysis-card">
+                        <div class="analysis-label">SARCASM LEVEL</div>
+                        <div class="analysis-value safety-good" id="sarcasm-level">Perfect</div>
+                    </div>
+                </div>
+                
+                <div style="background: #f0f8ff; padding: 12px; border-radius: 8px; font-size: 12px; font-weight: 700; margin-top: 16px;">
+                    💡 <strong>Example:</strong> "Yeah, they weren't very good, were they?" (with obvious sarcastic smile)
+                </div>
+                
+                <div class="feedback-box" id="reversal-feedback">
+                    Great! Your tone makes it clear this is playful sarcasm, not genuine negativity.
+                </div>
+            </div>
+
+            <button class="primary-button" onclick="showScreen('absurd-debates')">
+                Try Different Situation
+            </button>
+        </div>
+    </div>
+
+    <!-- P5: Absurd Debates -->
+    <div class="phone-container">
+        <div class="screen" id="absurd-debates">
+            <div class="header">
+                <button class="back-btn" onclick="showScreen('reversal-trainer')">←</button>
+                <div class="lesson-title">Absurd Debate Builder</div>
+                <div></div>
+            </div>
+            
+            <div class="progress-bar">
+                <div class="progress-fill" style="width: 41%"></div>
+            </div>
+
+            <div class="main-content">
+                <div class="goal-text">
+                    Build a passionate argument for this ridiculous position
+                </div>
+                
+                <div class="topic-display" id="debate-topic">
+                    Cereal is clearly soup and anyone who disagrees is wrong
+                </div>
+                
+                <div class="argument-builder">
+                    <div class="argument-section">
+                        <div class="section-label">OPENING STATEMENT</div>
+                        <textarea class="textarea-input" id="opening-statement" placeholder="Start your argument with authority..."></textarea>
+                    </div>
+                    <div class="argument-section">
+                        <div class="section-label">KEY EVIDENCE</div>
+                        <textarea class="textarea-input" id="key-evidence" placeholder="Present your 'evidence'..."></textarea>
+                    </div>
+                    <div class="argument-section">
+                        <div class="section-label">DRAMATIC CONCLUSION</div>
+                        <textarea class="textarea-input" id="conclusion" placeholder="End with passion..."></textarea>
+                    </div>
+                </div>
+                
+                <div class="analysis-card" style="margin: 16px 0;">
+                    <div class="analysis-label">COMMITMENT METER</div>
+                    <div class="analysis-value safety-good" id="commitment-level">Perfectly Ridiculous</div>
+                </div>
+                
+                <div class="button-row">
+                    <button class="secondary-button" onclick="generateNewTopic()">New Topic</button>
+                    <button class="secondary-button" onclick="readArgument()">Read Aloud</button>
+                </div>
+            </div>
+
+            <button class="primary-button" onclick="showScreen('fake-expertise')">
+                Practice Debate
+            </button>
+        </div>
+    </div>
+
+    <!-- P6: Fake Expertise -->
+    <div class="phone-container">
+        <div class="screen" id="fake-expertise">
+            <div class="header">
+                <button class="back-btn" onclick="showScreen('absurd-debates')">←</button>
+                <div class="lesson-title">Fake Expert Academy</div>
+                <div></div>
+            </div>
+            
+            <div class="progress-bar">
+                <div class="progress-fill" style="width: 50%"></div>
+            </div>
+
+            <div class="main-content">
+                <div class="goal-text">
+                    Give a confidently wrong expert explanation for this mundane topic
+                </div>
+                
+                <div class="statement-bubble" id="expertise-topic">
+                    Topic: The proper way to eat a sandwich
+                </div>
+                
+                <textarea class="textarea-input" id="expert-explanation" placeholder="Begin with 'Obviously, any expert knows that...' and give hilariously wrong advice" oninput="analyzeExpertise(this.value)"></textarea>
+                
+                <div class="analysis-grid">
+                    <div class="analysis-card">
+                        <div class="analysis-label">CONFIDENCE LEVEL</div>
+                        <div class="analysis-value safety-good" id="confidence-level">Authoritative</div>
+                    </div>
+                    <div class="analysis-card">
+                        <div class="analysis-label">WRONGNESS FACTOR</div>
+                        <div class="analysis-value safety-good" id="wrongness-level">Obviously Wrong</div>
+                    </div>
+                </div>
+                
+                <div style="background: #f0f8ff; padding: 12px; border-radius: 8px; font-size: 12px; font-weight: 700; margin-top: 16px;">
+                    <strong>Authority Starters:</strong> "Obviously...", "Any expert knows...", "It's scientifically proven...", "The fundamental rule is..."
+                </div>
+                
+                <div class="button-row">
+                    <button class="secondary-button" onclick="generateExpertiseTopic()">New Topic</button>
+                    <button class="secondary-button" onclick="addAuthorityPhrase()">Add Authority</button>
+                </div>
+            </div>
+
+            <button class="primary-button" onclick="showScreen('self-deprecation')">
+                Test Your Expertise
+            </button>
+        </div>
+    </div>
+
+    <!-- P7: Playful Self-Deprecation -->
+    <div class="phone-container">
+        <div class="screen" id="self-deprecation">
+            <div class="header">
+                <button class="back-btn" onclick="showScreen('fake-expertise')">←</button>
+                <div class="lesson-title">Humble Exaggeration</div>
+                <div></div>
+            </div>
+            
+            <div class="progress-bar">
+                <div class="progress-fill" style="width: 58%"></div>
+            </div>
+
+            <div class="main-content">
+                <div class="goal-text">
+                    Turn your achievement into playful self-deprecation
+                </div>
+                
+                <input type="text" class="text-input" id="achievement-input" placeholder="Enter a recent achievement..." oninput="generateSelfDeprecation()">
+                
+                <div class="dynamic-display" id="self-deprecation-display" style="display: none;">
+                    Your playful minimization will appear here
+                </div>
+                
+                <div class="analysis-grid" id="self-deprecation-analysis" style="display: none;">
+                    <div class="analysis-card">
+                        <div class="analysis-label">POSITIVITY CHECK</div>
+                        <div class="analysis-value safety-good" id="positivity-level">Healthy Balance</div>
+                    </div>
+                    <div class="analysis-card">
+                        <div class="analysis-label">PLAYFULNESS</div>
+                        <div class="analysis-value safety-good" id="self-playfulness">Clearly Joking</div>
+                    </div>
+                </div>
+                
+                <div style="background: #fff5f5; border: 2px solid #E06B6B; border-radius: 8px; padding: 12px; font-size: 12px; font-weight: 700; margin-top: 16px;">
+                    ⚠️ <strong>Keep it healthy:</strong> Self-deprecation should be obviously playful, not genuinely negative about yourself
+                </div>
+            </div>
+
+            <button class="primary-button" onclick="showScreen('teasing-calibrator')">
+                Try Another Achievement
+            </button>
+        </div>
+    </div>
+
+    <!-- P8: Teasing Safety Calibrator -->
+    <div class="phone-container">
+        <div class="screen" id="teasing-calibrator">
+            <div class="header">
+                <button class="back-btn" onclick="showScreen('self-deprecation')">←</button>
+                <div class="lesson-title">Teasing Calibrator</div>
+                <div></div>
+            </div>
+            
+            <div class="progress-bar">
+                <div class="progress-fill" style="width: 66%"></div>
+            </div>
+
+            <div class="main-content">
+                <div class="goal-text">
+                    Craft a playful tease and test it across different personality types
+                </div>
+                
+                <div class="statement-bubble">
+                    Scenario: Your close friend just spilled coffee on their white shirt
+                </div>
+                
+                <textarea class="textarea-input" id="teasing-input" placeholder="Write your playful tease..." oninput="analyzeTease(this.value)"></textarea>
+                
+                <div class="analysis-grid">
+                    <div class="analysis-card">
+                        <div class="analysis-label">PLAYFULNESS</div>
+                        <div class="analysis-value safety-good" id="tease-playfulness">Good</div>
+                    </div>
+                    <div class="analysis-card">
+                        <div class="analysis-label">BOUNDARY RESPECT</div>
+                        <div class="analysis-value safety-good" id="boundary-respect">Safe</div>
+                    </div>
+                    <div class="analysis-card">
+                        <div class="analysis-label">RELATIONSHIP FIT</div>
+                        <div class="analysis-value safety-good" id="relationship-fit">Perfect</div>
+                    </div>
+                    <div class="analysis-card">
+                        <div class="analysis-label">TARGETS BEHAVIOR</div>
+                        <div class="analysis-value safety-good" id="target-check">Not Person</div>
+                    </div>
+                </div>
+                
+                <div class="goal-text" style="margin: 16px 0 8px;">
+                    Test with different personality types:
+                </div>
+                
+                <div class="personality-selector">
+                    <div class="personality-chip" onclick="testPersonality(this, 'sensitive')">Sensitive Friend</div>
+                    <div class="personality-chip" onclick="testPersonality(this, 'sarcastic')">Sarcastic Friend</div>
+                    <div class="personality-chip" onclick="testPersonality(this, 'new')">New Acquaintance</div>
+                </div>
+                
+                <div class="feedback-box" id="personality-feedback">
+                    Select a personality type to see how they might react to your tease
+                </div>
+            </div>
+
+            <button class="primary-button" onclick="showScreen('bold-claims')">
+                Try Different Scenario
+            </button>
+        </div>
+    </div>
+
+    <!-- P9: Bold Claims Workshop -->
+    <div class="phone-container">
+        <div class="screen" id="bold-claims">
+            <div class="header">
+                <button class="back-btn" onclick="showScreen('teasing-calibrator')">←</button>
+                <div class="lesson-title">Bold Claims Workshop</div>
+                <div></div>
+            </div>
+            
+            <div class="progress-bar">
+                <div class="progress-fill" style="width: 75%"></div>
+            </div>
+
+            <div class="main-content">
+                <div class="goal-text">
+                    Make boldly ridiculous claims with confident delivery
+                </div>
+                
+                <div class="technique-grid">
+                    <div class="technique-card" onclick="selectClaimType(this, 'preference')">
+                        <div class="technique-title">Extreme Preference</div>
+                        <div class="technique-desc">Boldly declare unusual preferences</div>
+                    </div>
+                    <div class="technique-card" onclick="selectClaimType(this, 'achievement')">
+                        <div class="technique-title">Impossible Achievement</div>
+                        <div class="technique-desc">Claim ridiculous accomplishments</div>
+                    </div>
+                    <div class="technique-card" onclick="selectClaimType(this, 'expertise')">
+                        <div class="technique-title">Absurd Expertise</div>
+                        <div class="technique-desc">Claim expertise in silly things</div>
+                    </div>
+                </div>
+                
+                <textarea class="textarea-input" id="bold-claim-input" placeholder="Make your bold claim..." style="display: none;" oninput="analyzeBoldClaim(this.value)"></textarea>
+                
+                <div class="analysis-grid" id="bold-claim-analysis" style="display: none;">
+                    <div class="analysis-card">
+                        <div class="analysis-label">CONFIDENCE LEVEL</div>
+                        <div class="analysis-value safety-good" id="claim-confidence">Bold</div>
+                    </div>
+                    <div class="analysis-card">
+                        <div class="analysis-label">ABSURDITY CHECK</div>
+                        <div class="analysis-value safety-good" id="claim-absurdity">Obviously Playful</div>
+                    </div>
+                </div>
+                
+                <div class="feedback-box warning" id="bold-claim-warning" style="display: none;">
+                    ⚠️ Make sure your claim is obviously playful, not genuinely delusional
+                </div>
+            </div>
+
+            <button class="primary-button" id="bold-claim-continue" onclick="showScreen('compliment-transformer')" style="display: none;">
+                Make Another Claim
+            </button>
+        </div>
+    </div>
+
+    <!-- P10: Playful Compliment Transformer -->
+    <div class="phone-container">
+        <div class="screen" id="compliment-transformer">
+            <div class="header">
+                <button class="back-btn" onclick="showScreen('bold-claims')">←</button>
+                <div class="lesson-title">Compliment Transformer</div>
+                <div></div>
+            </div>
+            
+            <div class="progress-bar">
+                <div class="progress-fill" style="width: 83%"></div>
+            </div>
+
+            <div class="main-content">
+                <div class="goal-text">
+                    Transform boring compliments into memorable ones
+                </div>
+                
+                <div class="statement-bubble" id="boring-compliment">
+                    Boring compliment: "Nice shirt"
+                </div>
+                
+                <div class="technique-grid">
+                    <div class="technique-card" onclick="selectComplimentTechnique(this, 'exaggeration')">
+                        <div class="technique-title">Exaggeration</div>
+                        <div class="technique-desc">Make it dramatically over the top</div>
+                    </div>
+                    <div class="technique-card" onclick="selectComplimentTechnique(this, 'unexpected')">
+                        <div class="technique-title">Unexpected Framing</div>
+                        <div class="technique-desc">Reframe in surprising way</div>
+                    </div>
+                    <div class="technique-card" onclick="selectComplimentTechnique(this, 'confusion')">
+                        <div class="technique-title">Playful Confusion</div>
+                        <div class="technique-desc">Pretend to be confused by their amazingness</div>
+                    </div>
+                </div>
+                
+                <div class="dynamic-display" id="transformed-compliment" style="display: none;">
+                    Your transformed compliment will appear here
+                </div>
+                
+                <textarea class="textarea-input" id="compliment-input" placeholder="Write your transformed compliment..." style="display: none;" oninput="analyzeCompliment(this.value)"></textarea>
+                
+                <div class="analysis-card" id="memorability-meter" style="display: none; margin: 16px 0;">
+                    <div class="analysis-label">MEMORABILITY FACTOR</div>
+                    <div class="analysis-value safety-good" id="memorability-score">High Impact</div>
+                </div>
+                
+                <div class="button-row" id="compliment-buttons" style="display: none;">
+                    <button class="secondary-button" onclick="generateComplimentExample()">Show Example</button>
+                    <button class="secondary-button" onclick="newBoringCompliment()">New Compliment</button>
+                </div>
+            </div>
+
+            <button class="primary-button" id="compliment-continue" onclick="showScreen('perspective-flip')" style="display: none;">
+                Transform Another
+            </button>
+        </div>
+    </div>
+
+    <!-- P11: Perspective Flip Workshop -->
+    <div class="phone-container">
+        <div class="screen" id="perspective-flip">
+            <div class="header">
+                <button class="back-btn" onclick="showScreen('compliment-transformer')">←</button>
+                <div class="lesson-title">Perspective Flip Machine</div>
+                <div></div>
+            </div>
+            
+            <div class="progress-bar">
+                <div class="progress-fill" style="width: 91%"></div>
+            </div>
+
+            <div class="main-content">
+                <div class="goal-text">
+                    Reframe standard questions in unexpected but engaging ways
+                </div>
+                
+                <div class="statement-bubble" id="standard-question">
+                    Standard question: "Where are you from?"
+                </div>
+                
+                <textarea class="textarea-input" id="reframe-input" placeholder="Reframe this question in your own unique way..." oninput="analyzeReframe(this.value)"></textarea>
+                
+                <div class="analysis-grid">
+                    <div class="analysis-card">
+                        <div class="analysis-label">PERSONALITY INJECTION</div>
+                        <div class="analysis-value safety-good" id="personality-injection">Strong</div>
+                    </div>
+                    <div class="analysis-card">
+                        <div class="analysis-label">CONVERSATION FLOW</div>
+                        <div class="analysis-value safety-good" id="flow-check">Natural</div>
+                    </div>
+                </div>
+                
+                <div style="background: #f0f8ff; padding: 12px; border-radius: 8px; font-size: 12px; font-weight: 700; margin-top: 16px;">
+                    💡 <strong>Examples:</strong> "What's your origin story?" / "Where did you escape from?" / "What corner of the world claims you?"
+                </div>
+                
+                <div class="button-row">
+                    <button class="secondary-button" onclick="generateNewQuestion()">New Question</button>
+                    <button class="secondary-button" onclick="showExamples()">More Examples</button>
+                </div>
+            </div>
+
+            <button class="primary-button" onclick="showScreen('inside-joke-creator')">
+                Try Different Question
+            </button>
+        </div>
+    </div>
+
+    <!-- P12: Inside Joke Creator -->
+    <div class="phone-container">
+        <div class="screen" id="inside-joke-creator">
+            <div class="header">
+                <button class="back-btn" onclick="showScreen('perspective-flip')">←</button>
+                <div class="lesson-title">Inside Joke Creator</div>
+                <div></div>
+            </div>
+            
+            <div class="progress-bar">
+                <div class="progress-fill" style="width: 100%"></div>
+            </div>
+
+            <div class="main-content">
+                <div class="goal-text">
+                    Turn shared moments into inside jokes
+                </div>
+                
+                <div class="statement-bubble">
+                    Shared moment: You both just witnessed someone walking a cat on a leash
+                </div>
+                
+                <div class="response-grid">
+                    <div class="response-option" onclick="selectJokeStyle(this, 'observation')">
+                        <strong>Amplify the Observation:</strong><br>
+                        Make a comment that you both can build on
+                    </div>
+                    <div class="response-option" onclick="selectJokeStyle(this, 'callback')">
+                        <strong>Create Callback Potential:</strong><br>
+                        Say something that can be referenced later
+                    </div>
+                    <div class="response-option" onclick="selectJokeStyle(this, 'shared')">
+                        <strong>Shared Perspective:</strong><br>
+                        Comment on what you're both thinking
+                    </div>
+                </div>
+                
+                <textarea class="textarea-input" id="inside-joke-input" placeholder="Craft your inside joke starter..." style="display: none;" oninput="analyzeInsideJoke(this.value)"></textarea>
+                
+                <div class="analysis-grid" id="inside-joke-analysis" style="display: none;">
+                    <div class="analysis-card">
+                        <div class="analysis-label">SHARED FACTOR</div>
+                        <div class="analysis-value safety-good" id="shared-factor">Both Witnessed</div>
+                    </div>
+                    <div class="analysis-card">
+                        <div class="analysis-label">CALLBACK POTENTIAL</div>
+                        <div class="analysis-value safety-good" id="callback-potential">High</div>
+                    </div>
+                </div>
+                
+                <div style="background: #fff5f5; border: 2px solid #E06B6B; border-radius: 8px; padding: 12px; font-size: 12px; font-weight: 700; margin-top: 16px;">
+                    ⚠️ <strong>Remember:</strong> Inside jokes work best when they're based on shared experiences, not just your own observations
+                </div>
+                
+                <div class="button-row">
+                    <button class="secondary-button" onclick="generateNewMoment()">New Moment</button>
+                    <button class="secondary-button" onclick="testCallback()">Test Callback</button>
+                </div>
+            </div>
+
+            <button class="primary-button" onclick="celebrateCompletion()">
+                Complete Play Module!
+            </button>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <div class="nav-buttons">
+        <button class="nav-btn active" onclick="showTutorial(1)">Exag</button>
+        <button class="nav-btn" onclick="showTutorial(2)">Under</button>
+        <button class="nav-btn" onclick="showTutorial(3)">Misint</button>
+        <button class="nav-btn" onclick="showTutorial(4)">Reverse</button>
+        <button class="nav-btn" onclick="showTutorial(5)">Debate</button>
+        <button class="nav-btn" onclick="showTutorial(6)">Expert</button>
+        <button class="nav-btn" onclick="showTutorial(7)">SelfDep</button>
+        <button class="nav-btn" onclick="showTutorial(8)">Tease</button>
+        <button class="nav-btn" onclick="showTutorial(9)">Claims</button>
+        <button class="nav-btn" onclick="showTutorial(10)">Compli</button>
+        <button class="nav-btn" onclick="showTutorial(11)">Flip</button>
+        <button class="nav-btn" onclick="showTutorial(12)">Jokes</button>
+    </div>
+
+    <script>
+        function showScreen(screenId) {
+            document.querySelectorAll('.screen').forEach(screen => {
+                screen.classList.remove('active');
+            });
+            document.getElementById(screenId).classList.add('active');
+        }
+
+        function showTutorial(tutorialNum) {
+            document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            const screens = {
+                1: 'exaggeration-mastery', 2: 'understatement-workshop', 3: 'misinterpretation-generator',
+                4: 'reversal-trainer', 5: 'absurd-debates', 6: 'fake-expertise',
+                7: 'self-deprecation', 8: 'teasing-calibrator', 9: 'bold-claims',
+                10: 'compliment-transformer', 11: 'perspective-flip', 12: 'inside-joke-creator'
+            };
+            showScreen(screens[tutorialNum]);
+        }
+
+        // P1: Exaggeration
+        function updateExaggeration(value) {
+            const texts = {
+                1: "The movie was okay", 2: "The movie was kinda long", 3: "The movie was pretty long",
+                4: "The movie was really long", 5: "The movie was incredibly long", 6: "The movie was eternally long",
+                7: "The movie was epically long", 8: "The movie was longer than human civilization",
+                9: "The movie aged me several decades", 10: "The movie outlasted geological eras"
+            };
+            document.getElementById('exaggeration-text').textContent = texts[value];
+            updateContextMeters(parseInt(value));
+        }
+
+        function updateContextMeters(level) {
+            const friendMeter = document.getElementById('friend-meter');
+            const workMeter = document.getElementById('work-meter');
+            
+            // Update friend appropriateness (high tolerance)
+            const friendBars = friendMeter.children;
+            Array.from(friendBars).forEach((bar, i) => {
+                bar.className = level > i && level <= 8 ? 'meter-bar excellent' : 
+                                level > 8 ? 'meter-bar risky' : 'meter-bar';
+            });
+            
+            // Update work appropriateness (lower tolerance)  
+            const workBars = workMeter.children;
+            Array.from(workBars).forEach((bar, i) => {
+                bar.className = level > i && level <= 5 ? 'meter-bar good' : 
+                                level > 5 ? 'meter-bar risky' : 'meter-bar';
+            });
+        }
+
+        // P2: Understatement
+        function analyzeUnderstatement(text) {
+            const contrastLevel = document.getElementById('contrast-level');
+            const deadpanLevel = document.getElementById('deadpan-level');
+            
+            if (text.length > 10) {
+                const isUnderstated = text.toLowerCase().includes('okay') || text.toLowerCase().includes('fine') || 
+                                    text.toLowerCase().includes('alright') || text.toLowerCase().includes('decent');
+                contrastLevel.textContent = isUnderstated ? "Perfect" : "Needs More";
+                contrastLevel.className = isUnderstated ? "analysis-value safety-good" : "analysis-value safety-warning";
+                
+                deadpanLevel.textContent = text.includes('.') ? "Good" : "Add Period";
+            }
+        }
+
+        // P3: Misinterpretation
+        function selectTechnique(element, technique) {
+            document.querySelectorAll('.technique-card').forEach(card => card.classList.remove('selected'));
+            element.classList.add('selected');
+            
+            const input = document.getElementById('misinterpretation-input');
+            const analysis = document.getElementById('misinterpretation-analysis');
+            const continueBtn = document.getElementById('misinterpretation-continue');
+            
+            input.style.display = 'block';
+            analysis.style.display = 'grid';
+            continueBtn.style.display = 'block';
+            
+            const examples = {
+                literal: "Wait, there's actual pressure at your office? Like air pressure? Do you work in a submarine?",
+                innocent: "Oh no! Is your workplace's plumbing having issues?",
+                absurd: "Ah, you must work for Big Pressure - the underground pressure cartel"
+            };
+            input.placeholder = `Example: ${examples[technique]}`;
+        }
+
+        // P4: Reversal
+        function analyzeReversal(text) {
+            const toneSafety = document.getElementById('tone-safety');
+            const sarcasmLevel = document.getElementById('sarcasm-level');
+            const feedback = document.getElementById('reversal-feedback');
+            
+            if (text.length > 5) {
+                const hasNegative = text.toLowerCase().includes("wasn't") || text.toLowerCase().includes("terrible") || 
+                                  text.toLowerCase().includes("bad") || text.toLowerCase().includes("awful");
+                
+                toneSafety.textContent = hasNegative ? "Clearly Playful" : "Add Opposite";
+                sarcasmLevel.textContent = hasNegative ? "Perfect" : "More Obvious";
+                
+                if (hasNegative) {
+                    feedback.classList.add('show');
+                }
+            }
+        }
+
+        // P5: Debate Topics
+        function generateNewTopic() {
+            const topics = [
+                "Hot dogs are clearly sandwiches", "Pineapple on pizza is a war crime",
+                "Morning people are secretly plotting something", "Cats are just small, judgmental roommates",
+                "Coffee is just bean soup", "Socks with sandals are high fashion"
+            ];
+            const randomTopic = topics[Math.floor(Math.random() * topics.length)];
+            document.getElementById('debate-topic').textContent = randomTopic;
+        }
+
+        function readArgument() {
+            const opening = document.getElementById('opening-statement').value;
+            const evidence = document.getElementById('key-evidence').value;
+            const conclusion = document.getElementById('conclusion').value;
+            
+            const fullArgument = `${opening} ${evidence} ${conclusion}`;
+            if ('speechSynthesis' in window && fullArgument.trim()) {
+                const utterance = new SpeechSynthesisUtterance(fullArgument);
+                speechSynthesis.speak(utterance);
+            }
+        }
+
+        // P6: Fake Expertise
+        function analyzeExpertise(text) {
+            const confidenceLevel = document.getElementById('confidence-level');
+            const wrongnessLevel = document.getElementById('wrongness-level');
+            
+            if (text.length > 20) {
+                const hasAuthority = text.toLowerCase().includes('obviously') || text.toLowerCase().includes('expert') || 
+                                   text.toLowerCase().includes('clearly') || text.toLowerCase().includes('fundamental');
+                
+                confidenceLevel.textContent = hasAuthority ? "Authoritative" : "Add Authority";
+                wrongnessLevel.textContent = text.length > 50 ? "Obviously Wrong" : "More Detail";
+            }
+        }
+
+        function generateExpertiseTopic() {
+            const topics = [
+                "The optimal sleeping position", "How to properly walk up stairs", 
+                "The correct way to breathe", "Professional door opening technique",
+                "Advanced sitting methodology", "The science of yawning"
+            ];
+            const randomTopic = topics[Math.floor(Math.random() * topics.length)];
+            document.getElementById('expertise-topic').textContent = `Topic: ${randomTopic}`;
+        }
+
+        function addAuthorityPhrase() {
+            const phrases = ["Obviously, ", "Any expert knows that ", "It's scientifically proven that ", "The fundamental rule is "];
+            const randomPhrase = phrases[Math.floor(Math.random() * phrases.length)];
+            const input = document.getElementById('expert-explanation');
+            input.value = randomPhrase + input.value;
+        }
+
+        // P7: Self-Deprecation
+        function generateSelfDeprecation() {
+            const achievement = document.getElementById('achievement-input').value;
+            const display = document.getElementById('self-deprecation-display');
+            const analysis = document.getElementById('self-deprecation-analysis');
+            
+            if (achievement.length > 3) {
+                const deprecations = [
+                    `Yeah, I'm basically a professional at ${achievement.toLowerCase()}`,
+                    `${achievement}? I guess I accidentally succeeded at something`,
+                    `I'm pretty much the ${achievement.toLowerCase()} champion of my living room`
+                ];
+                const randomDeprecation = deprecations[Math.floor(Math.random() * deprecations.length)];
+                
+                display.textContent = randomDeprecation;
+                display.style.display = 'flex';
+                analysis.style.display = 'grid';
+            }
+        }
+
+        // P8: Teasing
+        function analyzeTease(text) {
+            const playfulness = document.getElementById('tease-playfulness');
+            const boundaryRespect = document.getElementById('boundary-respect');
+            const relationshipFit = document.getElementById('relationship-fit');
+            const targetCheck = document.getElementById('target-check');
+            
+            if (text.length > 10) {
+                // Simple analysis logic
+                const isPlayful = !text.toLowerCase().includes('stupid') && !text.toLowerCase().includes('ugly');
+                const targetsBehavior = text.toLowerCase().includes('spill') || text.toLowerCase().includes('coffee');
+                
+                playfulness.textContent = isPlayful ? "Good" : "Too Harsh";
+                playfulness.className = `analysis-value ${isPlayful ? 'safety-good' : 'safety-danger'}`;
+                
+                targetCheck.textContent = targetsBehavior ? "Behavior" : "Check Target";
+                targetCheck.className = `analysis-value ${targetsBehavior ? 'safety-good' : 'safety-warning'}`;
+            }
+        }
+
+        function testPersonality(element, type) {
+            document.querySelectorAll('.personality-chip').forEach(chip => chip.classList.remove('selected'));
+            element.classList.add('selected');
+            
+            const feedback = document.getElementById('personality-feedback');
+            const reactions = {
+                sensitive: "Might be hurt by teasing about spills. Consider a supportive approach instead.",
+                sarcastic: "Would probably laugh and tease you back. Great match for playful banter!",
+                new: "Risky - they don't know your humor style yet. Play it safer with new people."
+            };
+            
+            feedback.textContent = reactions[type];
+            feedback.classList.add('show');
+            feedback.className = type === 'sensitive' || type === 'new' ? 'feedback-box warning show' : 'feedback-box show';
+        }
+
+        // P9: Bold Claims
+        function selectClaimType(element, type) {
+            document.querySelectorAll('.technique-card').forEach(card => card.classList.remove('selected'));
+            element.classList.add('selected');
+            
+            const input = document.getElementById('bold-claim-input');
+            const analysis = document.getElementById('bold-claim-analysis');
+            const continueBtn = document.getElementById('bold-claim-continue');
+            
+            input.style.display = 'block';
+            analysis.style.display = 'grid';
+            continueBtn.style.display = 'block';
+            
+            const examples = {
+                preference: "I only eat food that's perfectly spherical",
+                achievement: "I once arm-wrestled a tornado and won",
+                expertise: "I'm internationally recognized for my expertise in cloud naming"
+            };
+            input.placeholder = `Example: ${examples[type]}`;
+        }
+
+        function analyzeBoldClaim(text) {
+            const confidence = document.getElementById('claim-confidence');
+            const absurdity = document.getElementById('claim-absurdity');
+            const warning = document.getElementById('bold-claim-warning');
+            
+            if (text.length > 10) {
+                const isBold = text.includes('!') || text.toLowerCase().includes('best') || text.toLowerCase().includes('only');
+                const isAbsurd = text.toLowerCase().includes('tornado') || text.toLowerCase().includes('internationally') || 
+                               text.toLowerCase().includes('spherical') || text.length > 50;
+                
+                confidence.textContent = isBold ? "Bold" : "Add Confidence";
+                absurdity.textContent = isAbsurd ? "Obviously Playful" : "More Absurd";
+                
+                if (!isAbsurd && text.length > 20) {
+                    warning.style.display = 'block';
+                }
+            }
+        }
+
+        // P10: Compliment Transformer
+        function selectComplimentTechnique(element, technique) {
+            document.querySelectorAll('.technique-card').forEach(card => card.classList.remove('selected'));
+            element.classList.add('selected');
+            
+            const display = document.getElementById('transformed-compliment');
+            const input = document.getElementById('compliment-input');
+            const meter = document.getElementById('memorability-meter');
+            const buttons = document.getElementById('compliment-buttons');
+            const continueBtn = document.getElementById('compliment-continue');
+            
+            input.style.display = 'block';
+            display.style.display = 'flex';
+            meter.style.display = 'block';
+            buttons.style.display = 'flex';
+            continueBtn.style.display = 'block';
+            
+            const transformations = {
+                exaggeration: "That shirt is clearly plotting to make everyone else's wardrobe jealous",
+                unexpected: "Your shirt just upgraded the entire room's aesthetic",
+                confusion: "Wait, how is your shirt making everyone else look underdressed?"
+            };
+            
+            display.textContent = transformations[technique];
+        }
+
+        function generateComplimentExample() {
+            const examples = [
+                "That shirt has main character energy",
+                "Your shirt is conducting a masterclass in style",
+                "I think your shirt just made mine feel insecure"
+            ];
+            const randomExample = examples[Math.floor(Math.random() * examples.length)];
+            document.getElementById('transformed-compliment').textContent = randomExample;
+        }
+
+        function newBoringCompliment() {
+            const compliments = ["Nice shoes", "Cool bag", "Great haircut", "Nice jacket", "Cool watch"];
+            const randomCompliment = compliments[Math.floor(Math.random() * compliments.length)];
+            document.getElementById('boring-compliment').textContent = `Boring compliment: "${randomCompliment}"`;
+        }
+
+        // P11: Perspective Flip
+        function analyzeReframe(text) {
+            const personalityInjection = document.getElementById('personality-injection');
+            const flowCheck = document.getElementById('flow-check');
+            
+            if (text.length > 10) {
+                const isCreative = !text.toLowerCase().includes('where') || text.includes('?');
+                const hasPersonality = text.toLowerCase().includes('origin') || text.toLowerCase().includes('escape') || 
+                                     text.toLowerCase().includes('corner') || text.length > 20;
+                
+                personalityInjection.textContent = hasPersonality ? "Strong" : "Add More";
+                flowCheck.textContent = isCreative ? "Natural" : "More Creative";
+            }
+        }
+
+        function generateNewQuestion() {
+            const questions = [
+                "What do you do for work?", "What's your favorite food?", 
+                "Do you have any hobbies?", "Where did you go to school?", "What's your favorite movie?"
+            ];
+            const randomQuestion = questions[Math.floor(Math.random() * questions.length)];
+            document.getElementById('standard-question').textContent = `Standard question: "${randomQuestion}"`;
+        }
+
+        // P12: Inside Jokes
+        function selectJokeStyle(element, style) {
+            document.querySelectorAll('.response-option').forEach(option => option.classList.remove('selected'));
+            element.classList.add('selected');
+            
+            const input = document.getElementById('inside-joke-input');
+            const analysis = document.getElementById('inside-joke-analysis');
+            
+            input.style.display = 'block';
+            analysis.style.display = 'grid';
+            
+            const examples = {
+                observation: "Well, that's the most confident cat I've ever seen",
+                callback: "I think we just witnessed the future of pet transportation",
+                shared: "Are we both seeing this or did we enter an alternate dimension?"
+            };
+            input.placeholder = `Example: ${examples[style]}`;
+        }
+
+        function generateNewMoment() {
+            const moments = [
+                "Someone wearing a full suit at the beach", "A person talking very seriously to a houseplant",
+                "Someone doing yoga poses while waiting for the bus", "A person wearing winter coat in summer heat"
+            ];
+            const randomMoment = moments[Math.floor(Math.random() * moments.length)];
+            document.querySelector('#inside-joke-creator .statement-bubble').textContent = 
+                `Shared moment: You both just witnessed ${randomMoment}`;
+        }
+
+        function analyzeInsideJoke(text) {
+            const sharedFactor = document.getElementById('shared-factor');
+            const callbackPotential = document.getElementById('callback-potential');
+            
+            if (text.length > 10) {
+                const referencesShared = text.toLowerCase().includes('we') || text.toLowerCase().includes('both') || 
+                                       text.toLowerCase().includes('see') || text.toLowerCase().includes('witness');
+                const hasCallback = text.length > 20 && (text.includes('?') || text.includes('future') || text.includes('dimension'));
+                
+                sharedFactor.textContent = referencesShared ? "Both Witnessed" : "Make It Shared";
+                sharedFactor.className = `analysis-value ${referencesShared ? 'safety-good' : 'safety-warning'}`;
+                
+                callbackPotential.textContent = hasCallback ? "High" : "Medium";
+            }
+        }
+
+        function testCallback() {
+            const callbacks = [
+                "Remember the cat leash situation?", "This gives me cat-walking-person vibes",
+                "At least they're not walking a cat", "We've entered the pet dimension again"
+            ];
+            const randomCallback = callbacks[Math.floor(Math.random() * callbacks.length)];
+            
+            const feedback = document.createElement('div');
+            feedback.className = 'feedback-box show';
+            feedback.textContent = `Future callback example: "${randomCallback}"`;
+            feedback.style.background = '#87ceeb';
+            
+            const existingFeedback = document.querySelector('#inside-joke-creator .feedback-box');
+            if (existingFeedback) {
+                existingFeedback.remove();
+            }
+            
+            document.querySelector('#inside-joke-creator .main-content').appendChild(feedback);
+        }
+
+        function celebrateCompletion() {
+            const celebration = document.createElement('div');
+            celebration.style.cssText = `
+                position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+                background: #87ceeb; color: white; padding: 40px; border-radius: 20px;
+                text-align: center; font-size: 24px; font-weight: 900;
+                box-shadow: 0 20px 40px rgba(0,0,0,0.3); z-index: 1000;
+            `;
+            celebration.innerHTML = `
+                <div style="font-size: 48px; margin-bottom: 16px;">🎉</div>
+                <div>Play Module Complete!</div>
+                <div style="font-size: 14px; margin-top: 16px; font-weight: 700;">
+                    You've mastered all 12 playfulness techniques!
+                </div>
+                <button onclick="this.parentElement.remove()" style="
+                    margin-top: 20px; padding: 12px 24px; background: white; color: #87ceeb;
+                    border: none; border-radius: 8px; font-weight: 900; cursor: pointer;
+                ">Awesome!</button>
+            `;
+            document.body.appendChild(celebration);
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            updateExaggeration(3);
+        });
+    </script>
+</body>
+</html>
