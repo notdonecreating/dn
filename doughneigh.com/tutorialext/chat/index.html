@@ -1,0 +1,1248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat Module Tutorial Extensions</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            background: #f0f8ff;
+            color: #3c3c3c;
+            line-height: 1.4;
+        }
+
+        .phone-container {
+            max-width: 390px;
+            margin: 20px auto;
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+        }
+
+        .screen {
+            min-height: 600px;
+            padding: 20px;
+            display: none;
+        }
+
+        .screen.active {
+            display: block;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .back-btn {
+            background: none;
+            border: none;
+            font-size: 24px;
+            color: #777;
+            cursor: pointer;
+        }
+
+        .lesson-title {
+            font-size: 18px;
+            font-weight: 900;
+            color: #3c3c3c;
+        }
+
+        .progress-bar {
+            height: 8px;
+            background: #e5e5e5;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 32px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: #87ceeb;
+            transition: width 0.3s ease;
+        }
+
+        .main-content {
+            margin-bottom: 32px;
+        }
+
+        .statement-bubble {
+            background: #fafafa;
+            border: 3px solid #e5e5e5;
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 24px;
+            font-size: 16px;
+            font-weight: 700;
+            text-align: center;
+        }
+
+        .goal-text {
+            font-size: 14px;
+            font-weight: 700;
+            color: #777;
+            margin-bottom: 24px;
+            text-align: center;
+        }
+
+        /* C1: Basic Weaving Recognition */
+        .highlightable-text {
+            padding: 16px;
+            margin-bottom: 16px;
+            font-size: 16px;
+            font-weight: 700;
+            line-height: 1.8;
+            text-align: center;
+        }
+
+        .word-highlight {
+            background: #87ceeb;
+            color: white;
+            padding: 2px 6px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 0 2px;
+            transition: all 0.2s ease;
+        }
+
+        .word-highlight:hover {
+            background: #6bb6db;
+            transform: scale(1.05);
+        }
+
+        .word-highlight.selected {
+            background: #5aa5c8;
+            box-shadow: 0 2px 8px rgba(90, 165, 200, 0.4);
+        }
+
+        .weaving-options {
+            background: #f0f8ff;
+            border: 2px solid #87ceeb;
+            border-radius: 12px;
+            padding: 16px;
+            margin-top: 16px;
+            text-align: left;
+        }
+
+        .weaving-option {
+            padding: 8px;
+            margin: 4px 0;
+            background: white;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+
+        .weaving-option:hover {
+            background: #e0f0ff;
+        }
+
+        /* C2: Advanced Weaving Map */
+        .topic-web {
+            position: relative;
+            height: 300px;
+            background: #fafafa;
+            border-radius: 16px;
+            margin: 16px 0;
+            overflow: hidden;
+        }
+
+        .topic-bubble {
+            position: absolute;
+            background: #87ceeb;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .topic-bubble:hover {
+            background: #6bb6db;
+            transform: scale(1.1);
+        }
+
+        .topic-bubble.connected {
+            background: #7BB57B;
+        }
+
+        .connection-line {
+            position: absolute;
+            height: 2px;
+            background: #87ceeb;
+            transform-origin: left center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .connection-line.active {
+            opacity: 1;
+        }
+
+        /* C3: Question Analysis */
+        .text-input {
+            width: 100%;
+            padding: 12px;
+            border: 3px solid #e5e5e5;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            transition: border-color 0.2s ease;
+        }
+
+        .text-input:focus {
+            outline: none;
+            border-color: #87ceeb;
+        }
+
+        .question-feedback {
+            background: #f0f8ff;
+            border: 2px solid #87ceeb;
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 16px;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .depth-meter {
+            display: flex;
+            gap: 4px;
+            margin-top: 8px;
+            align-items: center;
+        }
+
+        .depth-segment {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 10px;
+            font-weight: 900;
+            color: white;
+            transition: opacity 0.3s ease;
+        }
+
+        .depth-segment.surface { background: #E06B6B; }
+        .depth-segment.personal { background: #ffc107; }
+        .depth-segment.values { background: #7BB57B; }
+
+        /* C4: Context Photo Analysis */
+        .photo-scene {
+            position: relative;
+            height: 200px;
+            background: linear-gradient(135deg, #e5e5e5, #d5d5d5);
+            border-radius: 16px;
+            margin: 16px 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: 700;
+            color: #777;
+            overflow: hidden;
+        }
+
+        .context-hotspot {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: #87ceeb;
+            border-radius: 50%;
+            cursor: pointer;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(135, 206, 235, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(135, 206, 235, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(135, 206, 235, 0); }
+        }
+
+        .context-tooltip {
+            position: absolute;
+            background: #3c3c3c;
+            color: white;
+            padding: 8px;
+            border-radius: 6px;
+            font-size: 10px;
+            font-weight: 700;
+            display: none;
+            z-index: 10;
+        }
+
+        /* C5: Relationship Depth Slider */
+        .relationship-slider {
+            margin: 24px 0;
+        }
+
+        .slider {
+            width: 100%;
+            height: 8px;
+            border-radius: 4px;
+            background: linear-gradient(to right, #E06B6B, #ffc107, #7BB57B);
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: white;
+            border: 3px solid #87ceeb;
+            cursor: pointer;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .relationship-label {
+            text-align: center;
+            font-size: 12px;
+            font-weight: 900;
+            color: #87ceeb;
+            margin-top: 8px;
+        }
+
+        .opener-example {
+            background: #f0f8ff;
+            border: 2px solid #87ceeb;
+            border-radius: 12px;
+            padding: 16px;
+            margin-top: 16px;
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        /* C6: Response Enhancement */
+        .enhancement-steps {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin: 16px 0;
+        }
+
+        .enhancement-step {
+            background: white;
+            border: 2px solid #e5e5e5;
+            border-radius: 8px;
+            padding: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .enhancement-step:hover {
+            border-color: #87ceeb;
+            background: #f0f8ff;
+        }
+
+        .enhancement-step.completed {
+            border-color: #7BB57B;
+            background: #f0fff0;
+        }
+
+        .response-evolution {
+            background: #fafafa;
+            border: 2px solid #e5e5e5;
+            border-radius: 12px;
+            padding: 16px;
+            margin: 16px 0;
+            font-size: 14px;
+            font-weight: 700;
+            min-height: 80px;
+            display: flex;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+
+        .impact-meter {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .impact-bar {
+            height: 8px;
+            border-radius: 4px;
+            flex: 1;
+            background: #e5e5e5;
+            transition: background 0.3s ease;
+        }
+
+        .impact-bar.filled {
+            background: #7BB57B;
+        }
+
+        /* C7: Compliment Response */
+        .response-cards {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin: 16px 0;
+        }
+
+        .response-card {
+            background: white;
+            border: 3px solid #e5e5e5;
+            border-radius: 12px;
+            padding: 16px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 14px;
+            font-weight: 700;
+            position: relative;
+        }
+
+        .response-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(135, 206, 235, 0.3);
+        }
+
+        .response-card.good {
+            border-color: #7BB57B;
+        }
+
+        .response-card.bad {
+            border-color: #E06B6B;
+        }
+
+        .response-card.selected {
+            background: #87ceeb;
+            border-color: #6bb6db;
+            color: white;
+            transform: scale(1.02);
+        }
+
+        .card-indicator {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 900;
+        }
+
+        .card-indicator.check {
+            background: #7BB57B;
+            color: white;
+        }
+
+        .card-indicator.x {
+            background: #E06B6B;
+            color: white;
+        }
+
+        /* Buttons */
+        .primary-button {
+            background: #87ceeb;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            padding: 16px 24px;
+            font-size: 16px;
+            font-weight: 900;
+            cursor: pointer;
+            width: 100%;
+            box-shadow: 0 2px 4px rgba(107, 182, 219, 0.3);
+            transition: all 0.2s ease;
+        }
+
+        .primary-button:hover {
+            background: #6bb6db;
+            transform: translateY(-1px);
+        }
+
+        .primary-button:disabled {
+            background: #d5d5d5;
+            color: #777;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .secondary-button {
+            background: white;
+            color: #87ceeb;
+            border: 2px solid #87ceeb;
+            border-radius: 8px;
+            padding: 8px 16px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            margin: 4px;
+            transition: all 0.2s ease;
+        }
+
+        .secondary-button:hover {
+            background: #f0f8ff;
+        }
+
+        .feedback-box {
+            background: #7BB57B;
+            color: white;
+            border-radius: 8px;
+            padding: 12px;
+            margin: 16px 0;
+            font-size: 12px;
+            font-weight: 700;
+            display: none;
+            animation: slideIn 0.3s ease;
+        }
+
+        .feedback-box.show {
+            display: block;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Navigation */
+        .nav-buttons {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 6px;
+            z-index: 100;
+            flex-wrap: wrap;
+            max-width: 350px;
+            justify-content: center;
+        }
+
+        .nav-btn {
+            padding: 6px 12px;
+            background: #87ceeb;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 10px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+
+        .nav-btn.active {
+            background: #6bb6db;
+        }
+
+        .nav-btn:hover {
+            background: #5aa5c8;
+        }
+
+        /* Scenario tabs */
+        .scenario-tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 16px;
+            overflow-x: auto;
+        }
+
+        .scenario-tab {
+            padding: 8px 16px;
+            background: white;
+            border: 2px solid #e5e5e5;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.2s ease;
+        }
+
+        .scenario-tab.active {
+            background: #87ceeb;
+            color: white;
+            border-color: #6bb6db;
+        }
+    </style>
+</head>
+<body>
+    <!-- C1: Basic Weaving Recognition Game -->
+    <div class="phone-container">
+        <div class="screen active" id="c1-weaving">
+            <div class="header">
+                <button class="back-btn">←</button>
+                <div class="lesson-title">C1: Basic Weaving</div>
+                <div></div>
+            </div>
+            
+            <div class="progress-bar">
+                <div class="progress-fill" style="width: 20%"></div>
+            </div>
+
+            <div class="main-content">
+                <div class="goal-text">
+                    Tap words that could be weaving points
+                </div>
+                
+                <div class="highlightable-text">
+                    "I 
+                    <span class="word-highlight" onclick="selectWord(this, 'love', 1)">love</span> 
+                    this 
+                    <span class="word-highlight" onclick="selectWord(this, 'coffee', 1)">coffee</span> 
+                    <span class="word-highlight" onclick="selectWord(this, 'shop', 1)">shop</span>"
+                </div>
+                
+                <div class="weaving-options" id="weaving-options-1" style="display: none;">
+                    <div style="font-weight: 900; margin-bottom: 8px;">Weaving options for "<span id="selected-word-1"></span>":</div>
+                    <div class="weaving-option" onclick="selectWeaving(this, 1)">
+                        "Speaking of coffee, I don't usually get one this late"
+                    </div>
+                    <div class="weaving-option" onclick="selectWeaving(this, 1)">
+                        "Coffee reminds me of my favorite morning routine"
+                    </div>
+                    <div class="weaving-option" onclick="selectWeaving(this, 1)">
+                        "That's interesting - what's your usual order?"
+                    </div>
+                </div>
+                
+                <div class="feedback-box" id="weaving-feedback-1">
+                    Great choice! This weaving picks up on their interest and shares your own experience.
+                </div>
+            </div>
+
+            <button class="primary-button" onclick="showScreen('c2-advanced-weaving')">
+                Continue to Advanced Weaving
+            </button>
+        </div>
+    </div>
+
+    <!-- C2: Advanced Weaving - Threading Pathway Map -->
+    <div class="phone-container">
+        <div class="screen" id="c2-advanced-weaving">
+            <div class="header">
+                <button class="back-btn" onclick="showScreen('c1-weaving')">←</button>
+                <div class="lesson-title">C2: Advanced Weaving</div>
+                <div></div>
+            </div>
+            
+            <div class="progress-bar">
+                <div class="progress-fill" style="width: 40%"></div>
+            </div>
+
+            <div class="main-content">
+                <div class="goal-text">
+                    Connect related topics to build conversation pathways
+                </div>
+                
+                <div class="topic-web" id="topic-web">
+                    <div class="topic-bubble" style="top: 20px; left: 50px;" onclick="connectTopic(this, 'weather')" data-topic="weather">Weather</div>
+                    <div class="topic-bubble" style="top: 80px; left: 200px;" onclick="connectTopic(this, 'mood')" data-topic="mood">Mood</div>
+                    <div class="topic-bubble" style="top: 150px; left: 100px;" onclick="connectTopic(this, 'weekend')" data-topic="weekend">Weekend Plans</div>
+                    <div class="topic-bubble" style="top: 200px; left: 250px;" onclick="connectTopic(this, 'activities')" data-topic="activities">Activities</div>
+                    <div class="topic-bubble" style="top: 120px; left: 20px;" onclick="connectTopic(this, 'seasons')" data-topic="seasons">Seasons</div>
+                    
+                    <div class="connection-line" id="line-weather-mood" style="top: 35px; left: 90px; width: 130px; transform: rotate(15deg);"></div>
+                    <div class="connection-line" id="line-weather-seasons" style="top: 35px; left: 50px; width: 80px; transform: rotate(60deg);"></div>
+                    <div class="connection-line" id="line-mood-weekend" style="top: 115px; left: 150px; width: 90px; transform: rotate(45deg);"></div>
+                </div>
+                
+                <div class="feedback-box" id="threading-feedback">
+                    Excellent! You've identified natural conversation pathways. Weather connects to mood, which leads to weekend plans.
+                </div>
+            </div>
+
+            <button class="primary-button" onclick="showScreen('c3-questions')">
+                Continue to Questions
+            </button>
+        </div>
+    </div>
+
+    <!-- C3: Conversation Questions - Transformation Lab -->
+    <div class="phone-container">
+        <div class="screen" id="c3-questions">
+            <div class="header">
+                <button class="back-btn" onclick="showScreen('c2-advanced-weaving')">←</button>
+                <div class="lesson-title">C3: Question Types</div>
+                <div></div>
+            </div>
+            
+            <div class="progress-bar">
+                <div class="progress-fill" style="width: 60%"></div>
+            </div>
+
+            <div class="main-content">
+                <div class="statement-bubble">
+                    Someone just said: "I love hiking"
+                </div>
+                
+                <div class="goal-text">
+                    Transform this closed question into something deeper
+                </div>
+                
+                <div style="background: #fff5f5; border: 2px solid #E06B6B; border-radius: 8px; padding: 12px; margin-bottom: 16px; text-align: center;">
+                    <strong>Closed:</strong> "Do you hike often?"
+                </div>
+                
+                <input type="text" class="text-input" id="question-input" placeholder="Type your improved question here..." oninput="analyzeQuestion(this.value)">
+                
+                <div class="question-feedback" id="question-feedback" style="display: none;">
+                    <div id="question-display"></div>
+                    <div class="depth-meter">
+                        <div class="depth-segment surface" id="depth-surface" style="opacity: 0.3;">Surface</div>
+                        <div class="depth-segment personal" id="depth-personal" style="opacity: 0.3;">Personal</div>
+                        <div class="depth-segment values" id="depth-values" style="opacity: 0.3;">Values</div>
+                    </div>
+                </div>
+                
+                <div style="background: #f0f8ff; padding: 12px; border-radius: 8px; font-size: 12px; font-weight: 700; margin-top: 16px; text-align: center;">
+                    💡 <strong>Tips:</strong> Try "What draws you to hiking?" or "What does hiking give you that other activities don't?"
+                </div>
+            </div>
+
+            <button class="primary-button" onclick="showScreen('c4-context')">
+                Continue to Context Reading
+            </button>
+        </div>
+    </div>
+
+    <!-- C4: Context Reading Challenge -->
+    <div class="phone-container">
+        <div class="screen" id="c4-context">
+            <div class="header">
+                <button class="back-btn" onclick="showScreen('c3-questions')">←</button>
+                <div class="lesson-title">C4: Context Reading</div>
+                <div></div>
+            </div>
+            
+            <div class="progress-bar">
+                <div class="progress-fill" style="width: 80%"></div>
+            </div>
+
+            <div class="main-content">
+                <div class="goal-text">
+                    Tap on contextual elements that could start conversations
+                </div>
+                
+                <div class="photo-scene">
+                    <div style="text-align: center;">
+                        📖 Coffee Shop Scene
+                        <br><small>Person reading, laptop open, busy atmosphere</small>
+                    </div>
+                    
+                    <div class="context-hotspot" style="top: 60px; left: 80px;" onclick="showContext(this, 'book')" data-context="book">
+                        <div class="context-tooltip">Their book</div>
+                    </div>
+                    
+                    <div class="context-hotspot" style="top: 120px; left: 200px;" onclick="showContext(this, 'laptop')" data-context="laptop">
+                        <div class="context-tooltip">Working setup</div>
+                    </div>
+                    
+                    <div class="context-hotspot" style="top: 40px; left: 250px;" onclick="showContext(this, 'atmosphere')" data-context="atmosphere">
+                        <div class="context-tooltip">Busy environment</div>
+                    </div>
+                </div>
+                
+                <div class="weaving-options" id="context-options" style="display: none;">
+                    <div style="font-weight: 900; margin-bottom: 8px;">Opener ideas for <span id="context-element"></span>:</div>
+                    <div class="weaving-option" id="context-option-1"></div>
+                    <div class="weaving-option" id="context-option-2"></div>
+                    <div class="weaving-option" id="context-option-3"></div>
+                </div>
+                
+                <div style="margin-top: 16px; font-size: 12px; font-weight: 700; text-align: center;">
+                    Spotted: <span id="context-count">0</span>/3 opportunities
+                </div>
+            </div>
+
+            <button class="primary-button" onclick="showScreen('c5-relationship')">
+                Continue to Relationship Depth
+            </button>
+        </div>
+    </div>
+
+    <!-- C5: Relationship Depth Selector -->
+    <div class="phone-container">
+        <div class="screen" id="c5-relationship">
+            <div class="header">
+                <button class="back-btn" onclick="showScreen('c4-context')">←</button>
+                <div class="lesson-title">C5: Relationship Starters</div>
+                <div></div>
+            </div>
+            
+            <div class="progress-bar">
+                <div class="progress-fill" style="width: 85%"></div>
+            </div>
+
+            <div class="main-content">
+                <div class="goal-text">
+                    See how relationship depth changes your conversation approach
+                </div>
+                
+                <div class="scenario-tabs">
+                    <div class="scenario-tab active" onclick="changeScenario('work')">Work Colleague</div>
+                    <div class="scenario-tab" onclick="changeScenario('old-friend')">Old Friend</div>
+                    <div class="scenario-tab" onclick="changeScenario('family')">Family Member</div>
+                </div>
+                
+                <div class="relationship-slider">
+                    <input type="range" min="1" max="5" value="3" class="slider" id="relationship-slider" oninput="updateRelationship(this.value)">
+                    <div class="relationship-label" id="relationship-label">Friendly</div>
+                </div>
+                
+                <div class="opener-example" id="opener-example">
+                    "Hey! How's your day going so far?"
+                </div>
+                
+                <div style="display: flex; gap: 8px; margin-top: 16px;">
+                    <button class="secondary-button" onclick="updateRelationship(1)">Formal</button>
+                    <button class="secondary-button" onclick="updateRelationship(3)">Casual</button>
+                    <button class="secondary-button" onclick="updateRelationship(5)">Intimate</button>
+                </div>
+            </div>
+
+            <button class="primary-button" onclick="showScreen('c6-enhancement')">
+                Continue to Response Enhancement
+            </button>
+        </div>
+    </div>
+
+    <!-- C6: Response Enhancement Workshop -->
+    <div class="phone-container">
+        <div class="screen" id="c6-enhancement">
+            <div class="header">
+                <button class="back-btn" onclick="showScreen('c5-relationship')">←</button>
+                <div class="lesson-title">C6: Response Enhancement</div>
+                <div></div>
+            </div>
+            
+            <div class="progress-bar">
+                <div class="progress-fill" style="width: 90%"></div>
+            </div>
+
+            <div class="main-content">
+                <div class="statement-bubble">
+                    Question: "How was your weekend?"
+                </div>
+                
+                <div class="goal-text">
+                    Transform boring answers into engaging responses
+                </div>
+                
+                <div class="response-evolution" id="response-text">
+                    "Good"
+                </div>
+                
+                <div class="enhancement-steps">
+                    <div class="enhancement-step" onclick="enhanceResponse('detail')" id="step-detail">
+                        <strong>Add Detail</strong><br>
+                        Include specific activities or events
+                    </div>
+                    <div class="enhancement-step" onclick="enhanceResponse('emotion')" id="step-emotion">
+                        <strong>Add Emotion</strong><br>
+                        Show how you felt about it
+                    </div>
+                    <div class="enhancement-step" onclick="enhanceResponse('story')" id="step-story">
+                        <strong>Add Story Hook</strong><br>
+                        Create intrigue or interest
+                    </div>
+                    <div class="enhancement-step" onclick="enhanceResponse('weaving')" id="step-weaving">
+                        <strong>Add Weaving</strong><br>
+                        Give them something to respond to
+                    </div>
+                </div>
+                
+                <div class="impact-meter">
+                    <span style="font-size: 12px; font-weight: 700;">Engagement Level:</span>
+                    <div class="impact-bar" id="impact-1"></div>
+                    <div class="impact-bar" id="impact-2"></div>
+                    <div class="impact-bar" id="impact-3"></div>
+                    <div class="impact-bar" id="impact-4"></div>
+                </div>
+            </div>
+
+            <button class="primary-button" onclick="showScreen('c7-compliments')">
+                Continue to Compliment Responses
+            </button>
+        </div>
+    </div>
+
+    <!-- C7: Compliment Response Picker -->
+    <div class="phone-container">
+        <div class="screen" id="c7-compliments">
+            <div class="header">
+                <button class="back-btn" onclick="showScreen('c6-enhancement')">←</button>
+                <div class="lesson-title">C7: Compliment Responses</div>
+                <div></div>
+            </div>
+            
+            <div class="progress-bar">
+                <div class="progress-fill" style="width: 100%"></div>
+            </div>
+
+            <div class="main-content">
+                <div class="statement-bubble">
+                    "I love your presentation style - it was so engaging!"
+                </div>
+                
+                <div class="goal-text">
+                    Choose the response that accepts gracefully while continuing conversation
+                </div>
+                
+                <div class="response-cards">
+                    <div class="response-card bad" onclick="selectComplimentResponse(this, 'deflect')">
+                        <div class="card-indicator x">✕</div>
+                        "Oh, it was nothing really. I just threw it together last minute."
+                    </div>
+                    
+                    <div class="response-card good" onclick="selectComplimentResponse(this, 'accept')">
+                        <div class="card-indicator check">✓</div>
+                        "Thank you! I worked hard on making it engaging."
+                    </div>
+                    
+                    <div class="response-card good" onclick="selectComplimentResponse(this, 'weave')">
+                        <div class="card-indicator check">✓✓</div>
+                        "Thanks! What part resonated most with you?"
+                    </div>
+                    
+                    <div class="response-card bad" onclick="selectComplimentResponse(this, 'awkward')">
+                        <div class="card-indicator x">✕</div>
+                        "Uh... thanks... I guess..."
+                    </div>
+                </div>
+                
+                <div class="feedback-box" id="compliment-feedback">
+                    Perfect! This response accepts the compliment gracefully and keeps the conversation going by asking them to elaborate.
+                </div>
+            </div>
+
+            <button class="primary-button" onclick="resetToFirst()">
+                Review All Lessons
+            </button>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <div class="nav-buttons">
+        <button class="nav-btn active" onclick="showLesson(1)">C1</button>
+        <button class="nav-btn" onclick="showLesson(2)">C2</button>
+        <button class="nav-btn" onclick="showLesson(3)">C3</button>
+        <button class="nav-btn" onclick="showLesson(4)">C4</button>
+        <button class="nav-btn" onclick="showLesson(5)">C5</button>
+        <button class="nav-btn" onclick="showLesson(6)">C6</button>
+        <button class="nav-btn" onclick="showLesson(7)">C7</button>
+    </div>
+
+    <script>
+        // Global state
+        let connectedTopics = [];
+        let contextSpotted = [];
+        let enhancementSteps = [];
+        let currentScenario = 'work';
+
+        function showScreen(screenId) {
+            document.querySelectorAll('.screen').forEach(screen => {
+                screen.classList.remove('active');
+            });
+            document.getElementById(screenId).classList.add('active');
+        }
+
+        function showLesson(lessonNum) {
+            document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelector(`.nav-btn:nth-child(${lessonNum})`).classList.add('active');
+            
+            const screens = {
+                1: 'c1-weaving',
+                2: 'c2-advanced-weaving', 
+                3: 'c3-questions',
+                4: 'c4-context',
+                5: 'c5-relationship',
+                6: 'c6-enhancement',
+                7: 'c7-compliments'
+            };
+            
+            showScreen(screens[lessonNum]);
+        }
+
+        // C1: Basic Weaving Recognition
+        function selectWord(element, word, lessonId) {
+            // Clear previous selections
+            document.querySelectorAll('.word-highlight').forEach(el => {
+                el.classList.remove('selected');
+            });
+            
+            element.classList.add('selected');
+            document.getElementById(`selected-word-${lessonId}`).textContent = word;
+            
+            const options = document.getElementById(`weaving-options-${lessonId}`);
+            options.style.display = 'block';
+            
+            // Update options based on word
+            const optionElements = options.querySelectorAll('.weaving-option');
+            if (word === 'coffee') {
+                optionElements[0].textContent = "Speaking of coffee, I don't usually get one this late";
+                optionElements[1].textContent = "Coffee reminds me of my favorite morning routine";
+                optionElements[2].textContent = "That's interesting - what's your usual order?";
+            } else if (word === 'love') {
+                optionElements[0].textContent = "I love that you have a regular spot";
+                optionElements[1].textContent = "Love at first sip? That's how I felt about my local place";
+                optionElements[2].textContent = "What do you love most about it?";
+            } else if (word === 'shop') {
+                optionElements[0].textContent = "This shop has such a great vibe";
+                optionElements[1].textContent = "Shop hunting is one of my favorite weekend activities";
+                optionElements[2].textContent = "How did you discover this shop?";
+            }
+        }
+
+        function selectWeaving(element, lessonId) {
+            document.querySelectorAll('.weaving-option').forEach(el => {
+                el.style.background = 'white';
+            });
+            element.style.background = '#e0f0ff';
+            
+            document.getElementById(`weaving-feedback-${lessonId}`).classList.add('show');
+        }
+
+        // C2: Advanced Weaving - Topic Connection
+        function connectTopic(element, topic) {
+            element.classList.toggle('connected');
+            
+            if (element.classList.contains('connected')) {
+                connectedTopics.push(topic);
+            } else {
+                connectedTopics = connectedTopics.filter(t => t !== topic);
+            }
+            
+            // Show connections based on logic
+            updateConnections();
+            
+            if (connectedTopics.length >= 3) {
+                document.getElementById('threading-feedback').classList.add('show');
+            }
+        }
+
+        function updateConnections() {
+            const lines = document.querySelectorAll('.connection-line');
+            lines.forEach(line => line.classList.remove('active'));
+            
+            if (connectedTopics.includes('weather') && connectedTopics.includes('mood')) {
+                document.getElementById('line-weather-mood').classList.add('active');
+            }
+            if (connectedTopics.includes('weather') && connectedTopics.includes('seasons')) {
+                document.getElementById('line-weather-seasons').classList.add('active');
+            }
+            if (connectedTopics.includes('mood') && connectedTopics.includes('weekend')) {
+                document.getElementById('line-mood-weekend').classList.add('active');
+            }
+        }
+
+        // C3: Question Analysis
+        function analyzeQuestion(question) {
+            const feedback = document.getElementById('question-feedback');
+            const display = document.getElementById('question-display');
+            
+            if (question.length < 3) {
+                feedback.style.display = 'none';
+                return;
+            }
+            
+            feedback.style.display = 'block';
+            display.innerHTML = `<strong>Your question:</strong> "${question}"`;
+            
+            // Reset depth indicators
+            document.getElementById('depth-surface').style.opacity = '0.3';
+            document.getElementById('depth-personal').style.opacity = '0.3';
+            document.getElementById('depth-values').style.opacity = '0.3';
+            
+            // Analyze question depth
+            const q = question.toLowerCase();
+            if (q.includes('do you') || q.includes('are you') || q.includes('have you')) {
+                document.getElementById('depth-surface').style.opacity = '1';
+            } else if (q.includes('what') || q.includes('how') || q.includes('where') || q.includes('when')) {
+                document.getElementById('depth-surface').style.opacity = '1';
+                document.getElementById('depth-personal').style.opacity = '1';
+            } else if (q.includes('why') || q.includes('what draws') || q.includes('what gives') || q.includes('what does')) {
+                document.getElementById('depth-surface').style.opacity = '1';
+                document.getElementById('depth-personal').style.opacity = '1';
+                document.getElementById('depth-values').style.opacity = '1';
+            }
+        }
+
+        // C4: Context Reading
+        function showContext(element, context) {
+            if (contextSpotted.includes(context)) return;
+            
+            contextSpotted.push(context);
+            element.style.background = '#7BB57B';
+            
+            const options = document.getElementById('context-options');
+            const contextElement = document.getElementById('context-element');
+            const option1 = document.getElementById('context-option-1');
+            const option2 = document.getElementById('context-option-2');
+            const option3 = document.getElementById('context-option-3');
+            
+            contextElement.textContent = context;
+            options.style.display = 'block';
+            
+            if (context === 'book') {
+                option1.textContent = '"What are you reading? It looks interesting"';
+                option2.textContent = '"Good book? You look really absorbed"';
+                option3.textContent = '"Mind if I ask about your book recommendation?"';
+            } else if (context === 'laptop') {
+                option1.textContent = '"Busy day? You look focused"';
+                option2.textContent = '"Working on anything exciting?"';
+                option3.textContent = '"I love coffee shops for work too - so much better than the office"';
+            } else if (context === 'atmosphere') {
+                option1.textContent = '"This place gets busy fast, doesn\'t it?"';
+                option2.textContent = '"Do you come here often when it\'s this crowded?"';
+                option3.textContent = '"The energy here is perfect for productivity"';
+            }
+            
+            document.getElementById('context-count').textContent = contextSpotted.length;
+            
+            // Show tooltip
+            const tooltip = element.querySelector('.context-tooltip');
+            tooltip.style.display = 'block';
+            setTimeout(() => tooltip.style.display = 'none', 2000);
+        }
+
+        // C5: Relationship Depth
+        function changeScenario(scenario) {
+            document.querySelectorAll('.scenario-tab').forEach(tab => tab.classList.remove('active'));
+            event.target.classList.add('active');
+            currentScenario = scenario;
+            updateRelationship(document.getElementById('relationship-slider').value);
+        }
+
+        function updateRelationship(level) {
+            const slider = document.getElementById('relationship-slider');
+            const label = document.getElementById('relationship-label');
+            const example = document.getElementById('opener-example');
+            
+            slider.value = level;
+            
+            const labels = ['Distant', 'Professional', 'Friendly', 'Close', 'Intimate'];
+            label.textContent = labels[level - 1];
+            
+            // Update examples based on scenario and relationship level
+            const examples = {
+                'work': [
+                    'Good morning. I hope you have a productive day.',
+                    'Hi there. How are things going with the project?',
+                    'Hey! How\'s your day going so far?',
+                    'Morning! Did you see that thing about the office renovation?',
+                    'Hey you! Ready for another adventure in spreadsheet land?'
+                ],
+                'old-friend': [
+                    'Hello. It\'s been a while.',
+                    'Hi! Good to see you again.',
+                    'Hey! How have you been?',
+                    'Look who it is! What have you been up to?',
+                    'There\'s my favorite troublemaker! Come here!'
+                ],
+                'family': [
+                    'Hello. How are you doing?',
+                    'Hi. How have things been?',
+                    'Hey! Good to see you.',
+                    'Hey there! What\'s new with you?',
+                    'There you are! I\'ve missed you!'
+                ]
+            };
+            
+            example.textContent = examples[currentScenario][level - 1];
+        }
+
+        // C6: Response Enhancement
+        function enhanceResponse(type) {
+            const element = document.getElementById(`step-${type}`);
+            if (element.classList.contains('completed')) return;
+            
+            element.classList.add('completed');
+            enhancementSteps.push(type);
+            
+            const responseText = document.getElementById('response-text');
+            let newText = 'Good';
+            
+            if (enhancementSteps.includes('detail')) {
+                newText = 'Good! I went hiking at Blue Ridge Mountains';
+            }
+            if (enhancementSteps.includes('emotion')) {
+                newText = 'Good! I went hiking at Blue Ridge Mountains and felt so refreshed';
+            }
+            if (enhancementSteps.includes('story')) {
+                newText = 'Good! I went hiking at Blue Ridge Mountains and felt so refreshed - though I definitely got lost for an hour!';
+            }
+            if (enhancementSteps.includes('weaving')) {
+                newText = 'Good! I went hiking at Blue Ridge Mountains and felt so refreshed - though I definitely got lost for an hour! Do you ever get outdoors on weekends?';
+            }
+            
+            responseText.textContent = newText;
+            
+            // Update impact meter
+            for (let i = 1; i <= enhancementSteps.length; i++) {
+                document.getElementById(`impact-${i}`).classList.add('filled');
+            }
+        }
+
+        // C7: Compliment Response
+        function selectComplimentResponse(element, type) {
+            document.querySelectorAll('.response-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            
+            element.classList.add('selected');
+            
+            const feedback = document.getElementById('compliment-feedback');
+            
+            if (type === 'deflect') {
+                feedback.textContent = 'This deflects the compliment and makes them feel bad for giving it. Try accepting it instead.';
+                feedback.style.background = '#E06B6B';
+            } else if (type === 'accept') {
+                feedback.textContent = 'Good! This accepts the compliment gracefully and acknowledges your effort.';
+                feedback.style.background = '#7BB57B';
+            } else if (type === 'weave') {
+                feedback.textContent = 'Perfect! This accepts the compliment gracefully and keeps the conversation going by asking them to elaborate.';
+                feedback.style.background = '#7BB57B';
+            } else if (type === 'awkward') {
+                feedback.textContent = 'This makes the moment awkward. Confidence in accepting compliments makes others comfortable giving them.';
+                feedback.style.background = '#E06B6B';
+            }
+            
+            feedback.classList.add('show');
+        }
+
+        function resetToFirst() {
+            // Reset all state
+            connectedTopics = [];
+            contextSpotted = [];
+            enhancementSteps = [];
+            
+            // Reset UI elements
+            document.querySelectorAll('.connected').forEach(el => el.classList.remove('connected'));
+            document.querySelectorAll('.completed').forEach(el => el.classList.remove('completed'));
+            document.querySelectorAll('.filled').forEach(el => el.classList.remove('filled'));
+            document.getElementById('context-count').textContent = '0';
+            document.getElementById('response-text').textContent = 'Good';
+            
+            showLesson(1);
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            updateRelationship(3);
+        });
+    </script>
+</body>
+</html>
