@@ -1,0 +1,1476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yap Module Tutorial Extensions</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            background: #f0f8ff;
+            color: #3c3c3c;
+            line-height: 1.4;
+        }
+
+        .phone-container {
+            max-width: 390px;
+            margin: 20px auto;
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+        }
+
+        .screen {
+            min-height: 600px;
+            padding: 20px;
+            display: none;
+        }
+
+        .screen.active {
+            display: block;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .back-btn {
+            background: none;
+            border: none;
+            font-size: 24px;
+            color: #777;
+            cursor: pointer;
+        }
+
+        .lesson-title {
+            font-size: 18px;
+            font-weight: 900;
+            color: #3c3c3c;
+        }
+
+        .progress-bar {
+            height: 8px;
+            background: #e5e5e5;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 32px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: #87ceeb;
+            transition: width 0.3s ease;
+        }
+
+        .main-content {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .statement-bubble {
+            background: #fafafa;
+            border: 3px solid #e5e5e5;
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 24px;
+            font-size: 16px;
+            font-weight: 700;
+        }
+
+        .goal-text {
+            font-size: 14px;
+            font-weight: 700;
+            color: #777;
+            margin-bottom: 24px;
+        }
+
+        /* Story Element Arranger */
+        .story-container {
+            background: #fafafa;
+            border: 3px dashed #d5d5d5;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 16px;
+            min-height: 120px;
+        }
+
+        .story-element {
+            background: #87ceeb;
+            color: white;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: move;
+            user-select: none;
+            transition: transform 0.2s ease;
+        }
+
+        .story-element:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(135, 206, 235, 0.3);
+        }
+
+        .story-element.dragging {
+            opacity: 0.5;
+        }
+
+        .drop-zone {
+            min-height: 60px;
+            border: 2px dashed #c0c0c0;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 700;
+            color: #777;
+            transition: all 0.2s ease;
+        }
+
+        .drop-zone.drag-over {
+            border-color: #87ceeb;
+            background: #f0f8ff;
+        }
+
+        .drop-zone.filled {
+            border-color: #87ceeb;
+            background: #f0f8ff;
+            color: #3c3c3c;
+        }
+
+        .drop-zone-label {
+            font-size: 12px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            text-align: left;
+        }
+
+        /* Hook Laboratory */
+        .hook-selector {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin: 16px 0;
+        }
+
+        .hook-type {
+            background: white;
+            border: 2px solid #e5e5e5;
+            border-radius: 20px;
+            padding: 8px 16px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .hook-type:hover {
+            border-color: #87ceeb;
+            background: #f0f8ff;
+        }
+
+        .hook-type.selected {
+            background: #87ceeb;
+            border-color: #6bb6db;
+            color: white;
+        }
+
+        .story-display {
+            background: #f0f8ff;
+            border: 3px solid #87ceeb;
+            border-radius: 12px;
+            padding: 16px;
+            margin: 16px 0;
+            font-size: 14px;
+            font-weight: 700;
+            text-align: left;
+            min-height: 80px;
+        }
+
+        .engagement-meter {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin: 12px 0;
+        }
+
+        .meter-label {
+            font-size: 11px;
+            font-weight: 700;
+            color: #777;
+        }
+
+        .meter-bar {
+            height: 6px;
+            border-radius: 3px;
+            flex: 1;
+            background: #e5e5e5;
+            transition: background 0.3s ease;
+        }
+
+        .meter-bar.filled {
+            background: #7BB57B;
+        }
+
+        /* Tension Builder */
+        .tension-layers {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin: 20px 0;
+        }
+
+        .layer-button {
+            background: white;
+            border: 2px solid #87ceeb;
+            border-radius: 8px;
+            padding: 12px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            color: #87ceeb;
+        }
+
+        .layer-button:hover {
+            background: #f0f8ff;
+        }
+
+        .layer-button.added {
+            background: #87ceeb;
+            color: white;
+        }
+
+        .layer-content {
+            background: #f0f8ff;
+            border-left: 4px solid #87ceeb;
+            padding: 12px;
+            margin-top: 8px;
+            font-size: 11px;
+            font-weight: 700;
+            display: none;
+            animation: expandDown 0.3s ease;
+        }
+
+        .layer-content.show {
+            display: block;
+        }
+
+        @keyframes expandDown {
+            from {
+                max-height: 0;
+                opacity: 0;
+            }
+            to {
+                max-height: 100px;
+                opacity: 1;
+            }
+        }
+
+        .suspense-meter {
+            background: #fafafa;
+            border: 2px solid #e5e5e5;
+            border-radius: 8px;
+            padding: 12px;
+            margin: 16px 0;
+        }
+
+        .suspense-bar {
+            height: 12px;
+            background: #e5e5e5;
+            border-radius: 6px;
+            overflow: hidden;
+            margin-top: 8px;
+        }
+
+        .suspense-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #87ceeb, #6bb6db);
+            transition: width 0.5s ease;
+        }
+
+        /* Ending Comparator */
+        .ending-cards {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin: 20px 0;
+        }
+
+        .ending-card {
+            background: white;
+            border: 2px solid #e5e5e5;
+            border-radius: 12px;
+            padding: 16px;
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .ending-card:hover {
+            border-color: #87ceeb;
+            box-shadow: 0 2px 8px rgba(135, 206, 235, 0.2);
+        }
+
+        .ending-text {
+            font-size: 12px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .star-rating {
+            display: flex;
+            gap: 4px;
+            margin-bottom: 8px;
+        }
+
+        .star {
+            font-size: 16px;
+            color: #e5e5e5;
+            cursor: pointer;
+            transition: color 0.2s ease;
+        }
+
+        .star.filled {
+            color: #ffc107;
+        }
+
+        .star:hover {
+            color: #ffc107;
+        }
+
+        /* Passion Constructor */
+        .template-section {
+            background: white;
+            border: 2px solid #e5e5e5;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            overflow: hidden;
+        }
+
+        .section-header {
+            background: #87ceeb;
+            color: white;
+            padding: 8px 12px;
+            font-size: 12px;
+            font-weight: 900;
+        }
+
+        .section-input {
+            padding: 12px;
+        }
+
+        .text-input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #d5d5d5;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 700;
+            resize: vertical;
+            min-height: 60px;
+        }
+
+        .text-input:focus {
+            outline: none;
+            border-color: #87ceeb;
+        }
+
+        .persuasiveness-score {
+            background: #7BB57B;
+            color: white;
+            border-radius: 20px;
+            padding: 8px 16px;
+            font-size: 14px;
+            font-weight: 900;
+            display: inline-block;
+            margin: 12px 0;
+        }
+
+        /* Pitch Optimizer */
+        .pitch-scenario {
+            display: flex;
+            gap: 8px;
+            margin: 16px 0;
+        }
+
+        .scenario-tab {
+            background: white;
+            border: 2px solid #e5e5e5;
+            border-radius: 8px;
+            padding: 8px 12px;
+            font-size: 11px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            flex: 1;
+            text-align: center;
+        }
+
+        .scenario-tab:hover {
+            border-color: #87ceeb;
+        }
+
+        .scenario-tab.active {
+            background: #87ceeb;
+            color: white;
+            border-color: #6bb6db;
+        }
+
+        .pitch-components {
+            background: #fafafa;
+            border: 2px dashed #d5d5d5;
+            border-radius: 12px;
+            padding: 16px;
+            margin: 16px 0;
+            min-height: 120px;
+        }
+
+        .pitch-component {
+            background: #87ceeb;
+            color: white;
+            padding: 10px;
+            border-radius: 6px;
+            margin-bottom: 8px;
+            font-size: 11px;
+            font-weight: 700;
+            cursor: move;
+            transition: transform 0.2s ease;
+        }
+
+        .pitch-component:hover {
+            transform: translateY(-1px);
+        }
+
+        .success-probability {
+            background: #7BB57B;
+            color: white;
+            border-radius: 8px;
+            padding: 12px;
+            margin: 12px 0;
+            text-align: center;
+            font-size: 14px;
+            font-weight: 900;
+        }
+
+        /* Yes But Constructor */
+        .response-templates {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            margin: 20px 0;
+        }
+
+        .template-card {
+            background: white;
+            border: 2px solid #e5e5e5;
+            border-radius: 12px;
+            padding: 16px;
+        }
+
+        .template-title {
+            font-size: 12px;
+            font-weight: 900;
+            margin-bottom: 8px;
+            color: #87ceeb;
+        }
+
+        .template-input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #d5d5d5;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 700;
+            min-height: 40px;
+        }
+
+        .relationship-impact {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .impact-meter {
+            height: 8px;
+            flex: 1;
+            border-radius: 4px;
+            background: #e5e5e5;
+            overflow: hidden;
+        }
+
+        .impact-fill {
+            height: 100%;
+            transition: width 0.3s ease;
+        }
+
+        .impact-fill.positive {
+            background: #7BB57B;
+        }
+
+        .impact-fill.negative {
+            background: #E06B6B;
+        }
+
+        /* Social Calibration */
+        .scenario-viewer {
+            background: #fafafa;
+            border: 2px solid #e5e5e5;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 16px 0;
+            text-align: center;
+        }
+
+        .scenario-animation {
+            background: linear-gradient(45deg, #e5e5e5 25%, transparent 25%), 
+                        linear-gradient(-45deg, #e5e5e5 25%, transparent 25%);
+            background-size: 20px 20px;
+            height: 120px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: 700;
+            color: #777;
+        }
+
+        .decision-buttons {
+            display: flex;
+            gap: 12px;
+            margin: 20px 0;
+        }
+
+        .decision-btn {
+            background: white;
+            border: 3px solid #87ceeb;
+            border-radius: 12px;
+            padding: 16px 20px;
+            font-size: 14px;
+            font-weight: 900;
+            cursor: pointer;
+            flex: 1;
+            transition: all 0.2s ease;
+            color: #87ceeb;
+        }
+
+        .decision-btn:hover {
+            background: #f0f8ff;
+        }
+
+        .decision-btn.speak {
+            background: #87ceeb;
+            color: white;
+        }
+
+        .decision-btn.listen {
+            background: #7BB57B;
+            color: white;
+        }
+
+        .accuracy-tracker {
+            background: white;
+            border: 2px solid #e5e5e5;
+            border-radius: 8px;
+            padding: 12px;
+            margin: 16px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* Buttons */
+        .primary-button {
+            background: #87ceeb;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            padding: 16px 24px;
+            font-size: 16px;
+            font-weight: 900;
+            cursor: pointer;
+            width: 100%;
+            box-shadow: 0 2px 4px rgba(107, 182, 219, 0.3);
+            transition: all 0.2s ease;
+        }
+
+        .primary-button:hover {
+            background: #6bb6db;
+            transform: translateY(-1px);
+        }
+
+        .secondary-button {
+            background: white;
+            color: #87ceeb;
+            border: 2px solid #87ceeb;
+            border-radius: 8px;
+            padding: 8px 16px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            margin: 4px;
+            transition: all 0.2s ease;
+        }
+
+        .secondary-button:hover {
+            background: #f0f8ff;
+        }
+
+        .secondary-button.small {
+            padding: 6px 12px;
+            font-size: 12px;
+        }
+
+        /* Navigation */
+        .nav-buttons {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 6px;
+            z-index: 100;
+            flex-wrap: wrap;
+            max-width: 350px;
+            justify-content: center;
+        }
+
+        .nav-btn {
+            padding: 6px 10px;
+            background: #87ceeb;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 10px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .nav-btn.active {
+            background: #6bb6db;
+        }
+
+        /* Feedback */
+        .feedback-box {
+            background: #7BB57B;
+            color: white;
+            border-radius: 8px;
+            padding: 12px;
+            margin: 16px 0;
+            font-size: 12px;
+            font-weight: 700;
+            display: none;
+        }
+
+        .feedback-box.show {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Y1: Mini-Stories Structure -->
+    <div class="phone-container">
+        <div class="screen active" id="story-structure">
+            <div class="header">
+                <button class="back-btn">←</button>
+                <div class="lesson-title">Story Structure</div>
+                <div></div>
+            </div>
+            
+            <div class="progress-bar">
+                <div class="progress-fill" style="width: 25%"></div>
+            </div>
+
+            <div class="main-content">
+                <div class="goal-text">
+                    Arrange story elements to create the most engaging flow
+                </div>
+                
+                <div class="statement-bubble">
+                    Event: Getting caught in unexpected rain without an umbrella
+                </div>
+                
+                <div class="story-container" id="story-elements">
+                    <div class="story-element" draggable="true" data-element="setup">
+                        Setup: I was dressed up for an important dinner
+                    </div>
+                    <div class="story-element" draggable="true" data-element="action">
+                        Action: Sudden downpour started as I left the building
+                    </div>
+                    <div class="story-element" draggable="true" data-element="outcome">
+                        Outcome: Stranger shared their umbrella with me
+                    </div>
+                    <div class="story-element" draggable="true" data-element="emotion">
+                        Emotion: Went from panic to gratitude to connection
+                    </div>
+                    <div class="story-element" draggable="true" data-element="lesson">
+                        Lesson: Sometimes disasters lead to unexpected kindness
+                    </div>
+                </div>
+                
+                <div class="drop-zone-label">Beginning:</div>
+                <div class="drop-zone" data-position="beginning" ondrop="drop(event)" ondragover="allowDrop(event)">
+                    Drag story elements here
+                </div>
+                
+                <div class="drop-zone-label">Middle:</div>
+                <div class="drop-zone" data-position="middle" ondrop="drop(event)" ondragover="allowDrop(event)">
+                    Drag story elements here
+                </div>
+                
+                <div class="drop-zone-label">End:</div>
+                <div class="drop-zone" data-position="end" ondrop="drop(event)" ondragover="allowDrop(event)">
+                    Drag story elements here
+                </div>
+            </div>
+
+            <div style="display: flex; gap: 8px; margin-bottom: 16px;">
+                <button class="secondary-button" onclick="readStory()">Read Story</button>
+                <button class="secondary-button" onclick="resetStory()">Reset</button>
+            </div>
+            
+            <button class="primary-button" onclick="showScreen('hook-lab')">
+                Compare Arrangements
+            </button>
+        </div>
+    </div>
+
+    <!-- Y2: Hook Laboratory -->
+    <div class="phone-container">
+        <div class="screen" id="hook-lab">
+            <div class="header">
+                <button class="back-btn" onclick="showScreen('story-structure')">←</button>
+                <div class="lesson-title">Hook Laboratory</div>
+                <div></div>
+            </div>
+            
+            <div class="progress-bar">
+                <div class="progress-fill" style="width: 35%"></div>
+            </div>
+
+            <div class="main-content">
+                <div class="goal-text">
+                    Try different hook types to see how they affect engagement
+                </div>
+                
+                <div class="statement-bubble">
+                    Story: Almost missing your flight due to traffic
+                </div>
+                
+                <div class="hook-selector">
+                    <div class="hook-type selected" onclick="selectHook(this, 'mystery')">Mystery</div>
+                    <div class="hook-type" onclick="selectHook(this, 'emotion')">Emotion</div>
+                    <div class="hook-type" onclick="selectHook(this, 'surprise')">Surprise</div>
+                    <div class="hook-type" onclick="selectHook(this, 'callback')">Callback</div>
+                </div>
+                
+                <div class="story-display" id="story-display">
+                    "I learned something about myself in the back of that taxi..."
+                </div>
+                
+                <div class="engagement-meter">
+                    <span class="meter-label">Engagement:</span>
+                    <div class="meter-bar filled" id="engagement-1"></div>
+                    <div class="meter-bar filled" id="engagement-2"></div>
+                    <div class="meter-bar filled" id="engagement-3"></div>
+                    <div class="meter-bar" id="engagement-4"></div>
+                    <div class="meter-bar" id="engagement-5"></div>
+                </div>
+            </div>
+
+            <button class="primary-button" onclick="showScreen('tension-builder')">
+                Try Different Story
+            </button>
+        </div>
+    </div>
+
+    <!-- Y3: Tension Builder -->
+    <div class="phone-container">
+        <div class="screen" id="tension-builder">
+            <div class="header">
+                <button class="back-btn" onclick="showScreen('hook-lab')">←</button>
+                <div class="lesson-title">Tension Builder</div>
+                <div></div>
+            </div>
+            
+            <div class="progress-bar">
+                <div class="progress-fill" style="width: 45%"></div>
+            </div>
+
+            <div class="main-content">
+                <div class="goal-text">
+                    Add setup layers to build suspense for your story climax
+                </div>
+                
+                <div class="statement-bubble">
+                    Story climax: I accidentally sent a very personal text to my boss
+                </div>
+                
+                <div class="tension-layers">
+                    <div class="layer-button" onclick="addLayer(this, 'environment')">
+                        Add Environment
+                        <div class="layer-content" id="environment-content">
+                            It was 2 AM, I was exhausted after a 14-hour workday, sitting alone in the dimly lit office...
+                        </div>
+                    </div>
+                    
+                    <div class="layer-button" onclick="addLayer(this, 'stakes')">
+                        Add Stakes  
+                        <div class="layer-content" id="stakes-content">
+                            This was the week of my performance review, and I'd been trying to prove I deserved a promotion...
+                        </div>
+                    </div>
+                    
+                    <div class="layer-button" onclick="addLayer(this, 'circumstances')">
+                        Add Circumstances
+                        <div class="layer-content" id="circumstances-content">
+                            My phone was at 1% battery, I was texting my partner about my awful day, and my boss's name is right next to theirs in my contacts...
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="suspense-meter">
+                    <div style="font-size: 12px; font-weight: 700; color: #777;">Suspense Level:</div>
+                    <div class="suspense-bar">
+                        <div class="suspense-fill" id="suspense-fill" style="width: 20%"></div>
+                    </div>
+                </div>
+            </div>
+
+            <button class="primary-button" onclick="showScreen('ending-comparator')">
+                See Climax Impact
+            </button>
+        </div>
+    </div>
+
+    <!-- Y4: Ending Comparator -->
+    <div class="phone-container">
+        <div class="screen" id="ending-comparator">
+            <div class="header">
+                <button class="back-btn" onclick="showScreen('tension-builder')">←</button>
+                <div class="lesson-title">Ending Evaluator</div>
+                <div></div>
+            </div>
+            
+            <div class="progress-bar">
+                <div class="progress-fill" style="width: 55%"></div>
+            </div>
+
+            <div class="main-content">
+                <div class="goal-text">
+                    Rate different endings and see what makes them satisfying
+                </div>
+                
+                <div class="statement-bubble">
+                    Story: You discovered your favorite childhood restaurant was closing
+                </div>
+                
+                <div class="ending-cards">
+                    <div class="ending-card">
+                        <div class="ending-text">"So I was pretty sad about it and went home."</div>
+                        <div class="star-rating" data-ending="1">
+                            <span class="star" onclick="rateLending(1, 1)">★</span>
+                            <span class="star" onclick="rateLending(1, 2)">★</span>
+                            <span class="star" onclick="rateLending(1, 3)">★</span>
+                            <span class="star" onclick="rateLending(1, 4)">★</span>
+                            <span class="star" onclick="rateLending(1, 5)">★</span>
+                        </div>
+                    </div>
+                    
+                    <div class="ending-card">
+                        <div class="ending-text">"I realized that place wasn't just about the food - it was about the memories. So I called my family and we all went for one last meal together the next day."</div>
+                        <div class="star-rating" data-ending="2">
+                            <span class="star" onclick="rateLending(2, 1)">★</span>
+                            <span class="star" onclick="rateLending(2, 2)">★</span>
+                            <span class="star" onclick="rateLending(2, 3)">★</span>
+                            <span class="star" onclick="rateLending(2, 4)">★</span>
+                            <span class="star" onclick="rateLending(2, 5)">★</span>
+                        </div>
+                    </div>
+                    
+                    <div class="ending-card">
+                        <div class="ending-text">"Turns out the owner was retiring and passed the recipes to his daughter who opened a new place across town. Sometimes endings are actually beginnings."</div>
+                        <div class="star-rating" data-ending="3">
+                            <span class="star" onclick="rateLending(3, 1)">★</span>
+                            <span class="star" onclick="rateLending(3, 2)">★</span>
+                            <span class="star" onclick="rateLending(3, 3)">★</span>
+                            <span class="star" onclick="rateLending(3, 4)">★</span>
+                            <span class="star" onclick="rateLending(3, 5)">★</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <button class="primary-button" onclick="showScreen('passion-constructor')">
+                Create Your Own Ending
+            </button>
+        </div>
+    </div>
+
+    <!-- Y5: Passion Constructor -->
+    <div class="phone-container">
+        <div class="screen" id="passion-constructor">
+            <div class="header">
+                <button class="back-btn" onclick="showScreen('ending-comparator')">←</button>
+                <div class="lesson-title">Passion Constructor</div>
+                <div></div>
+            </div>
+            
+            <div class="progress-bar">
+                <div class="progress-fill" style="width: 65%"></div>
+            </div>
+
+            <div class="main-content">
+                <div class="goal-text">
+                    Build a compelling explanation about something you care about
+                </div>
+                
+                <div class="statement-bubble">
+                    Topic: Why people should learn to cook (or choose your own)
+                </div>
+                
+                <div class="template-section">
+                    <div class="section-header">Hook - Grab their attention</div>
+                    <div class="section-input">
+                        <textarea class="text-input" placeholder="Start with something intriguing or surprising..." oninput="updatePersuasiveness()"></textarea>
+                    </div>
+                </div>
+                
+                <div class="template-section">
+                    <div class="section-header">Stakes - Why this matters</div>
+                    <div class="section-input">
+                        <textarea class="text-input" placeholder="Explain why people should care about this..." oninput="updatePersuasiveness()"></textarea>
+                    </div>
+                </div>
+                
+                <div class="template-section">
+                    <div class="section-header">Evidence - Key points and support</div>
+                    <div class="section-input">
+                        <textarea class="text-input" placeholder="Your strongest arguments and examples..." oninput="updatePersuasiveness()"></textarea>
+                    </div>
+                </div>
+                
+                <div class="template-section">
+                    <div class="section-header">Call to Understanding</div>
+                    <div class="section-input">
+                        <textarea class="text-input" placeholder="What do you want them to understand or do?" oninput="updatePersuasiveness()"></textarea>
+                    </div>
+                </div>
+                
+                <div class="persuasiveness-score" id="persuasiveness-score">
+                    Persuasiveness: 65%
+                </div>
+            </div>
+
+            <button class="primary-button" onclick="showScreen('pitch-optimizer')">
+                Test with Different Audiences
+            </button>
+        </div>
+    </div>
+
+    <!-- Y6: Pitch Optimizer -->
+    <div class="phone-container">
+        <div class="screen" id="pitch-optimizer">
+            <div class="header">
+                <button class="back-btn" onclick="showScreen('passion-constructor')">←</button>
+                <div class="lesson-title">Pitch Optimizer</div>
+                <div></div>
+            </div>
+            
+            <div class="progress-bar">
+                <div class="progress-fill" style="width: 75%"></div>
+            </div>
+
+            <div class="main-content">
+                <div class="goal-text">
+                    Arrange pitch components for different scenarios
+                </div>
+                
+                <div class="pitch-scenario">
+                    <div class="scenario-tab active" onclick="selectScenario(this, 'networking')">Networking</div>
+                    <div class="scenario-tab" onclick="selectScenario(this, 'project')">Project</div>
+                    <div class="scenario-tab" onclick="selectScenario(this, 'personal')">Personal</div>
+                </div>
+                
+                <div class="statement-bubble">
+                    Scenario: Networking event - introducing your startup idea
+                </div>
+                
+                <div class="pitch-components" id="pitch-components">
+                    <div class="pitch-component" draggable="true" data-component="problem">
+                        Problem: Small businesses struggle with inventory management
+                    </div>
+                    <div class="pitch-component" draggable="true" data-component="solution">
+                        Solution: AI-powered inventory prediction software
+                    </div>
+                    <div class="pitch-component" draggable="true" data-component="evidence">
+                        Evidence: 30% reduction in waste in our pilot program
+                    </div>
+                    <div class="pitch-component" draggable="true" data-component="differentiator">
+                        Differentiator: Only solution that learns from local market data
+                    </div>
+                    <div class="pitch-component" draggable="true" data-component="ask">
+                        Ask: Looking for strategic partnerships and early customers
+                    </div>
+                </div>
+                
+                <div style="background: #f0f8ff; border: 2px solid #87ceeb; border-radius: 8px; padding: 12px; margin: 16px 0;">
+                    <div style="font-size: 12px; font-weight: 700; margin-bottom: 8px;">Your Pitch Order:</div>
+                    <div id="pitch-order" style="font-size: 11px; color: #777;">Drag components above to arrange your pitch</div>
+                </div>
+                
+                <div class="success-probability" id="success-probability">
+                    Success Probability: 78%
+                </div>
+            </div>
+
+            <button class="primary-button" onclick="showScreen('yes-but-constructor')">
+                Try Different Scenario
+            </button>
+        </div>
+    </div>
+
+    <!-- Y7: Yes But Constructor -->
+    <div class="phone-container">
+        <div class="screen" id="yes-but-constructor">
+            <div class="header">
+                <button class="back-btn" onclick="showScreen('pitch-optimizer')">←</button>
+                <div class="lesson-title">Diplomatic Disagreement</div>
+                <div></div>
+            </div>
+            
+            <div class="progress-bar">
+                <div class="progress-fill" style="width: 85%"></div>
+            </div>
+
+            <div class="main-content">
+                <div class="goal-text">
+                    Practice "Yes, but..." vs "No, and..." approaches
+                </div>
+                
+                <div class="statement-bubble">
+                    Statement: "Social media is completely ruining human connection"
+                </div>
+                
+                <div class="response-templates">
+                    <div class="template-card">
+                        <div class="template-title">"No, and..." Response (Confrontational)</div>
+                        <textarea class="template-input" placeholder="I disagree because..." oninput="updateRelationshipImpact('no')"></textarea>
+                        <div class="relationship-impact">
+                            <span style="font-size: 11px; font-weight: 700;">Relationship Impact:</span>
+                            <div class="impact-meter">
+                                <div class="impact-fill negative" id="no-impact" style="width: 30%"></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="template-card">
+                        <div class="template-title">"Yes, but..." Response (Diplomatic)</div>
+                        <textarea class="template-input" placeholder="I agree that social media has problems, but..." oninput="updateRelationshipImpact('yes')"></textarea>
+                        <div class="relationship-impact">
+                            <span style="font-size: 11px; font-weight: 700;">Relationship Impact:</span>
+                            <div class="impact-meter">
+                                <div class="impact-fill positive" id="yes-impact" style="width: 75%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <button class="primary-button" onclick="showScreen('social-calibration')">
+                Try Different Opinion
+            </button>
+        </div>
+    </div>
+
+    <!-- Y8: Social Calibration -->
+    <div class="phone-container">
+        <div class="screen" id="social-calibration">
+            <div class="header">
+                <button class="back-btn" onclick="showScreen('yes-but-constructor')">←</button>
+                <div class="lesson-title">Social Calibration</div>
+                <div></div>
+            </div>
+            
+            <div class="progress-bar">
+                <div class="progress-fill" style="width: 100%"></div>
+            </div>
+
+            <div class="main-content">
+                <div class="goal-text">
+                    Watch the group dynamic and decide when to speak vs listen
+                </div>
+                
+                <div class="scenario-viewer">
+                    <div class="scenario-animation">
+                        👥 Group Meeting in Progress
+                        <br><small>Watch for cues...</small>
+                    </div>
+                    
+                    <div style="font-size: 12px; font-weight: 700; text-align: left; margin-bottom: 12px;">
+                        Situation: Sarah just finished explaining a complex problem she's facing. 
+                        Everyone looks thoughtful. There's been a 3-second pause.
+                    </div>
+                    
+                    <div style="font-size: 11px; font-weight: 700; color: #777; text-align: left;">
+                        Cues: Sarah is looking down, group energy feels heavy, no one else has spoken yet
+                    </div>
+                </div>
+                
+                <div class="decision-buttons">
+                    <div class="decision-btn listen" onclick="makeDecision('listen')">
+                        LISTEN
+                        <div style="font-size: 10px; margin-top: 4px;">Let the moment breathe</div>
+                    </div>
+                    <div class="decision-btn speak" onclick="makeDecision('speak')">
+                        SPEAK
+                        <div style="font-size: 10px; margin-top: 4px;">Jump in with response</div>
+                    </div>
+                </div>
+                
+                <div class="accuracy-tracker">
+                    <div style="font-size: 12px; font-weight: 700;">Calibration Accuracy:</div>
+                    <div style="font-size: 14px; font-weight: 900; color: #7BB57B;">7/10 ✓</div>
+                </div>
+                
+                <div class="feedback-box" id="calibration-feedback">
+                    Good choice! Sarah needed a moment to process. Someone else will likely speak next, or she'll continue.
+                </div>
+            </div>
+
+            <button class="primary-button" onclick="nextScenario()">
+                Next Scenario
+            </button>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <div class="nav-buttons">
+        <button class="nav-btn active" onclick="showYapLesson(1)">Story</button>
+        <button class="nav-btn" onclick="showYapLesson(2)">Hook</button>
+        <button class="nav-btn" onclick="showYapLesson(3)">Tension</button>
+        <button class="nav-btn" onclick="showYapLesson(4)">Ending</button>
+        <button class="nav-btn" onclick="showYapLesson(5)">Passion</button>
+        <button class="nav-btn" onclick="showYapLesson(6)">Pitch</button>
+        <button class="nav-btn" onclick="showYapLesson(7)">YesBut</button>
+        <button class="nav-btn" onclick="showYapLesson(8)">Calibrate</button>
+    </div>
+
+    <script>
+        let storyStructure = { beginning: null, middle: null, end: null };
+        let suspenseLevel = 20;
+        let calibrationScore = 7;
+
+        function showScreen(screenId) {
+            document.querySelectorAll('.screen').forEach(screen => {
+                screen.classList.remove('active');
+            });
+            document.getElementById(screenId).classList.add('active');
+        }
+
+        function showYapLesson(lessonNum) {
+            document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            const screens = {
+                1: 'story-structure',
+                2: 'hook-lab',
+                3: 'tension-builder',
+                4: 'ending-comparator',
+                5: 'passion-constructor',
+                6: 'pitch-optimizer',
+                7: 'yes-but-constructor',
+                8: 'social-calibration'
+            };
+            
+            showScreen(screens[lessonNum]);
+        }
+
+        // Story Structure - Drag and Drop
+        function allowDrop(ev) {
+            ev.preventDefault();
+            ev.target.classList.add('drag-over');
+        }
+
+        function drag(ev) {
+            ev.dataTransfer.setData("text", ev.target.getAttribute('data-element'));
+            ev.dataTransfer.setData("element", ev.target.outerHTML);
+            ev.target.classList.add('dragging');
+        }
+
+        function drop(ev) {
+            ev.preventDefault();
+            ev.target.classList.remove('drag-over');
+            
+            const elementType = ev.dataTransfer.getData("text");
+            const elementHTML = ev.dataTransfer.getData("element");
+            const position = ev.target.getAttribute('data-position');
+            
+            if (position && elementType) {
+                ev.target.innerHTML = elementHTML;
+                ev.target.classList.add('filled');
+                storyStructure[position] = elementType;
+                
+                // Remove original element
+                const originalElement = document.querySelector(`[data-element="${elementType}"].dragging`);
+                if (originalElement && originalElement.parentNode.id === 'story-elements') {
+                    originalElement.remove();
+                }
+            }
+        }
+
+        // Add drag event listeners
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.story-element').forEach(element => {
+                element.addEventListener('dragstart', drag);
+                element.addEventListener('dragend', function() {
+                    this.classList.remove('dragging');
+                });
+            });
+            
+            document.querySelectorAll('.drop-zone').forEach(zone => {
+                zone.addEventListener('dragover', allowDrop);
+                zone.addEventListener('dragleave', function(ev) {
+                    ev.target.classList.remove('drag-over');
+                });
+            });
+        });
+
+        function readStory() {
+            let story = "Your story: ";
+            if (storyStructure.beginning) story += getElementText(storyStructure.beginning) + ". ";
+            if (storyStructure.middle) story += getElementText(storyStructure.middle) + ". ";
+            if (storyStructure.end) story += getElementText(storyStructure.end) + ".";
+            
+            if ('speechSynthesis' in window) {
+                const utterance = new SpeechSynthesisUtterance(story);
+                speechSynthesis.speak(utterance);
+            } else {
+                alert(story);
+            }
+        }
+
+        function getElementText(elementType) {
+            const texts = {
+                'setup': 'I was dressed up for an important dinner',
+                'action': 'Sudden downpour started as I left the building', 
+                'outcome': 'Stranger shared their umbrella with me',
+                'emotion': 'Went from panic to gratitude to connection',
+                'lesson': 'Sometimes disasters lead to unexpected kindness'
+            };
+            return texts[elementType] || '';
+        }
+
+        function resetStory() {
+            // Clear drop zones
+            document.querySelectorAll('.drop-zone').forEach(zone => {
+                zone.innerHTML = 'Drag story elements here';
+                zone.classList.remove('filled');
+            });
+            
+            // Reset story elements
+            const elementsContainer = document.getElementById('story-elements');
+            elementsContainer.innerHTML = `
+                <div class="story-element" draggable="true" data-element="setup">
+                    Setup: I was dressed up for an important dinner
+                </div>
+                <div class="story-element" draggable="true" data-element="action">
+                    Action: Sudden downpour started as I left the building
+                </div>
+                <div class="story-element" draggable="true" data-element="outcome">
+                    Outcome: Stranger shared their umbrella with me
+                </div>
+                <div class="story-element" draggable="true" data-element="emotion">
+                    Emotion: Went from panic to gratitude to connection
+                </div>
+                <div class="story-element" draggable="true" data-element="lesson">
+                    Lesson: Sometimes disasters lead to unexpected kindness
+                </div>
+            `;
+            
+            // Re-add event listeners
+            document.querySelectorAll('.story-element').forEach(element => {
+                element.addEventListener('dragstart', drag);
+                element.addEventListener('dragend', function() {
+                    this.classList.remove('dragging');
+                });
+            });
+            
+            storyStructure = { beginning: null, middle: null, end: null };
+        }
+
+        // Hook Laboratory
+        function selectHook(element, hookType) {
+            document.querySelectorAll('.hook-type').forEach(el => {
+                el.classList.remove('selected');
+            });
+            element.classList.add('selected');
+            
+            const hooks = {
+                'mystery': '"I learned something about myself in the back of that taxi..."',
+                'emotion': '"I\'ve never felt panic quite like that moment when I saw the departure board..."',
+                'surprise': '"Turns out the traffic jam saved my life - literally."',
+                'callback': '"You know how I always say I\'m punctual? Well, this is why I don\'t anymore."'
+            };
+            
+            document.getElementById('story-display').textContent = hooks[hookType];
+            
+            // Update engagement meter
+            const engagement = {'mystery': 4, 'emotion': 3, 'surprise': 5, 'callback': 4};
+            updateEngagementMeter(engagement[hookType]);
+        }
+
+        function updateEngagementMeter(level) {
+            for (let i = 1; i <= 5; i++) {
+                const bar = document.getElementById(`engagement-${i}`);
+                if (i <= level) {
+                    bar.classList.add('filled');
+                } else {
+                    bar.classList.remove('filled');
+                }
+            }
+        }
+
+        // Tension Builder
+        function addLayer(element, layerType) {
+            element.classList.toggle('added');
+            const content = document.getElementById(`${layerType}-content`);
+            content.classList.toggle('show');
+            
+            // Update suspense level
+            if (element.classList.contains('added')) {
+                suspenseLevel += 25;
+            } else {
+                suspenseLevel -= 25;
+            }
+            
+            suspenseLevel = Math.max(20, Math.min(100, suspenseLevel));
+            document.getElementById('suspense-fill').style.width = suspenseLevel + '%';
+        }
+
+        // Ending Comparator
+        function rateLending(endingNum, stars) {
+            const ratingDiv = document.querySelector(`[data-ending="${endingNum}"]`);
+            const starElements = ratingDiv.querySelectorAll('.star');
+            
+            starElements.forEach((star, index) => {
+                if (index < stars) {
+                    star.classList.add('filled');
+                } else {
+                    star.classList.remove('filled');
+                }
+            });
+            
+            // Show feedback based on rating
+            setTimeout(() => {
+                const feedbacks = {
+                    1: "Low ratings usually mean the ending feels incomplete or doesn't resolve the emotional journey.",
+                    2: "This ending has emotional resonance and gives the story meaning through action.",
+                    3: "This ending transforms the loss into something hopeful and provides closure with growth."
+                };
+                
+                if (feedbacks[endingNum]) {
+                    alert(feedbacks[endingNum]);
+                }
+            }, 500);
+        }
+
+        // Passion Constructor  
+        function updatePersuasiveness() {
+            const inputs = document.querySelectorAll('#passion-constructor .text-input');
+            let filledSections = 0;
+            inputs.forEach(input => {
+                if (input.value.trim().length > 20) filledSections++;
+            });
+            
+            const score = Math.min(95, 40 + (filledSections * 15));
+            document.getElementById('persuasiveness-score').textContent = `Persuasiveness: ${score}%`;
+        }
+
+        // Pitch Optimizer
+        function selectScenario(element, scenario) {
+            document.querySelectorAll('.scenario-tab').forEach(el => {
+                el.classList.remove('active');
+            });
+            element.classList.add('active');
+            
+            const scenarios = {
+                'networking': 'Scenario: Networking event - introducing your startup idea',
+                'project': 'Scenario: Team meeting - proposing a new project',
+                'personal': 'Scenario: Coffee chat - introducing yourself professionally'
+            };
+            
+            document.querySelector('.statement-bubble').textContent = scenarios[scenario];
+        }
+
+        // Yes But Constructor
+        function updateRelationshipImpact(responseType) {
+            const impact = responseType === 'yes' ? 75 : 30;
+            document.getElementById(`${responseType}-impact`).style.width = impact + '%';
+        }
+
+        // Social Calibration
+        function makeDecision(decision) {
+            const correctDecision = 'listen'; // In this scenario, listening is correct
+            
+            if (decision === correctDecision) {
+                calibrationScore = Math.min(10, calibrationScore + 1);
+                document.getElementById('calibration-feedback').textContent = 
+                    "Good choice! Sarah needed a moment to process. Someone else will likely speak next, or she'll continue.";
+                document.getElementById('calibration-feedback').style.background = '#7BB57B';
+            } else {
+                document.getElementById('calibration-feedback').textContent = 
+                    "In this case, listening was better. Sarah was processing and the group needed a moment of silence.";
+                document.getElementById('calibration-feedback').style.background = '#E06B6B';
+            }
+            
+            document.getElementById('calibration-feedback').classList.add('show');
+            document.querySelector('.accuracy-tracker div:last-child').innerHTML = 
+                `<span style="font-size: 14px; font-weight: 900; color: #7BB57B;">${calibrationScore}/10 ✓</span>`;
+        }
+
+        function nextScenario() {
+            // Reset feedback
+            document.getElementById('calibration-feedback').classList.remove('show');
+            
+            // New scenario
+            const scenarios = [
+                "Tom just made a joke but nobody laughed. Awkward silence for 2 seconds.",
+                "Meeting is running over time, people are checking phones, energy is low.",
+                "Someone shared exciting news, everyone is smiling and leaning in."
+            ];
+            
+            const randomScenario = scenarios[Math.floor(Math.random() * scenarios.length)];
+            document.querySelector('.scenario-viewer div:nth-child(2)').innerHTML = 
+                `Situation: ${randomScenario}`;
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            selectHook(document.querySelector('.hook-type.selected'), 'mystery');
+        });
+    </script>
+</body>
+</html>
