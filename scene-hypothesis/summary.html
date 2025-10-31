@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,174 +8,281 @@
     <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
 </head>
 <body>
-    <a href="index.html" class="home-link">← Back to Book Index</a>
+    <button class="mobile-menu-button" id="mobileMenuButton">☰</button>
     
-    <h1>Scene Theory: Book Summary</h1>
-    <div class="intro-text">A concise outline of key concepts and arguments. This summary provides the essential points from each chapter in simple language, highlighting the core elements of Scene Theory.</div>
-    
-    <div>
-        <div class="book-part-title">Part I: Foundations of Scene Theory</div>
-        
-        <div class="chapter-summary">
-            <div class="summary-title">Chapter 1: Understanding Scenes</div>
-            <ul>
-                <li>Scenes are organic social clusters with shared values and distinct status systems</li>
-                <li>Unlike formal organizations, scenes emerge naturally and function as magnetic centers of activity</li>
-                <li>Scenes consist of "wackos" (creative innovators) and "strivers" (ambitious adopters), both as producers and consumers</li>
-                <li>Scenes develop their own micro-cultures with unique values and status hierarchies</li>
-                <li>Like organisms, scenes have life cycles that include potential decline phases</li>
-            </ul>
-            <a href="chapter1.html" class="read-link">Read Full Chapter →</a>
+    <div class="container">
+        <div class="sidebar" id="sidebar">
+            <div class="theme-toggle">
+                <span class="toggle-label">Dark Mode</span>
+                <label class="switch">
+                    <input type="checkbox" id="themeToggle">
+                    <span class="slider"></span>
+                </label>
+            </div>
+            
+            <div class="book-title">Scene Theory</div>
+            
+            <div class="nav-section">
+                <div class="nav-section-title">Introduction</div>
+                <ul class="nav-links">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="summary.html" class="active">Book Summary</a></li>
+                </ul>
+            </div>
+            
+            <div class="nav-section">
+                <div class="nav-section-title">Part I: Foundations</div>
+                <ul class="nav-links">
+                    <li><a href="chapter1.html"><span class="chapter-number">1.</span> Understanding Scenes</a></li>
+                    <li><a href="chapter2.html"><span class="chapter-number">2.</span> How Scenes Generate Progress</a></li>
+                    <li><a href="chapter3.html"><span class="chapter-number">3.</span> Scene Prerequisites</a></li>
+                </ul>
+            </div>
+            
+            <div class="nav-section">
+                <div class="nav-section-title">Part II: Development Framework</div>
+                <ul class="nav-links">
+                    <li><a href="chapter4.html"><span class="chapter-number">4.</span> The Missing Variable in Development</a></li>
+                    <li><a href="chapter5.html"><span class="chapter-number">5.</span> Slack and Development</a></li>
+                    <li><a href="chapter6.html"><span class="chapter-number">6.</span> Global Talent Flows and Scene Dynamics</a></li>
+                    <li><a href="chapter6b.html"><span class="chapter-number">6B.</span> Scene Theory and Development Stagnation</a></li>
+                </ul>
+            </div>
+            
+            <div class="nav-section">
+                <div class="nav-section-title">Part III: Nigeria Case Study</div>
+                <ul class="nav-links">
+                    <li><a href="chapter7.html"><span class="chapter-number">7.</span> Mapping Nigeria's Historical Clusters</a></li>
+                    <li><a href="chapter8.html"><span class="chapter-number">8.</span> When Universities Don't Lead to Scenes</a></li>
+                    <li><a href="chapter9.html"><span class="chapter-number">9.</span> Bad Magnets and Models of Success</a></li>
+                </ul>
+            </div>
+            
+            <div class="nav-section">
+                <div class="nav-section-title">Part IV: Breaking Cycles</div>
+                <ul class="nav-links">
+                    <li><a href="chapter10.html"><span class="chapter-number">10.</span> Creating Conditions for Scene Formation</a></li>
+                    <li><a href="chapter11.html"><span class="chapter-number">11.</span> New Models for Development Intervention</a></li>
+                </ul>
+            </div>
+            
+            <div class="nav-section">
+                <div class="nav-section-title">Summary Sections</div>
+                <ul class="nav-links">
+                    <li><a href="#part1">Part I: Foundations</a></li>
+                    <li><a href="#part2">Part II: Development Framework</a></li>
+                    <li><a href="#part3">Part III: Nigeria Case Study</a></li>
+                    <li><a href="#part4">Part IV: Breaking Cycles</a></li>
+                </ul>
+            </div>
         </div>
         
-        <div class="chapter-summary">
-            <div class="summary-title">Chapter 2: How Scenes Generate Progress</div>
-            <ul>
-                <li>Scenes transform quantity of activity into quality of output through critical mass</li>
-                <li>Creator-consumer dynamics within scenes establish powerful feedback loops</li>
-                <li>Peer networks and status rewards drive motivation and excellence</li>
-                <li>Magnetic attraction of talent and resources accelerates innovation</li>
-                <li>Network effects and cross-pollination of ideas breed novel approaches</li>
-                <li>Tacit knowledge transfers more effectively within scenes than through formal channels</li>
-                <li>A critical "wacko-to-striver" ratio threshold is necessary for breakthrough innovation</li>
-            </ul>
-            <a href="chapter2.html" class="read-link">Read Full Chapter →</a>
-        </div>
-        
-        <div class="chapter-summary">
-            <div class="summary-title">Chapter 3: Scene Prerequisites</div>
-            <ul>
-                <li>Certain environmental conditions make scenes more or less likely to form</li>
-                <li>Geographic and cultural factors influence scene density</li>
-                <li>"Scene Poverty Traps" can prevent scene formation despite apparent potential</li>
-                <li>Initial "great work" or pioneering creators often serve as nucleation points for scenes</li>
-            </ul>
-            <a href="chapter3.html" class="read-link">Read Full Chapter →</a>
+        <div class="content">
+            <h1>Scene Theory: Book Summary</h1>
+            <div class="intro-text">A concise outline of key concepts and arguments. This summary provides the essential points from each chapter in simple language, highlighting the core elements of Scene Theory.</div>
+            
+            <h2 id="part1">Part I: Foundations of Scene Theory</h2>
+            
+            <div class="chapter-summary">
+                <div class="summary-title">Chapter 1: Understanding Scenes</div>
+                <ul>
+                    <li>Scenes are organic social clusters with shared values and distinct status systems</li>
+                    <li>Unlike formal organizations, scenes emerge naturally and function as magnetic centers of activity</li>
+                    <li>Scenes consist of "wackos" (creative innovators) and "strivers" (ambitious adopters), both as producers and consumers</li>
+                    <li>Scenes develop their own micro-cultures with unique values and status hierarchies</li>
+                    <li>Like organisms, scenes have life cycles that include potential decline phases</li>
+                </ul>
+                <a href="chapter1.html" class="read-link">Read Full Chapter →</a>
+            </div>
+            
+            <div class="chapter-summary">
+                <div class="summary-title">Chapter 2: How Scenes Generate Progress</div>
+                <ul>
+                    <li>Scenes transform quantity of activity into quality of output through critical mass</li>
+                    <li>Creator-consumer dynamics within scenes establish powerful feedback loops</li>
+                    <li>Peer networks and status rewards drive motivation and excellence</li>
+                    <li>Magnetic attraction of talent and resources accelerates innovation</li>
+                    <li>Network effects and cross-pollination of ideas breed novel approaches</li>
+                    <li>Tacit knowledge transfers more effectively within scenes than through formal channels</li>
+                    <li>A critical "wacko-to-striver" ratio threshold is necessary for breakthrough innovation</li>
+                </ul>
+                <a href="chapter2.html" class="read-link">Read Full Chapter →</a>
+            </div>
+            
+            <div class="chapter-summary">
+                <div class="summary-title">Chapter 3: Scene Prerequisites</div>
+                <ul>
+                    <li>Certain environmental conditions make scenes more or less likely to form</li>
+                    <li>Geographic and cultural factors influence scene density</li>
+                    <li>"Scene Poverty Traps" can prevent scene formation despite apparent potential</li>
+                    <li>Initial "great work" or pioneering creators often serve as nucleation points for scenes</li>
+                </ul>
+                <a href="chapter3.html" class="read-link">Read Full Chapter →</a>
+            </div>
+            
+            <h2 id="part2">Part II: Scene Theory as Development Framework</h2>
+            
+            <div class="chapter-summary">
+                <div class="summary-title">Chapter 4: The Missing Variable in Development</div>
+                <ul>
+                    <li>Traditional development models overlook the critical role of scenes</li>
+                    <li>Scene formation complements institutional approaches to development</li>
+                    <li>Scenes can serve as catalysts that accelerate broader economic progress</li>
+                    <li>The presence of "slack" resources is necessary for enabling productive scene formation</li>
+                    <li>Physical and human capital alone are insufficient without scene dynamics</li>
+                </ul>
+                <a href="chapter4.html" class="read-link">Read Full Chapter →</a>
+            </div>
+            
+            <div class="chapter-summary">
+                <div class="summary-title">Chapter 5: Slack and Development</div>
+                <ul>
+                    <li>Resource constraints directly limit scene potential and creative output</li>
+                    <li>Multiple forms of slack (economic, temporal, social, institutional) are required</li>
+                    <li>Slack serves as a meta-condition for development that enables other factors</li>
+                    <li>Infrastructure reliability fundamentally shapes creative potential by freeing mental bandwidth</li>
+                </ul>
+                <a href="chapter5.html" class="read-link">Read Full Chapter →</a>
+            </div>
+            
+            <div class="chapter-summary">
+                <div class="summary-title">Chapter 6: Global Talent Flows and Scene Dynamics</div>
+                <ul>
+                    <li>Competing "magnetic poles" at global and local levels direct talent flows</li>
+                    <li>Brain drain creates significant barriers to scene formation in developing regions</li>
+                    <li>Local status systems can direct talent toward or away from productive activities</li>
+                    <li>Stronger poles naturally drain resources from weaker environments</li>
+                    <li>Talent allocation creates self-reinforcing virtuous or vicious cycles</li>
+                </ul>
+                <a href="chapter6.html" class="read-link">Read Full Chapter →</a>
+            </div>
+            
+            <div class="chapter-summary">
+                <div class="summary-title">Chapter 6B: Scene Theory and Development Stagnation</div>
+                <ul>
+                    <li>Lack of positive scenes directly contributes to development stagnation</li>
+                    <li>"Negative scenes" can actively impede progress by misdirecting talent and resources</li>
+                    <li>Scene theory explains persistent underdevelopment beyond traditional economic factors</li>
+                </ul>
+                <a href="chapter6b.html" class="read-link">Read Full Chapter →</a>
+            </div>
+            
+            <h2 id="part3">Part III: Nigeria Through the Lens of Scene Theory</h2>
+            
+            <div class="chapter-summary">
+                <div class="summary-title">Chapter 7: Mapping Nigeria's Historical Clusters</div>
+                <ul>
+                    <li>Comprehensive analysis of Nigeria's historical social and creative clusters</li>
+                    <li>Geographic and temporal patterns reveal scene formation triggers and obstacles</li>
+                    <li>Case studies demonstrate complete scene trajectories, including growth and decay</li>
+                    <li>Comparative analysis across different domains and time periods highlights patterns</li>
+                </ul>
+                <a href="chapter7.html" class="read-link">Read Full Chapter →</a>
+            </div>
+            
+            <div class="chapter-summary">
+                <div class="summary-title">Chapter 8: When Universities Don't Lead to Scenes</div>
+                <ul>
+                    <li>Educational institutions should naturally generate scenes but often fail to do so</li>
+                    <li>Specific barriers in Nigerian universities prevent effective scene formation</li>
+                    <li>Tacit knowledge transmission failures block the development of expertise clusters</li>
+                    <li>Comparison of successful and failed university-adjacent scenes reveals key differences</li>
+                    <li>Cultural and domain-specific barriers influence scene potential in academic settings</li>
+                </ul>
+                <a href="chapter8.html" class="read-link">Read Full Chapter →</a>
+            </div>
+            
+            <div class="chapter-summary">
+                <div class="summary-title">Chapter 9: Bad Magnets and Models of Success</div>
+                <ul>
+                    <li>Nigeria's strongest talent poles often direct energy toward extractive rather than creative activities</li>
+                    <li>Status systems reward behaviors that inhibit rather than promote development</li>
+                    <li>Productive magnetic poles are systematically weakened in the current environment</li>
+                    <li>Prevailing models of success influence talent flows away from innovation</li>
+                    <li>Media portrayals shape aspirations toward non-productive domains</li>
+                    <li>Systemic suppression of idealism further inhibits positive scene formation</li>
+                </ul>
+                <a href="chapter9.html" class="read-link">Read Full Chapter →</a>
+            </div>
+            
+            <h2 id="part4">Part IV: Breaking Cycles Through Scene Theory</h2>
+            
+            <div class="chapter-summary">
+                <div class="summary-title">Chapter 10: Creating Conditions for Scene Formation</div>
+                <ul>
+                    <li>Minimum necessary conditions for scene formation in challenging environments</li>
+                    <li>Protective mechanisms against extraction that allow scenes to develop</li>
+                    <li>Methods for shifting status systems to reward creative production</li>
+                    <li>Techniques for creating slack in resource-constrained contexts</li>
+                    <li>Case studies of successful scene formation despite typical constraints</li>
+                    <li>Lessons from both organic and deliberately engineered scenes</li>
+                </ul>
+                <a href="chapter10.html" class="read-link">Read Full Chapter →</a>
+            </div>
+            
+            <div class="chapter-summary">
+                <div class="summary-title">Chapter 11: New Models for Development Intervention</div>
+                <ul>
+                    <li>Applications of scene theory to development program design</li>
+                    <li>Scene formation as a complement to traditional institutional reform</li>
+                    <li>The critical role of local clusters in driving national development</li>
+                    <li>Targeted interventions to break scene poverty traps</li>
+                    <li>Supporting rather than engineering innovation for sustainable progress</li>
+                    <li>Measuring development through scene vitality rather than traditional metrics</li>
+                    <li>Policy implications for governments, NGOs, and international organizations</li>
+                </ul>
+                <a href="chapter11.html" class="read-link">Read Full Chapter →</a>
+            </div>
+            
+            <footer>
+                <p>© 2025 Scene Theory | An Open Online Book</p>
+            </footer>
         </div>
     </div>
     
-    <div>
-        <div class="book-part-title">Part II: Scene Theory as Development Framework</div>
+    <script>
+        // Theme toggle
+        const themeToggle = document.getElementById('themeToggle');
+        const htmlElement = document.documentElement;
         
-        <div class="chapter-summary">
-            <div class="summary-title">Chapter 4: The Missing Variable in Development</div>
-            <ul>
-                <li>Traditional development models overlook the critical role of scenes</li>
-                <li>Scene formation complements institutional approaches to development</li>
-                <li>Scenes can serve as catalysts that accelerate broader economic progress</li>
-                <li>The presence of "slack" resources is necessary for enabling productive scene formation</li>
-                <li>Physical and human capital alone are insufficient without scene dynamics</li>
-            </ul>
-            <a href="chapter4.html" class="read-link">Read Full Chapter →</a>
-        </div>
+        // Check for saved theme preference or use preferred color scheme
+        const savedTheme = localStorage.getItem('theme') || 
+                          (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
         
-        <div class="chapter-summary">
-            <div class="summary-title">Chapter 5: Slack and Development</div>
-            <ul>
-                <li>Resource constraints directly limit scene potential and creative output</li>
-                <li>Multiple forms of slack (economic, temporal, social, institutional) are required</li>
-                <li>Slack serves as a meta-condition for development that enables other factors</li>
-                <li>Infrastructure reliability fundamentally shapes creative potential by freeing mental bandwidth</li>
-            </ul>
-            <a href="chapter5.html" class="read-link">Read Full Chapter →</a>
-        </div>
+        // Apply the saved theme
+        if (savedTheme === 'dark') {
+            htmlElement.setAttribute('data-theme', 'dark');
+            themeToggle.checked = true;
+        }
         
-        <div class="chapter-summary">
-            <div class="summary-title">Chapter 6: Global Talent Flows and Scene Dynamics</div>
-            <ul>
-                <li>Competing "magnetic poles" at global and local levels direct talent flows</li>
-                <li>Brain drain creates significant barriers to scene formation in developing regions</li>
-                <li>Local status systems can direct talent toward or away from productive activities</li>
-                <li>Stronger poles naturally drain resources from weaker environments</li>
-                <li>Talent allocation creates self-reinforcing virtuous or vicious cycles</li>
-            </ul>
-            <a href="chapter6.html" class="read-link">Read Full Chapter →</a>
-        </div>
+        // Toggle theme when the switch is clicked
+        themeToggle.addEventListener('change', function() {
+            if (this.checked) {
+                htmlElement.setAttribute('data-theme', 'dark');
+                localStorage.setItem('theme', 'dark');
+            } else {
+                htmlElement.setAttribute('data-theme', 'light');
+                localStorage.setItem('theme', 'light');
+            }
+        });
         
-        <div class="chapter-summary">
-            <div class="summary-title">Chapter 6B: Scene Theory and Development Stagnation</div>
-            <ul>
-                <li>Lack of positive scenes directly contributes to development stagnation</li>
-                <li>"Negative scenes" can actively impede progress by misdirecting talent and resources</li>
-                <li>Scene theory explains persistent underdevelopment beyond traditional economic factors</li>
-            </ul>
-            <a href="chapter6b.html" class="read-link">Read Full Chapter →</a>
-        </div>
-    </div>
-    
-    <div>
-        <div class="book-part-title">Part III: Nigeria Through the Lens of Scene Theory</div>
+        // Mobile menu toggle
+        const mobileMenuButton = document.getElementById('mobileMenuButton');
+        const sidebar = document.getElementById('sidebar');
         
-        <div class="chapter-summary">
-            <div class="summary-title">Chapter 7: Mapping Nigeria's Historical Clusters</div>
-            <ul>
-                <li>Comprehensive analysis of Nigeria's historical social and creative clusters</li>
-                <li>Geographic and temporal patterns reveal scene formation triggers and obstacles</li>
-                <li>Case studies demonstrate complete scene trajectories, including growth and decay</li>
-                <li>Comparative analysis across different domains and time periods highlights patterns</li>
-            </ul>
-            <a href="chapter7.html" class="read-link">Read Full Chapter →</a>
-        </div>
+        mobileMenuButton.addEventListener('click', function() {
+            sidebar.classList.toggle('active');
+        });
         
-        <div class="chapter-summary">
-            <div class="summary-title">Chapter 8: When Universities Don't Lead to Scenes</div>
-            <ul>
-                <li>Educational institutions should naturally generate scenes but often fail to do so</li>
-                <li>Specific barriers in Nigerian universities prevent effective scene formation</li>
-                <li>Tacit knowledge transmission failures block the development of expertise clusters</li>
-                <li>Comparison of successful and failed university-adjacent scenes reveals key differences</li>
-                <li>Cultural and domain-specific barriers influence scene potential in academic settings</li>
-            </ul>
-            <a href="chapter8.html" class="read-link">Read Full Chapter →</a>
-        </div>
+        // Collapsible sections
+        const sectionTitles = document.querySelectorAll('.nav-section-title');
         
-        <div class="chapter-summary">
-            <div class="summary-title">Chapter 9: Bad Magnets and Models of Success</div>
-            <ul>
-                <li>Nigeria's strongest talent poles often direct energy toward extractive rather than creative activities</li>
-                <li>Status systems reward behaviors that inhibit rather than promote development</li>
-                <li>Productive magnetic poles are systematically weakened in the current environment</li>
-                <li>Prevailing models of success influence talent flows away from innovation</li>
-                <li>Media portrayals shape aspirations toward non-productive domains</li>
-                <li>Systemic suppression of idealism further inhibits positive scene formation</li>
-            </ul>
-            <a href="chapter9.html" class="read-link">Read Full Chapter →</a>
-        </div>
-    </div>
-    
-    <div>
-        <div class="book-part-title">Part IV: Breaking Cycles Through Scene Theory</div>
-        
-        <div class="chapter-summary">
-            <div class="summary-title">Chapter 10: Creating Conditions for Scene Formation</div>
-            <ul>
-                <li>Minimum necessary conditions for scene formation in challenging environments</li>
-                <li>Protective mechanisms against extraction that allow scenes to develop</li>
-                <li>Methods for shifting status systems to reward creative production</li>
-                <li>Techniques for creating slack in resource-constrained contexts</li>
-                <li>Case studies of successful scene formation despite typical constraints</li>
-                <li>Lessons from both organic and deliberately engineered scenes</li>
-            </ul>
-            <a href="chapter10.html" class="read-link">Read Full Chapter →</a>
-        </div>
-        
-        <div class="chapter-summary">
-            <div class="summary-title">Chapter 11: New Models for Development Intervention</div>
-            <ul>
-                <li>Applications of scene theory to development program design</li>
-                <li>Scene formation as a complement to traditional institutional reform</li>
-                <li>The critical role of local clusters in driving national development</li>
-                <li>Targeted interventions to break scene poverty traps</li>
-                <li>Supporting rather than engineering innovation for sustainable progress</li>
-                <li>Measuring development through scene vitality rather than traditional metrics</li>
-                <li>Policy implications for governments, NGOs, and international organizations</li>
-            </ul>
-            <a href="chapter11.html" class="read-link">Read Full Chapter →</a>
-        </div>
-    </div>
-    
-    <footer>
-        <p>© 2025 Scene Theory | An Open Online Book</p>
-    </footer>
+        sectionTitles.forEach(title => {
+            title.addEventListener('click', function() {
+                const section = this.parentElement;
+                section.classList.toggle('collapsed');
+            });
+        });
+    </script>
 </body>
 </html>
