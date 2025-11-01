@@ -205,13 +205,103 @@
             border-bottom: 1px solid var(--border-color);
         }
         
-        .mobile-nav select {
+        /* Custom styled select dropdown */
+        .custom-select {
+            position: relative;
             width: 100%;
-            padding: 0.5rem;
+        }
+        
+        .custom-select select {
+            width: 100%;
+            padding: 0.75rem;
             font-family: 'Space Mono', monospace;
             background-color: var(--background-color);
             color: var(--text-color);
             border: 1px solid var(--border-color);
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            cursor: pointer;
+            transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+            font-size: 0.9rem;
+        }
+        
+        .custom-select::after {
+            content: "▼";
+            font-size: 0.7rem;
+            color: var(--text-color);
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            pointer-events: none;
+        }
+        
+        .custom-select select:focus {
+            outline: none;
+            border-color: var(--text-color);
+        }
+        
+        .custom-select select option {
+            background-color: var(--background-color);
+            color: var(--text-color);
+            padding: 0.5rem;
+        }
+        
+        /* Markdown content styling */
+        .markdown-content h2 {
+            font-size: 18px;
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+        }
+        
+        .markdown-content h3 {
+            font-size: 16px;
+            margin-top: 1.8rem;
+            margin-bottom: 0.75rem;
+        }
+        
+        .markdown-content p {
+            margin-bottom: 1.25rem;
+        }
+        
+        .markdown-content ul, .markdown-content ol {
+            padding-left: 2rem;
+            margin-bottom: 1.25rem;
+        }
+        
+        .markdown-content li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .markdown-content blockquote {
+            border-left: 2px solid var(--border-color);
+            padding-left: 1rem;
+            margin-left: 1rem;
+            font-style: italic;
+            color: var(--secondary-text-color);
+            margin-bottom: 1.25rem;
+        }
+        
+        .markdown-content code {
+            font-family: monospace;
+            background-color: var(--code-bg, rgba(0, 0, 0, 0.05));
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+        
+        .markdown-content pre {
+            background-color: var(--code-bg, rgba(0, 0, 0, 0.05));
+            padding: 1rem;
+            overflow-x: auto;
+            margin-bottom: 1.25rem;
+            border: 1px solid var(--border-color);
+        }
+        
+        .markdown-content pre code {
+            background-color: transparent;
+            padding: 0;
         }
         
         @media (max-width: 900px) {
@@ -252,27 +342,29 @@
     <button class="theme-toggle" id="theme-toggle">🌙</button>
     
     <div class="mobile-nav">
-        <select id="chapter-select" onchange="navigateTo(this.value)">
-            <option value="">Select chapter...</option>
-            <option value="/scene-hypothesis.html">Homepage</option>
-            <option value="/scene-hypothesis/summary.html">Summary</option>
-            <option value="/scene-hypothesis/part1.html">Part I: Foundations of Scene Theory</option>
-            <option value="/scene-hypothesis/chapter1.html">Chapter 1: Understanding Scenes</option>
-            <option value="/scene-hypothesis/chapter2.html">Chapter 2: How Scenes Generate Progress</option>
-            <option value="/scene-hypothesis/chapter3.html">Chapter 3: Scene Prerequisites</option>
-            <option value="/scene-hypothesis/part2.html">Part II: Scene Theory as Development Framework</option>
-            <option value="/scene-hypothesis/chapter4.html">Chapter 4: The Missing Variable in Development</option>
-            <option value="/scene-hypothesis/chapter5.html">Chapter 5: Slack and Development</option>
-            <option value="/scene-hypothesis/chapter6.html">Chapter 6: Global Talent Flows</option>
-            <option value="/scene-hypothesis/chapter6b.html">Chapter 6B: Development Stagnation</option>
-            <option value="/scene-hypothesis/part3.html">Part III: Nigeria Through the Lens of Scene Theory</option>
-            <option value="/scene-hypothesis/chapter7.html">Chapter 7: Nigeria's Historical Clusters</option>
-            <option value="/scene-hypothesis/chapter8.html">Chapter 8: When Universities Don't Lead</option>
-            <option value="/scene-hypothesis/chapter9.html">Chapter 9: Bad Magnets and Models</option>
-            <option value="/scene-hypothesis/part4.html">Part IV: Breaking Cycles Through Scene Theory</option>
-            <option value="/scene-hypothesis/chapter10.html">Chapter 10: Creating Conditions for Scenes</option>
-            <option value="/scene-hypothesis/chapter11.html">Chapter 11: New Models for Development</option>
-        </select>
+        <div class="custom-select">
+            <select id="chapter-select" onchange="navigateTo(this.value)">
+                <option value="">Select chapter...</option>
+                <option value="/scene-hypothesis.html">Homepage</option>
+                <option value="/scene-hypothesis/summary.html">Summary</option>
+                <option value="/scene-hypothesis/part1.html">Part I: Foundations of Scene Theory</option>
+                <option value="/scene-hypothesis/chapter1.html">Chapter 1: Understanding Scenes</option>
+                <option value="/scene-hypothesis/chapter2.html">Chapter 2: How Scenes Generate Progress</option>
+                <option value="/scene-hypothesis/chapter3.html">Chapter 3: Scene Prerequisites</option>
+                <option value="/scene-hypothesis/part2.html">Part II: Scene Theory as Development Framework</option>
+                <option value="/scene-hypothesis/chapter4.html">Chapter 4: The Missing Variable in Development</option>
+                <option value="/scene-hypothesis/chapter5.html">Chapter 5: Slack and Development</option>
+                <option value="/scene-hypothesis/chapter6.html">Chapter 6: Global Talent Flows</option>
+                <option value="/scene-hypothesis/chapter6b.html">Chapter 6B: Development Stagnation</option>
+                <option value="/scene-hypothesis/part3.html">Part III: Nigeria Through the Lens of Scene Theory</option>
+                <option value="/scene-hypothesis/chapter7.html">Chapter 7: Nigeria's Historical Clusters</option>
+                <option value="/scene-hypothesis/chapter8.html">Chapter 8: When Universities Don't Lead</option>
+                <option value="/scene-hypothesis/chapter9.html">Chapter 9: Bad Magnets and Models</option>
+                <option value="/scene-hypothesis/part4.html">Part IV: Breaking Cycles Through Scene Theory</option>
+                <option value="/scene-hypothesis/chapter10.html">Chapter 10: Creating Conditions for Scenes</option>
+                <option value="/scene-hypothesis/chapter11.html">Chapter 11: New Models for Development</option>
+            </select>
+        </div>
     </div>
     
     <div class="container">
@@ -320,118 +412,89 @@
             <h1>Scene Theory: Summary Version</h1>
             <p class="author-info">Key concepts and findings in bullet-point format</p>
             
-            <div class="summary-section">
-                <h2>Part I: Foundations of Scene Theory</h2>
-                
-                <h3>Chapter 1: Understanding Scenes</h3>
-                <ul>
-                    <li>Scenes are organic social clusters with distinct values and status systems</li>
-                    <li>They feature 'wackos' (creative boundary-pushers) and 'strivers' (status-seekers)</li>
-                    <li>Scenes function as magnetic centers of activity</li>
-                    <li>They follow life cycles similar to organisms</li>
-                    <li>Network effects and micro-cultures emerge from scene composition</li>
-                </ul>
-                
-                <h3>Chapter 2: How Scenes Generate Progress</h3>
-                <ul>
-                    <li>Scenes generate progress through quantity-to-quality transformation</li>
-                    <li>Creator-consumer feedback loops accelerate improvement</li>
-                    <li>Alternative status systems reward innovation and risk-taking</li>
-                    <li>Tacit knowledge transmission occurs through direct interaction</li>
-                    <li>The 'wacko-to-striver' ratio affects scene productivity</li>
-                </ul>
-                
-                <h3>Chapter 3: Scene Prerequisites</h3>
-                <ul>
-                    <li>Scenes require density, physical spaces, economic slack, and cultural permission</li>
-                    <li>'Scene poverty traps' prevent formation through self-reinforcing negative conditions</li>
-                    <li>The 'first great work' problem must be overcome to establish scene viability</li>
-                    <li>Some environments inherently support scene formation better than others</li>
-                </ul>
-            </div>
-            
-            <div class="summary-section">
-                <h2>Part II: Scene Theory as Development Framework</h2>
-                
-                <h3>Chapter 4: The Missing Variable in Development</h3>
-                <ul>
-                    <li>Traditional development models overlook the crucial role of scenes</li>
-                    <li>Scenes create magnetism, alternative status systems, and tacit knowledge transmission</li>
-                    <li>Scene theory complements institutional approaches to development</li>
-                    <li>Physical and human capital alone are insufficient for sustainable progress</li>
-                </ul>
-                
-                <h3>Chapter 5: Slack and Development</h3>
-                <ul>
-                    <li>Slack is a meta-condition for scene formation and development</li>
-                    <li>Multiple forms include economic, temporal, cognitive, social, and institutional slack</li>
-                    <li>Infrastructure unreliability dramatically reduces creative potential</li>
-                    <li>Resource constraints force short-term thinking and limit risk tolerance</li>
-                </ul>
-                
-                <h3>Chapter 6: Global Talent Flows and Scene Dynamics</h3>
-                <ul>
-                    <li>Global scenes compete for talent across national boundaries</li>
-                    <li>Brain drain prevents critical mass for local scene formation</li>
-                    <li>Talent flows create self-reinforcing virtuous or vicious cycles</li>
-                    <li>Status systems direct talent toward or away from local production</li>
-                </ul>
-                
-                <h3>Chapter 6B: Scene Theory and Development Stagnation</h3>
-                <ul>
-                    <li>Some scene configurations impede rather than promote development</li>
-                    <li>Resource scarcity and institutional dysfunction distort scene formation</li>
-                    <li>Different scene types (productive, extractive, aspirational) compete for talent</li>
-                    <li>Negative scenes can create self-reinforcing stagnation</li>
-                </ul>
-            </div>
-            
-            <div class="summary-section">
-                <h2>Part III: Nigeria Through the Lens of Scene Theory</h2>
-                
-                <h3>Chapter 7: Mapping Nigeria's Historical Clusters</h3>
-                <ul>
-                    <li>Research mapped Nigerian scenes across history using archival sources</li>
-                    <li>Scenes clustered in urban centers during periods of political openness</li>
-                    <li>Notable scenes included Mbari Club, Kalakuta Republic, and early Nollywood</li>
-                    <li>Common triggers for scene decay included political repression and brain drain</li>
-                </ul>
-                
-                <h3>Chapter 8: When Universities Don't Lead to Positive Scenes</h3>
-                <ul>
-                    <li>Universities should function as scene incubators but often fail in Nigeria</li>
-                    <li>Resource constraints, political interference, and governance issues create barriers</li>
-                    <li>Tacit knowledge transmission fails due to faculty exodus and limited research</li>
-                    <li>Negative scenes form around credential acquisition rather than knowledge production</li>
-                </ul>
-                
-                <h3>Chapter 9: Bad Magnets and Models of Success</h3>
-                <ul>
-                    <li>Nigeria's strongest 'magnetic poles' attract talent toward extraction not production</li>
-                    <li>Status systems reward consumption, power, and patronage over creation</li>
-                    <li>Media portrayals celebrate wealth without examining sources</li>
-                    <li>Idealistic ambition faces active discouragement and social sanctions</li>
-                </ul>
-            </div>
-            
-            <div class="summary-section">
-                <h2>Part IV: Breaking Cycles Through Scene Theory</h2>
-                
-                <h3>Chapter 10: Creating Conditions for Scene Formation</h3>
-                <ul>
-                    <li>Productive scenes need protected spaces, resources, connections, and early wins</li>
-                    <li>Protective mechanisms against extraction include institutional buffers</li>
-                    <li>Status interventions should celebrate and reward productive role models</li>
-                    <li>Strategic approaches can generate slack even in constrained environments</li>
-                </ul>
-                
-                <h3>Chapter 11: New Models for Development Intervention</h3>
-                <ul>
-                    <li>Scene-oriented development programs support nascent nuclei and connections</li>
-                    <li>Interventions can break scene poverty traps through diaspora engagement</li>
-                    <li>Effective approaches support rather than engineer innovation</li>
-                    <li>Alternative metrics measure scene density, magnetic pull, and knowledge transmission</li>
-                </ul>
+            <!-- Use markdown content here -->
+            <div class="markdown-content">
+## Part I: Foundations of Scene Theory
+
+### Chapter 1: Understanding Scenes
+- Scenes are organic social clusters with distinct values and status systems
+- They feature 'wackos' (creative boundary-pushers) and 'strivers' (status-seekers)
+- Scenes function as magnetic centers of activity
+- They follow life cycles similar to organisms
+- Network effects and micro-cultures emerge from scene composition
+
+### Chapter 2: How Scenes Generate Progress
+- Scenes generate progress through quantity-to-quality transformation
+- Creator-consumer feedback loops accelerate improvement
+- Alternative status systems reward innovation and risk-taking
+- Tacit knowledge transmission occurs through direct interaction
+- The 'wacko-to-striver' ratio affects scene productivity
+
+### Chapter 3: Scene Prerequisites
+- Scenes require density, physical spaces, economic slack, and cultural permission
+- 'Scene poverty traps' prevent formation through self-reinforcing negative conditions
+- The 'first great work' problem must be overcome to establish scene viability
+- Some environments inherently support scene formation better than others
+
+## Part II: Scene Theory as Development Framework
+
+### Chapter 4: The Missing Variable in Development
+- Traditional development models overlook the crucial role of scenes
+- Scenes create magnetism, alternative status systems, and tacit knowledge transmission
+- Scene theory complements institutional approaches to development
+- Physical and human capital alone are insufficient for sustainable progress
+
+### Chapter 5: Slack and Development
+- Slack is a meta-condition for scene formation and development
+- Multiple forms include economic, temporal, cognitive, social, and institutional slack
+- Infrastructure unreliability dramatically reduces creative potential
+- Resource constraints force short-term thinking and limit risk tolerance
+
+### Chapter 6: Global Talent Flows and Scene Dynamics
+- Global scenes compete for talent across national boundaries
+- Brain drain prevents critical mass for local scene formation
+- Talent flows create self-reinforcing virtuous or vicious cycles
+- Status systems direct talent toward or away from local production
+
+### Chapter 6B: Scene Theory and Development Stagnation
+- Some scene configurations impede rather than promote development
+- Resource scarcity and institutional dysfunction distort scene formation
+- Different scene types (productive, extractive, aspirational) compete for talent
+- Negative scenes can create self-reinforcing stagnation
+
+## Part III: Nigeria Through the Lens of Scene Theory
+
+### Chapter 7: Mapping Nigeria's Historical Clusters
+- Research mapped Nigerian scenes across history using archival sources
+- Scenes clustered in urban centers during periods of political openness
+- Notable scenes included Mbari Club, Kalakuta Republic, and early Nollywood
+- Common triggers for scene decay included political repression and brain drain
+
+### Chapter 8: When Universities Don't Lead to Positive Scenes
+- Universities should function as scene incubators but often fail in Nigeria
+- Resource constraints, political interference, and governance issues create barriers
+- Tacit knowledge transmission fails due to faculty exodus and limited research
+- Negative scenes form around credential acquisition rather than knowledge production
+
+### Chapter 9: Bad Magnets and Models of Success
+- Nigeria's strongest 'magnetic poles' attract talent toward extraction not production
+- Status systems reward consumption, power, and patronage over creation
+- Media portrayals celebrate wealth without examining sources
+- Idealistic ambition faces active discouragement and social sanctions
+
+## Part IV: Breaking Cycles Through Scene Theory
+
+### Chapter 10: Creating Conditions for Scene Formation
+- Productive scenes need protected spaces, resources, connections, and early wins
+- Protective mechanisms against extraction include institutional buffers
+- Status interventions should celebrate and reward productive role models
+- Strategic approaches can generate slack even in constrained environments
+
+### Chapter 11: New Models for Development Intervention
+- Scene-oriented development programs support nascent nuclei and connections
+- Interventions can break scene poverty traps through diaspora engagement
+- Effective approaches support rather than engineer innovation
+- Alternative metrics measure scene density, magnetic pull, and knowledge transmission
             </div>
             
             <div class="separator">• • • • • • • • • • • • • • • • • • • • • • • • •</div>
@@ -448,6 +511,29 @@
     </div>
     
     <script>
+        // Load the Showdown library (Markdown to HTML converter)
+        const showdownScript = document.createElement('script');
+        showdownScript.src = 'https://cdnjs.cloudflare.com/ajax/libs/showdown/2.1.0/showdown.min.js';
+        document.head.appendChild(showdownScript);
+        
+        // Initialize Markdown converter when showdown is loaded
+        showdownScript.onload = function() {
+            const markdownContent = document.querySelector('.markdown-content');
+            if (markdownContent) {
+                const converter = new showdown.Converter({
+                    headingStyle: 'atx',
+                    tables: true,
+                    simplifiedAutoLink: true,
+                    strikethrough: true,
+                    tasklists: true,
+                    simpleLineBreaks: true
+                });
+                
+                const html = converter.makeHtml(markdownContent.textContent.trim());
+                markdownContent.innerHTML = html;
+            }
+        };
+        
         // Function to set the theme
         function setTheme(theme) {
             document.documentElement.setAttribute('data-theme', theme);
