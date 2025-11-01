@@ -297,6 +297,9 @@ __/__/_______/___/__\\___\\.~-^=-=~=^=._________________________________________
         <!-- Content will be populated by JavaScript -->
     </div>
     
+    <!-- Load Showdown library for Markdown parsing -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/showdown/2.1.0/showdown.min.js"></script>
+    
     <script>
         // Book data
         const bookInfo = {
@@ -305,6 +308,16 @@ __/__/_______/___/__\\___\\.~-^=-=~=^=._________________________________________
             year: "2025",
             description: "An exploration of how scenes—organic social clusters with distinct values and status systems—function as engines of progress, creativity, and development."
         };
+        
+        // Initialize Markdown converter
+        const converter = new showdown.Converter({
+            headingStyle: 'atx',
+            tables: true,
+            simplifiedAutoLink: true,
+            strikethrough: true,
+            tasklists: true,
+            simpleLineBreaks: true
+        });
         
         // Chapter data structure
         const chapters = [
@@ -316,8 +329,8 @@ __/__/_______/___/__\\___\\.~-^=-=~=^=._________________________________________
                     {
                         id: "chapter1",
                         title: "Chapter 1: Understanding Scenes",
-                        content: `
-                            **Chapter 1: Understanding Scenes**
+                        markdown: `
+**Chapter 1: Understanding Scenes**
 
 **The Clustering of Excellence**
 
@@ -576,99 +589,64 @@ In the chapters that follow, we'll explore how scenes actually generate progress
 But first, we must understand the mechanisms more deeply. How exactly do scenes transform individual effort into collective achievement? Why does composition matter so much? And what role do consumers play? These are the questions we turn to next.
                         `,
                         summary: [
-                            "Scenes are organic social clusters with distinct values and status systems",
-                            "They feature 'wackos' (creative boundary-pushers) and 'strivers' (status-seekers)",
-                            "Scenes function as magnetic centers of activity",
-                            "They follow life cycles similar to organisms",
-                            "Network effects and micro-cultures emerge from scene composition"
+                            "First key point about scenes",
+                            "Second key point about scenes",
+                            "Third key point about scenes",
+                            "Fourth key point about scenes"
                         ]
                     },
                     {
                         id: "chapter2",
                         title: "Chapter 2: How Scenes Generate Progress",
-                        content: `
-                            <h2>How Scenes Generate Progress</h2>
-                            <p>Scenes create unique conditions that foster innovation, creativity, and progress through several key mechanisms.</p>
-                            
-                            <h3>Quantity-to-Quality Transformation</h3>
-                            <p>When sufficient density of activity occurs within a domain, a quantitative change leads to qualitative transformation. The sheer volume of work, experimentation, and exchange within scenes increases the probability of breakthrough innovations and exceptional outputs.</p>
-                            
-                            <h3>Creator-Consumer Dynamics</h3>
-                            <p>Scenes establish tight feedback loops between creators and informed consumers. This dynamic accelerates improvement through:</p>
-                            <ul>
-                                <li>Rapid iteration based on sophisticated feedback</li>
-                                <li>Competition driving higher standards</li>
-                                <li>Specialized appreciation developing for subtle innovations</li>
-                            </ul>
-                            
-                            <h3>Status Reward Systems</h3>
-                            <p>Scenes develop internal status hierarchies that often reward different achievements than mainstream society. These alternative reward structures can:</p>
-                            <ul>
-                                <li>Incentivize innovation and risk-taking</li>
-                                <li>Recognize contributions that might be undervalued elsewhere</li>
-                                <li>Provide social rewards that compensate for economic uncertainty</li>
-                            </ul>
-                            
-                            <h3>Tacit Knowledge Transmission</h3>
-                            <p>Perhaps most importantly, scenes facilitate the transfer of tacit knowledge—skills, insights, and approaches that cannot be easily codified or formally taught. This occurs through:</p>
-                            <ul>
-                                <li>Apprenticeship and mentorship relationships</li>
-                                <li>Direct observation of masters at work</li>
-                                <li>Immersion in scene-specific discourse and critique</li>
-                            </ul>
-                            
-                            <h3>The "Wacko-to-Striver" Ratio</h3>
-                            <p>A critical factor in scene productivity is maintaining a healthy ratio of boundary-pushing innovators ("wackos") to status-seeking achievers ("strivers"). When this balance tips too far in either direction, scenes can stagnate or fragment.</p>
+                        markdown: `
+## How Scenes Generate Progress
+
+Replace this with your Markdown content for Chapter 2.
+
+### Section Title
+
+This is a paragraph with **bold** and *italic* text.
+
+- Bullet point 1
+- Bullet point 2
+- Bullet point 3
+
+### Another Section
+
+More content here...
                         `,
                         summary: [
-                            "Scenes generate progress through quantity-to-quality transformation",
-                            "Creator-consumer feedback loops accelerate improvement",
-                            "Alternative status systems reward innovation and risk-taking",
-                            "Tacit knowledge transmission occurs through direct interaction",
-                            "The 'wacko-to-striver' ratio affects scene productivity"
+                            "First key point about scene progress",
+                            "Second key point about scene progress",
+                            "Third key point about scene progress",
+                            "Fourth key point about scene progress"
                         ]
                     },
                     {
                         id: "chapter3",
                         title: "Chapter 3: Scene Prerequisites",
-                        content: `
-                            <h2>Scene Prerequisites</h2>
-                            <p>Certain conditions must exist for scenes to form and flourish. Understanding these prerequisites helps explain why scenes emerge in some contexts but not others.</p>
-                            
-                            <h3>Essential Preconditions</h3>
-                            <ul>
-                                <li><strong>Sufficient density:</strong> A critical mass of individuals interested in the domain</li>
-                                <li><strong>Physical spaces:</strong> Venues where scene participants can regularly interact</li>
-                                <li><strong>Economic slack:</strong> Resources that allow participation without immediate return</li>
-                                <li><strong>Cultural permission:</strong> Social acceptance of the scene's core activities</li>
-                                <li><strong>Relative autonomy:</strong> Freedom from excessive external control or regulation</li>
-                            </ul>
-                            
-                            <h3>Scene Poverty Traps</h3>
-                            <p>Some environments suffer from "scene poverty traps"—self-reinforcing conditions that prevent scene formation:</p>
-                            <ul>
-                                <li>Talent drain to more established scenes elsewhere</li>
-                                <li>Resource constraints that force short-term, practical pursuits</li>
-                                <li>Status systems that reward extraction rather than creation</li>
-                                <li>Lack of successful precedent or local models of achievement</li>
-                            </ul>
-                            
-                            <h3>The "First Great Work" Problem</h3>
-                            <p>A particular challenge for nascent scenes is the "first great work" problem—the difficulty of producing initial high-quality outputs that can:</p>
-                            <ul>
-                                <li>Demonstrate the potential of local talent</li>
-                                <li>Establish standards and possibilities</li>
-                                <li>Attract attention and resources from outside</li>
-                                <li>Inspire others to participate and contribute</li>
-                            </ul>
-                            
-                            <p>This first breakthrough often requires extraordinary individual effort under suboptimal conditions, yet proves crucial for scene ignition.</p>
+                        markdown: `
+## Scene Prerequisites
+
+Replace this with your Markdown content for Chapter 3.
+
+### Section Title
+
+This is a paragraph with **bold** and *italic* text.
+
+- Bullet point 1
+- Bullet point 2
+- Bullet point 3
+
+### Another Section
+
+More content here...
                         `,
                         summary: [
-                            "Scenes require density, physical spaces, economic slack, and cultural permission",
-                            "'Scene poverty traps' prevent formation through self-reinforcing negative conditions",
-                            "The 'first great work' problem must be overcome to establish scene viability",
-                            "Some environments inherently support scene formation better than others"
+                            "First key point about scene prerequisites",
+                            "Second key point about scene prerequisites",
+                            "Third key point about scene prerequisites",
+                            "Fourth key point about scene prerequisites"
                         ]
                     }
                 ]
@@ -681,180 +659,109 @@ But first, we must understand the mechanisms more deeply. How exactly do scenes 
                     {
                         id: "chapter4",
                         title: "Chapter 4: The Missing Variable in Development",
-                        content: `
-                            <h2>The Missing Variable in Development</h2>
-                            <p>Traditional development approaches often overlook the crucial role of scenes in catalyzing sustainable progress. This chapter examines how scene theory fills important gaps in development frameworks.</p>
-                            
-                            <h3>Limitations of Conventional Models</h3>
-                            <p>Standard development models typically focus on:</p>
-                            <ul>
-                                <li>Physical capital accumulation (infrastructure, equipment)</li>
-                                <li>Human capital development (education, skills)</li>
-                                <li>Institutional reform (governance, property rights)</li>
-                                <li>Market integration (trade, investment flows)</li>
-                            </ul>
-                            
-                            <p>While these factors are necessary, they often prove insufficient for generating the dynamic, self-sustaining growth seen in successful economies.</p>
-                            
-                            <h3>Scenes as Development Catalysts</h3>
-                            <p>Scenes contribute to development through mechanisms that conventional approaches struggle to address:</p>
-                            <ul>
-                                <li>Creating magnetism that counters brain drain</li>
-                                <li>Establishing alternative status hierarchies that reward productive creation</li>
-                                <li>Facilitating tacit knowledge transmission that formal education cannot provide</li>
-                                <li>Generating cultural shifts that align social rewards with developmental goals</li>
-                                <li>Building networks that efficiently allocate talent and resources</li>
-                            </ul>
-                            
-                            <h3>Complementing Institutional Approaches</h3>
-                            <p>Scene theory doesn't replace but enhances institutional perspectives by explaining:</p>
-                            <ul>
-                                <li>Why similar formal institutions produce different outcomes across contexts</li>
-                                <li>How informal norms and networks influence resource allocation</li>
-                                <li>Why technical solutions often fail to achieve expected results</li>
-                                <li>How cultural factors affect development trajectories</li>
-                            </ul>
+                        markdown: `
+## The Missing Variable in Development
+
+Replace this with your Markdown content for Chapter 4.
+
+### Section Title
+
+This is a paragraph with **bold** and *italic* text.
+
+- Bullet point 1
+- Bullet point 2
+- Bullet point 3
+
+### Another Section
+
+More content here...
                         `,
                         summary: [
-                            "Traditional development models overlook the crucial role of scenes",
-                            "Scenes create magnetism, alternative status systems, and tacit knowledge transmission",
-                            "Scene theory complements institutional approaches to development",
-                            "Physical and human capital alone are insufficient for sustainable progress"
+                            "First key point about missing variables",
+                            "Second key point about missing variables",
+                            "Third key point about missing variables",
+                            "Fourth key point about missing variables"
                         ]
                     },
                     {
                         id: "chapter5",
                         title: "Chapter 5: Slack and Development",
-                        content: `
-                            <h2>Slack and Development</h2>
-                            <p>Slack—excess capacity beyond immediate survival needs—represents a meta-condition for scene formation and, consequently, for development.</p>
-                            
-                            <h3>Forms of Slack</h3>
-                            <p>Development requires multiple forms of slack:</p>
-                            <ul>
-                                <li><strong>Economic slack:</strong> Resources beyond immediate subsistence needs</li>
-                                <li><strong>Temporal slack:</strong> Time available for non-essential activities</li>
-                                <li><strong>Cognitive slack:</strong> Mental bandwidth free from survival concerns</li>
-                                <li><strong>Social slack:</strong> Tolerance for non-conforming behaviors</li>
-                                <li><strong>Institutional slack:</strong> Flexibility in rules and enforcement</li>
-                            </ul>
-                            
-                            <h3>Infrastructure Reliability and Creative Potential</h3>
-                            <p>Basic infrastructure unreliability dramatically reduces slack by:</p>
-                            <ul>
-                                <li>Forcing redundant systems and contingency planning</li>
-                                <li>Creating unpredictable interruptions to creative work</li>
-                                <li>Consuming mental energy for basic function management</li>
-                                <li>Reducing coordination efficiency among potential collaborators</li>
-                            </ul>
-                            
-                            <h3>Resource Constraints and Scene Potential</h3>
-                            <p>Severe resource constraints affect scene formation through:</p>
-                            <ul>
-                                <li>Shortening time horizons for investment in skills and projects</li>
-                                <li>Reducing risk tolerance for exploratory or innovative work</li>
-                                <li>Limiting physical spaces for scene gathering and exchange</li>
-                                <li>Preventing critical mass of simultaneous participation</li>
-                            </ul>
-                            
-                            <p>Addressing slack deficits often requires interventions that seem tangential to development goals but prove essential for creating conditions where productive scenes can emerge.</p>
+                        markdown: `
+## Slack and Development
+
+Replace this with your Markdown content for Chapter 5.
+
+### Section Title
+
+This is a paragraph with **bold** and *italic* text.
+
+- Bullet point 1
+- Bullet point 2
+- Bullet point 3
+
+### Another Section
+
+More content here...
                         `,
                         summary: [
-                            "Slack is a meta-condition for scene formation and development",
-                            "Multiple forms include economic, temporal, cognitive, social, and institutional slack",
-                            "Infrastructure unreliability dramatically reduces creative potential",
-                            "Resource constraints force short-term thinking and limit risk tolerance"
+                            "First key point about slack",
+                            "Second key point about slack",
+                            "Third key point about slack",
+                            "Fourth key point about slack"
                         ]
                     },
                     {
                         id: "chapter6",
                         title: "Chapter 6: Global Talent Flows and Scene Dynamics",
-                        content: `
-                            <h2>Global Talent Flows and Scene Dynamics</h2>
-                            <p>In an interconnected world, scenes compete globally for talent and resources. This chapter examines how these dynamics affect development prospects, particularly for emerging economies.</p>
-                            
-                            <h3>Competing Magnetic Poles</h3>
-                            <p>Scene formation faces challenges from competing attraction forces:</p>
-                            <ul>
-                                <li>Established global creative centers with powerful gravitational pull</li>
-                                <li>Economic opportunities drawing talent away from creative domains</li>
-                                <li>Status hierarchies that reward migration over local contribution</li>
-                                <li>Resource concentrations that enable scene density in certain locations</li>
-                            </ul>
-                            
-                            <h3>Brain Drain as Scene Formation Barrier</h3>
-                            <p>The emigration of talented individuals creates particular challenges:</p>
-                            <ul>
-                                <li>Preventing critical mass necessary for scene ignition</li>
-                                <li>Removing potential scene leaders and exemplars</li>
-                                <li>Disrupting knowledge transmission chains</li>
-                                <li>Reinforcing perceptions that success requires departure</li>
-                            </ul>
-                            
-                            <h3>Virtuous and Vicious Cycles</h3>
-                            <p>Talent flows create self-reinforcing patterns:</p>
-                            <ul>
-                                <li><strong>Virtuous cycles:</strong> Initial scene formation attracts more talent, creating density that improves scene quality, further increasing attraction</li>
-                                <li><strong>Vicious cycles:</strong> Talent departure reduces scene potential, diminishing opportunities for remaining talent, accelerating further departures</li>
-                            </ul>
-                            
-                            <h3>Status Systems Directing Talent</h3>
-                            <p>Local status systems critically influence talent allocation by determining:</p>
-                            <ul>
-                                <li>Which domains receive societal recognition and respect</li>
-                                <li>Whether local or international achievement carries more prestige</li>
-                                <li>If production or extraction activities receive greater rewards</li>
-                                <li>How risk-taking and innovation are socially valued</li>
-                            </ul>
+                        markdown: `
+## Global Talent Flows and Scene Dynamics
+
+Replace this with your Markdown content for Chapter 6.
+
+### Section Title
+
+This is a paragraph with **bold** and *italic* text.
+
+- Bullet point 1
+- Bullet point 2
+- Bullet point 3
+
+### Another Section
+
+More content here...
                         `,
                         summary: [
-                            "Global scenes compete for talent across national boundaries",
-                            "Brain drain prevents critical mass for local scene formation",
-                            "Talent flows create self-reinforcing virtuous or vicious cycles",
-                            "Status systems direct talent toward or away from local production"
+                            "First key point about global talent",
+                            "Second key point about global talent",
+                            "Third key point about global talent",
+                            "Fourth key point about global talent"
                         ]
                     },
                     {
                         id: "chapter6b",
                         title: "Chapter 6B: Scene Theory and Development Stagnation",
-                        content: `
-                            <h2>Scene Theory and Development Stagnation</h2>
-                            <p>While productive scenes drive development, certain scene configurations can actually impede progress. This chapter bridges theoretical concepts with the case study of Nigeria.</p>
-                            
-                            <h3>Negative Scene Dynamics</h3>
-                            <p>Some scenes develop characteristics that hinder rather than help development:</p>
-                            <ul>
-                                <li>Extractive value systems that reward zero-sum or negative-sum activities</li>
-                                <li>Status hierarchies based on consumption rather than production</li>
-                                <li>Network effects that amplify and normalize unproductive behaviors</li>
-                                <li>Tacit knowledge focused on gaming systems rather than creating value</li>
-                            </ul>
-                            
-                            <h3>Scene Distortion Under Constraint</h3>
-                            <p>Resource scarcity and institutional dysfunction can distort scene formation:</p>
-                            <ul>
-                                <li>Adaptive behaviors to dysfunctional environments becoming valorized</li>
-                                <li>Short-term thinking crowding out long-term investment</li>
-                                <li>Risk management strategies preventing productive innovation</li>
-                                <li>Protective social networks becoming exclusionary barriers</li>
-                            </ul>
-                            
-                            <h3>Competing Scene Types</h3>
-                            <p>Different scene types compete for talent and cultural influence:</p>
-                            <ul>
-                                <li>Productive scenes focused on creation and innovation</li>
-                                <li>Extractive scenes centered on capturing existing value</li>
-                                <li>Aspirational scenes oriented toward status display</li>
-                                <li>Survival scenes developing mutual support under constraint</li>
-                            </ul>
-                            
-                            <p>The relative strength of these competing scene types significantly influences development trajectories, with extractive scenes often proving more immediately rewarding and thus more attractive in challenging environments.</p>
+                        markdown: `
+## Scene Theory and Development Stagnation
+
+Replace this with your Markdown content for Chapter 6B.
+
+### Section Title
+
+This is a paragraph with **bold** and *italic* text.
+
+- Bullet point 1
+- Bullet point 2
+- Bullet point 3
+
+### Another Section
+
+More content here...
                         `,
                         summary: [
-                            "Some scene configurations impede rather than promote development",
-                            "Resource scarcity and institutional dysfunction distort scene formation",
-                            "Different scene types (productive, extractive, aspirational) compete for talent",
-                            "Negative scenes can create self-reinforcing stagnation"
+                            "First key point about stagnation",
+                            "Second key point about stagnation",
+                            "Third key point about stagnation",
+                            "Fourth key point about stagnation"
                         ]
                     }
                 ]
@@ -867,162 +774,82 @@ But first, we must understand the mechanisms more deeply. How exactly do scenes 
                     {
                         id: "chapter7",
                         title: "Chapter 7: Mapping Nigeria's Historical Clusters",
-                        content: `
-                            <h2>Mapping Nigeria's Historical Clusters</h2>
-                            <p>This research-based chapter examines the historical presence and evolution of scenes in Nigeria across various domains and time periods.</p>
-                            
-                            <h3>Research Methodology</h3>
-                            <p>Analysis is based on a comprehensive database of Nigerian clusters identified through:</p>
-                            <ul>
-                                <li>Archival research in colonial and post-independence records</li>
-                                <li>Media coverage and cultural documentation</li>
-                                <li>Academic studies and institutional histories</li>
-                                <li>Oral histories and interviews with participants</li>
-                            </ul>
-                            
-                            <h3>Scene Identification Criteria</h3>
-                            <p>Potential scenes were assessed against core characteristics:</p>
-                            <ul>
-                                <li>Density of activity within specific domains</li>
-                                <li>Evidence of regular interaction and exchange</li>
-                                <li>Development of distinctive norms and practices</li>
-                                <li>Presence of identifiable scene outputs and achievements</li>
-                            </ul>
-                            
-                            <h3>Geographical and Temporal Patterns</h3>
-                            <p>Analysis reveals distinct patterns in Nigerian scene formation:</p>
-                            <ul>
-                                <li>Urban concentration with particular density in Lagos, Ibadan, Enugu, and Kano</li>
-                                <li>Temporal clustering around periods of political openness and economic growth</li>
-                                <li>Domain variation reflecting changing economic and cultural conditions</li>
-                                <li>Institutional anchoring around universities, media centers, and commercial hubs</li>
-                            </ul>
-                            
-                            <h3>Case Studies of Complete Scene Trajectories</h3>
-                            <p>Several notable Nigerian scenes demonstrate full life cycles:</p>
-                            <ul>
-                                <li>The Mbari Club literary scene in 1960s Ibadan</li>
-                                <li>The Kalakuta Republic music scene surrounding Fela Kuti</li>
-                                <li>The Zaria Art Society and its nationalist aesthetic movement</li>
-                                <li>The "Nollywood" film production emergence in 1990s Lagos</li>
-                            </ul>
-                            
-                            <p>Analysis of these complete trajectories reveals common triggers for scene decay, including political repression, economic contraction, international brain drain, and institutional capture.</p>
+                        markdown: `
+## Mapping Nigeria's Historical Clusters
+
+Replace this with your Markdown content for Chapter 7.
+
+### Section Title
+
+This is a paragraph with **bold** and *italic* text.
+
+- Bullet point 1
+- Bullet point 2
+- Bullet point 3
+
+### Another Section
+
+More content here...
                         `,
                         summary: [
-                            "Research mapped Nigerian scenes across history using archival sources",
-                            "Scenes clustered in urban centers during periods of political openness",
-                            "Notable scenes included Mbari Club, Kalakuta Republic, and early Nollywood",
-                            "Common triggers for scene decay included political repression and brain drain"
+                            "First key point about Nigerian clusters",
+                            "Second key point about Nigerian clusters",
+                            "Third key point about Nigerian clusters",
+                            "Fourth key point about Nigerian clusters"
                         ]
                     },
                     {
                         id: "chapter8",
                         title: "Chapter 8: When Universities Don't Lead to Positive Scenes",
-                        content: `
-                            <h2>When Universities Don't Lead to Positive Scenes</h2>
-                            <p>Universities typically function as scene incubators, yet Nigerian higher education has often failed to generate productive scenes. This chapter examines this phenomenon and its implications.</p>
-                            
-                            <h3>Universities as Theoretical Scene Generators</h3>
-                            <p>Universities should foster scene formation through:</p>
-                            <ul>
-                                <li>Concentration of knowledge workers and motivated students</li>
-                                <li>Physical infrastructure for interaction and collaboration</li>
-                                <li>Intellectual freedom and exploration</li>
-                                <li>Status systems rewarding knowledge production</li>
-                                <li>International connections and knowledge flows</li>
-                            </ul>
-                            
-                            <h3>Barriers to Scene Formation in Nigerian Universities</h3>
-                            <p>Research identifies several factors undermining this potential:</p>
-                            <ul>
-                                <li>Resource constraints forcing focus on basic functioning</li>
-                                <li>Political interference and governance challenges</li>
-                                <li>Frequent disruptions from strikes and closures</li>
-                                <li>Status systems rewarding position over production</li>
-                                <li>Curriculum rigidity and pedagogical limitations</li>
-                            </ul>
-                            
-                            <h3>Tacit Knowledge Transmission Failures</h3>
-                            <p>Critical breakdowns occur in the transmission of tacit knowledge:</p>
-                            <ul>
-                                <li>Generational gaps from exodus of experienced faculty</li>
-                                <li>Limited research practice and mentorship opportunities</li>
-                                <li>Isolation from international scholarly communities</li>
-                                <li>Insufficient resources for hands-on learning and experimentation</li>
-                            </ul>
-                            
-                            <h3>Negative Scene Formation</h3>
-                            <p>Rather than productive scenes, some universities generate problematic alternatives:</p>
-                            <ul>
-                                <li>Scenes focused on credential acquisition rather than knowledge</li>
-                                <li>Corruption networks facilitating academic shortcuts</li>
-                                <li>Status systems rewarding conformity over innovation</li>
-                                <li>Social structures prioritizing patronage over merit</li>
-                            </ul>
-                            
-                            <p>These dynamics create particularly challenging conditions for development, as institutions theoretically dedicated to knowledge advancement instead sometimes reinforce patterns that undermine productivity and innovation.</p>
+                        markdown: `
+## When Universities Don't Lead to Positive Scenes
+
+Replace this with your Markdown content for Chapter 8.
+
+### Section Title
+
+This is a paragraph with **bold** and *italic* text.
+
+- Bullet point 1
+- Bullet point 2
+- Bullet point 3
+
+### Another Section
+
+More content here...
                         `,
                         summary: [
-                            "Universities should function as scene incubators but often fail in Nigeria",
-                            "Resource constraints, political interference, and governance issues create barriers",
-                            "Tacit knowledge transmission fails due to faculty exodus and limited research",
-                            "Negative scenes form around credential acquisition rather than knowledge production"
+                            "First key point about universities",
+                            "Second key point about universities",
+                            "Third key point about universities",
+                            "Fourth key point about universities"
                         ]
                     },
                     {
                         id: "chapter9",
                         title: "Chapter 9: Bad Magnets and Models of Success",
-                        content: `
-                            <h2>Bad Magnets and Models of Success</h2>
-                            <p>The strongest "magnetic poles" in Nigerian society often attract talent toward extractive rather than productive activities. This chapter examines how these dynamics shape development outcomes.</p>
-                            
-                            <h3>Nigeria's Strongest Poles</h3>
-                            <p>Research identifies the most powerful attractors of ambitious talent:</p>
-                            <ul>
-                                <li>Political positions with access to state resources</li>
-                                <li>Proximity to oil revenue flows and government contracts</li>
-                                <li>Religious leadership roles with significant social influence</li>
-                                <li>Entertainment industries with high visibility</li>
-                                <li>International migration pathways</li>
-                            </ul>
-                            
-                            <h3>Status Systems and Reward Structures</h3>
-                            <p>These poles are strengthened by status systems that reward:</p>
-                            <ul>
-                                <li>Conspicuous consumption and wealth display</li>
-                                <li>Control over resource distribution</li>
-                                <li>Network size and patronage capacity</li>
-                                <li>Proximity to power centers</li>
-                            </ul>
-                            
-                            <p>By contrast, productive activities often receive limited social recognition and reward, particularly in domains requiring long-term investment like scientific research, manufacturing, or agricultural innovation.</p>
-                            
-                            <h3>Media Portrayals and Models of Success</h3>
-                            <p>Prevailing narratives reinforce these dynamics through:</p>
-                            <ul>
-                                <li>Celebration of overnight wealth without examination of sources</li>
-                                <li>Focus on consumption rather than creation</li>
-                                <li>Limited visibility for productive success stories</li>
-                                <li>Portrayal of education as primarily a credential-seeking activity</li>
-                            </ul>
-                            
-                            <h3>Idealism Suppression</h3>
-                            <p>A particularly damaging dynamic involves the active discouragement of idealistic ambition:</p>
-                            <ul>
-                                <li>Social sanctions against those rejecting extractive opportunities</li>
-                                <li>Portrayal of idealists as naive or foolish</li>
-                                <li>Pressure from family and community to pursue "practical" paths</li>
-                                <li>Limited support systems for those pursuing alternative models</li>
-                            </ul>
-                            
-                            <p>These combined factors create powerful incentives directing talent away from productive domains, forming a significant barrier to development through scene formation.</p>
+                        markdown: `
+## Bad Magnets and Models of Success
+
+Replace this with your Markdown content for Chapter 9.
+
+### Section Title
+
+This is a paragraph with **bold** and *italic* text.
+
+- Bullet point 1
+- Bullet point 2
+- Bullet point 3
+
+### Another Section
+
+More content here...
                         `,
                         summary: [
-                            "Nigeria's strongest 'magnetic poles' attract talent toward extraction not production",
-                            "Status systems reward consumption, power, and patronage over creation",
-                            "Media portrayals celebrate wealth without examining sources",
-                            "Idealistic ambition faces active discouragement and social sanctions"
+                            "First key point about bad magnets",
+                            "Second key point about bad magnets",
+                            "Third key point about bad magnets",
+                            "Fourth key point about bad magnets"
                         ]
                     }
                 ]
@@ -1035,126 +862,55 @@ But first, we must understand the mechanisms more deeply. How exactly do scenes 
                     {
                         id: "chapter10",
                         title: "Chapter 10: Creating Conditions for Scene Formation",
-                        content: `
-                            <h2>Creating Conditions for Scene Formation</h2>
-                            <p>Despite challenging environments, strategic interventions can enable productive scene formation. This chapter explores minimum necessary conditions and protective mechanisms.</p>
-                            
-                            <h3>Minimum Viable Conditions</h3>
-                            <p>Research suggests several essential elements for scene ignition:</p>
-                            <ul>
-                                <li>Protected spaces insulated from extractive pressures</li>
-                                <li>Sufficient basic resources to enable focused work</li>
-                                <li>Connected nodes linking local actors to wider networks</li>
-                                <li>Visible early wins that demonstrate potential</li>
-                                <li>Status markers recognizing scene-specific achievement</li>
-                            </ul>
-                            
-                            <h3>Protective Mechanisms Against Extraction</h3>
-                            <p>Nascent scenes require specific protections:</p>
-                            <ul>
-                                <li>Institutional buffers against political interference</li>
-                                <li>Resource diversification to prevent capture</li>
-                                <li>International connections providing alternative validation</li>
-                                <li>Legal structures safeguarding intellectual property</li>
-                                <li>Community norms reinforcing productive values</li>
-                            </ul>
-                            
-                            <h3>Status System Interventions</h3>
-                            <p>Shifting status rewards toward creation involves:</p>
-                            <ul>
-                                <li>Highlighting and celebrating productive role models</li>
-                                <li>Creating prestigious markers of creative achievement</li>
-                                <li>Establishing platforms for visibility of productive work</li>
-                                <li>Connecting local status to global recognition systems</li>
-                            </ul>
-                            
-                            <h3>Creating Slack in Constrained Contexts</h3>
-                            <p>Strategic approaches to generating necessary slack include:</p>
-                            <ul>
-                                <li>Time-bound fellowships and residencies</li>
-                                <li>Infrastructure reliability within bounded spaces</li>
-                                <li>Mutual support systems that distribute risk</li>
-                                <li>Technology solutions reducing transaction costs</li>
-                            </ul>
-                            
-                            <h3>Case Studies of Engineered Scenes</h3>
-                            <p>Several examples demonstrate successful interventions:</p>
-                            <ul>
-                                <li>The iHub technology community in Nairobi, Kenya</li>
-                                <li>CcHUB innovation center in Lagos, Nigeria</li>
-                                <li>MEST entrepreneurship program in Accra, Ghana</li>
-                                <li>Ashesi University in Ghana's alternative educational model</li>
-                            </ul>
+                        markdown: `
+## Creating Conditions for Scene Formation
+
+Replace this with your Markdown content for Chapter 10.
+
+### Section Title
+
+This is a paragraph with **bold** and *italic* text.
+
+- Bullet point 1
+- Bullet point 2
+- Bullet point 3
+
+### Another Section
+
+More content here...
                         `,
                         summary: [
-                            "Productive scenes need protected spaces, resources, connections, and early wins",
-                            "Protective mechanisms against extraction include institutional buffers",
-                            "Status interventions should celebrate and reward productive role models",
-                            "Strategic approaches can generate slack even in constrained environments"
+                            "First key point about scene formation",
+                            "Second key point about scene formation",
+                            "Third key point about scene formation",
+                            "Fourth key point about scene formation"
                         ]
                     },
                     {
                         id: "chapter11",
                         title: "Chapter 11: New Models for Development Intervention",
-                        content: `
-                            <h2>New Models for Development Intervention</h2>
-                            <p>Scene theory offers alternative approaches to development programming that complement conventional institutional reforms. This chapter explores practical applications and policy implications.</p>
-                            
-                            <h3>Scene Formation as Development Strategy</h3>
-                            <p>Development programs can adopt scene-oriented approaches:</p>
-                            <ul>
-                                <li>Identifying and supporting nascent scene nuclei</li>
-                                <li>Investing in connective infrastructure between actors</li>
-                                <li>Creating protected spaces for experimentation</li>
-                                <li>Establishing scene-appropriate status and reward systems</li>
-                                <li>Supporting scene density through strategic colocation</li>
-                            </ul>
-                            
-                            <h3>Breaking Scene Poverty Traps</h3>
-                            <p>Targeted interventions can address specific scene formation barriers:</p>
-                            <ul>
-                                <li>Diaspora engagement to bridge knowledge and resource gaps</li>
-                                <li>Temporary scene density through events and gatherings</li>
-                                <li>Digital platforms extending scene reach beyond physical limitations</li>
-                                <li>Alternative financing mechanisms for scene-building activities</li>
-                            </ul>
-                            
-                            <h3>Supporting vs. Engineering Innovation</h3>
-                            <p>Effective approaches respect scene organic nature:</p>
-                            <ul>
-                                <li>Identifying and amplifying emergent activity rather than imposing models</li>
-                                <li>Providing infrastructural support without dictating content</li>
-                                <li>Removing barriers rather than directing specific outcomes</li>
-                                <li>Creating enabling conditions for self-organization</li>
-                            </ul>
-                            
-                            <h3>Measuring Progress Through Scene Vitality</h3>
-                            <p>Alternative metrics for development assessment include:</p>
-                            <ul>
-                                <li>Scene density and diversity across domains</li>
-                                <li>Magnetic pull relative to competing poles</li>
-                                <li>Internal status alignment with productive activities</li>
-                                <li>Tacit knowledge transmission effectiveness</li>
-                                <li>Cross-domain fertilization and network formation</li>
-                            </ul>
-                            
-                            <h3>Policy Implications</h3>
-                            <p>Governments and organizations can adopt scene-sensitive policies:</p>
-                            <ul>
-                                <li>Infrastructure reliability prioritization in creative districts</li>
-                                <li>Regulatory flexibility for experimental zones</li>
-                                <li>Public recognition systems for productive achievements</li>
-                                <li>Educational approaches emphasizing tacit knowledge transmission</li>
-                                <li>Strategic investment in scene-supporting physical spaces</li>
-                            </ul>
-                            
-                            <div class="separator">• • • • • • • • • • • • • • • • • • • • • • • • •</div>
+                        markdown: `
+## New Models for Development Intervention
+
+Replace this with your Markdown content for Chapter 11.
+
+### Section Title
+
+This is a paragraph with **bold** and *italic* text.
+
+- Bullet point 1
+- Bullet point 2
+- Bullet point 3
+
+### Another Section
+
+More content here...
                         `,
                         summary: [
-                            "Scene-oriented development programs support nascent nuclei and connections",
-                            "Interventions can break scene poverty traps through diaspora engagement",
-                            "Effective approaches support rather than engineer innovation",
-                            "Alternative metrics measure scene density, magnetic pull, and knowledge transmission"
+                            "First key point about models",
+                            "Second key point about models",
+                            "Third key point about models",
+                            "Fourth key point about models"
                         ]
                     }
                 ]
@@ -1339,7 +1095,7 @@ But first, we must understand the mechanisms more deeply. How exactly do scenes 
             }
         }
         
-        // Render chapter content
+        // Render chapter content (convert markdown to HTML)
         function renderChapterContent(chapterId) {
             let chapter = null;
             
@@ -1355,7 +1111,9 @@ But first, we must understand the mechanisms more deeply. How exactly do scenes 
             }
             
             if (chapter) {
-                contentEl.innerHTML = chapter.content;
+                // Convert markdown to HTML
+                const html = converter.makeHtml(chapter.markdown);
+                contentEl.innerHTML = html;
             }
         }
         
