@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Part III: Nigeria Through the Lens of Scene Theory</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap">
+    <style>
+        :root {
+            --background-color: #f5f5f5;
+            --text-color: #333;
+            --border-color: #333;
+            --secondary-text-color: #666;
+        }
+        
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --background-color: #1a1a1a;
+                --text-color: #e0e0e0;
+                --border-color: #e0e0e0;
+                --secondary-text-color: #aaa;
+            }
+        }
+        
+        [data-theme="light"] {
+            --background-color: #f5f5f5;
+            --text-color: #333;
+            --border-color: #333;
+            --secondary-text-color: #666;
+        }
+        
+        [data-theme="dark"] {
+            --background-color: #1a1a1a;
+            --text-color: #e0e0e0;
+            --border-color: #e0e0e0;
+            --secondary-text-color: #aaa;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: 'Space Mono', monospace;
+            margin: 0;
+            padding: 0;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        
+        .container {
+            display: flex;
+            min-height: 100vh;
+        }
+        
+        .sidebar {
+            width: 280px;
+            border-right: 1px solid var(--border-color);
+            height: 100vh;
+            overflow-y: auto;
+            position: sticky;
+            top: 0;
+            padding: 2rem 1.5rem;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        
+        .sidebar h1 {
+            font-size: 1.5rem;
+            margin-bottom: 2rem;
+            cursor: pointer;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+        
+        .sidebar-nav {
+            margin-bottom: 2rem;
+        }
+        
+        .sidebar h2 {
+            font-size: 1rem;
+            margin-bottom: 0.75rem;
+            margin-top: 1.5rem;
+            text-transform: uppercase;
+        }
+        
+        .sidebar ul {
+            list-style: none;
+            padding-left: 0.75rem;
+            margin-bottom: 1rem;
+        }
+        
+        .sidebar li {
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+        
+        .sidebar .active {
+            font-weight: bold;
+        }
+        
+        .theme-toggle {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            z-index: 1000;
+            background: var(--text-color);
+            color: var(--background-color);
+            border: 1px solid var(--border-color);
+            padding: 5px 8px;
+            font-family: 'Space Mono', monospace;
+            font-size: 12px;
+            cursor: pointer;
+            transition: background-color 0.3s, color 0.3s;
+            opacity: 0.9;
+        }
+        
+        .theme-toggle:hover {
+            opacity: 1;
+        }
+        
+        .content {
+            flex: 1;
+            padding: 2.5rem 3rem;
+            max-width: 800px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        
+        .part-cover {
+            margin-bottom: 3rem;
+        }
+        
+        .part-number {
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+            color: var(--secondary-text-color);
+        }
+        
+        h1 {
+            font-size: 24px;
+            margin-bottom: 1.5rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+        
+        h2 {
+            font-size: 18px;
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+        }
+        
+        h3 {
+            font-size: 16px;
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
+        }
+        
+        p {
+            margin-bottom: 1.25rem;
+        }
+        
+        ul, ol {
+            padding-left: 2rem;
+            margin-bottom: 1.25rem;
+        }
+        
+        li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .chapters-in-part {
+            margin-top: 2rem;
+            border-top: 1px solid var(--border-color);
+            padding-top: 1.5rem;
+        }
+        
+        .chapters-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+        
+        .chapter-card {
+            border: 1px solid var(--border-color);
+            padding: 1.25rem;
+            transition: opacity 0.3s;
+        }
+        
+        .chapter-card:hover {
+            opacity: 0.8;
+        }
+        
+        .chapter-number {
+            font-size: 0.9rem;
+            color: var(--secondary-text-color);
+            margin-bottom: 0.5rem;
+        }
+        
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 3rem;
+            border-top: 1px solid var(--border-color);
+            padding-top: 1.5rem;
+        }
+        
+        /* Separator dots */
+        .separator {
+            text-align: center;
+            margin: 2.5rem 0;
+        }
+        
+        /* Link styling */
+        a {
+            color: var(--text-color);
+            text-decoration: none;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 2px;
+            transition: opacity 0.3s;
+        }
+        
+        a:hover {
+            opacity: 0.7;
+        }
+        
+        .mobile-nav {
+            display: none;
+            padding: 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        /* Custom styled select dropdown */
+        .custom-select {
+            position: relative;
+            width: 100%;
+        }
+        
+        .custom-select select {
+            width: 100%;
+            padding: 0.75rem;
+            font-family: 'Space Mono', monospace;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            border: 1px solid var(--border-color);
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            cursor: pointer;
+            transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+            font-size: 0.9rem;
+        }
+        
+        .custom-select::after {
+            content: "▼";
+            font-size: 0.7rem;
+            color: var(--text-color);
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            pointer-events: none;
+        }
+        
+        .custom-select select:focus {
+            outline: none;
+            border-color: var(--text-color);
+        }
+        
+        .custom-select select option {
+            background-color: var(--background-color);
+            color: var(--text-color);
+            padding: 0.5rem;
+        }
+        
+        @media (max-width: 900px) {
+            .content {
+                padding: 2rem;
+            }
+            
+            .chapters-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                display: none;
+            }
+            
+            .mobile-nav {
+                display: block;
+            }
+            
+            .content {
+                width: 100%;
+                max-width: none;
+                padding: 1.5rem;
+            }
+            
+            .theme-toggle {
+                top: 5px;
+                right: 5px;
+                padding: 3px 6px;
+                font-size: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <button class="theme-toggle" id="theme-toggle">🌙</button>
+    
+    <div class="mobile-nav">
+        <div class="custom-select">
+            <select id="chapter-select" onchange="navigateTo(this.value)">
+                <option value="">Select chapter...</option>
+                <option value="/scene-hypothesis.html">Homepage</option>
+                <option value="/scene-hypothesis/summary.html">Summary</option>
+                <option value="/scene-hypothesis/part1.html">Part I: Foundations of Scene Theory</option>
+                <option value="/scene-hypothesis/chapter1.html">Chapter 1: Understanding Scenes</option>
+                <option value="/scene-hypothesis/chapter2.html">Chapter 2: How Scenes Generate Progress</option>
+                <option value="/scene-hypothesis/chapter3.html">Chapter 3: Scene Prerequisites</option>
+                <option value="/scene-hypothesis/part2.html">Part II: Scene Theory as Development Framework</option>
+                <option value="/scene-hypothesis/chapter4.html">Chapter 4: The Missing Variable in Development</option>
+                <option value="/scene-hypothesis/chapter5.html">Chapter 5: Slack and Development</option>
+                <option value="/scene-hypothesis/chapter6.html">Chapter 6: Global Talent Flows</option>
+                <option value="/scene-hypothesis/chapter6b.html">Chapter 6B: Development Stagnation</option>
+                <option value="/scene-hypothesis/part3.html">Part III: Nigeria Through the Lens of Scene Theory</option>
+                <option value="/scene-hypothesis/chapter7.html">Chapter 7: Nigeria's Historical Clusters</option>
+                <option value="/scene-hypothesis/chapter8.html">Chapter 8: When Universities Don't Lead</option>
+                <option value="/scene-hypothesis/chapter9.html">Chapter 9: Bad Magnets and Models</option>
+                <option value="/scene-hypothesis/part4.html">Part IV: Breaking Cycles Through Scene Theory</option>
+                <option value="/scene-hypothesis/chapter10.html">Chapter 10: Creating Conditions for Scenes</option>
+                <option value="/scene-hypothesis/chapter11.html">Chapter 11: New Models for Development</option>
+            </select>
+        </div>
+    </div>
+    
+    <div class="container">
+        <div class="sidebar">
+            <h1 id="book-title"><a href="/scene-hypothesis.html">Scene Theory</a></h1>
+            
+            <div class="sidebar-nav">
+                <a href="/scene-hypothesis/summary.html">View Summary Version</a>
+                
+                <h2>Part I</h2>
+                <ul>
+                    <li><a href="/scene-hypothesis/part1.html">Foundations of Scene Theory</a></li>
+                    <li><a href="/scene-hypothesis/chapter1.html">Understanding Scenes</a></li>
+                    <li><a href="/scene-hypothesis/chapter2.html">How Scenes Generate Progress</a></li>
+                    <li><a href="/scene-hypothesis/chapter3.html">Scene Prerequisites</a></li>
+                </ul>
+                
+                <h2>Part II</h2>
+                <ul>
+                    <li><a href="/scene-hypothesis/part2.html">Scene Theory as Development</a></li>
+                    <li><a href="/scene-hypothesis/chapter4.html">The Missing Variable</a></li>
+                    <li><a href="/scene-hypothesis/chapter5.html">Slack and Development</a></li>
+                    <li><a href="/scene-hypothesis/chapter6.html">Global Talent Flows</a></li>
+                    <li><a href="/scene-hypothesis/chapter6b.html">Development Stagnation</a></li>
+                </ul>
+                
+                <h2>Part III</h2>
+                <ul>
+                    <li><a href="/scene-hypothesis/part3.html">Nigeria Through Scene Theory</a></li>
+                    <li><a href="/scene-hypothesis/chapter7.html">Historical Clusters</a></li>
+                    <li><a href="/scene-hypothesis/chapter8.html">When Universities Don't Lead</a></li>
+                    <li><a href="/scene-hypothesis/chapter9.html">Bad Magnets and Models</a></li>
+                </ul>
+                
+                <h2>Part IV</h2>
+                <ul>
+                    <li><a href="/scene-hypothesis/part4.html">Breaking Cycles</a></li>
+                    <li><a href="/scene-hypothesis/chapter10.html">Creating Conditions</a></li>
+                    <li><a href="/scene-hypothesis/chapter11.html">New Models for Development</a></li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="content">
+            <div class="part-cover">
+                <div class="part-number">Part III</div>
+                <h1>Nigeria Through the Lens of Scene Theory</h1>
+                
+                <p>This part presents research findings on scene dynamics in Nigeria, analyzing historical patterns and barriers to productive scene formation. It applies the theoretical framework developed in earlier parts to a specific case study, examining why scene-based development has been challenging in the Nigerian context.</p>
+                
+                <p>The chapters in this section draw on archival research and contemporary analysis to map historical scene clusters in Nigeria, explore the role of institutions like universities, and examine how status systems and societal models affect talent allocation and scene formation potential.</p>
+            </div>
+            
+            <div class="chapters-in-part">
+                <h2>Chapters in this section</h2>
+                
+                <div class="chapters-grid">
+                    <a href="/scene-hypothesis/chapter7.html" class="chapter-card">
+                        <div class="chapter-number">Chapter 7</div>
+                        <h3>Mapping Nigeria's Historical Clusters</h3>
+                        <p>Examines the historical presence and evolution of scenes in Nigeria across various domains and time periods, identifying patterns and trajectories.</p>
+                    </a>
+                    
+                    <a href="/scene-hypothesis/chapter8.html" class="chapter-card">
+                        <div class="chapter-number">Chapter 8</div>
+                        <h3>When Universities Don't Lead to Positive Scenes</h3>
+                        <p>Explores why Nigerian higher education has often failed to generate productive scenes despite their theoretical potential as scene incubators.</p>
+                    </a>
+                    
+                    <a href="/scene-hypothesis/chapter9.html" class="chapter-card">
+                        <div class="chapter-number">Chapter 9</div>
+                        <h3>Bad Magnets and Models of Success</h3>
+                        <p>Analyzes how Nigeria's strongest "magnetic poles" often attract talent toward extractive rather than productive activities, shaping development outcomes.</p>
+                    </a>
+                </div>
+            </div>
+            
+            <div class="nav-buttons">
+                <div>
+                    <a href="/scene-hypothesis/chapter6b.html">← Chapter 6B</a>
+                </div>
+                <div>
+                    <a href="/scene-hypothesis/chapter7.html">Chapter 7 →</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Function to set the theme
+        function setTheme(theme) {
+            document.documentElement.setAttribute('data-theme', theme);
+            // Try to use localStorage but fallback gracefully if unavailable
+            try {
+                localStorage.setItem('theme', theme);
+            } catch (e) {
+                console.log('localStorage not available, theme preference will not persist');
+            }
+            
+            // Update button text
+            updateToggleText();
+        }
+        
+        // Update toggle button text
+        function updateToggleText() {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            document.getElementById('theme-toggle').textContent = currentTheme === 'dark' ? '☀️' : '🌙';
+        }
+        
+        // Function to navigate to selected chapter
+        function navigateTo(url) {
+            if (url) {
+                window.location.href = url;
+            }
+        }
+        
+        // Initialize theme
+        function initTheme() {
+            // Check for saved theme preference or use system preference
+            let savedTheme = null;
+            try {
+                savedTheme = localStorage.getItem('theme');
+            } catch (e) {
+                console.log('localStorage not available, using system preference only');
+            }
+            
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            
+            if (savedTheme) {
+                setTheme(savedTheme);
+            } else if (prefersDark) {
+                setTheme('dark');
+            } else {
+                setTheme('light');
+            }
+        }
+        
+        // Add event listener to theme toggle
+        document.getElementById('theme-toggle').addEventListener('click', () => {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            setTheme(newTheme);
+        });
+        
+        // Set the active link in the sidebar
+        function setActivePage() {
+            const currentPath = window.location.pathname;
+            const links = document.querySelectorAll('.sidebar a');
+            
+            links.forEach(link => {
+                if (link.getAttribute('href') === currentPath) {
+                    link.parentElement.classList.add('active');
+                }
+            });
+            
+            // Set the selected option in the mobile dropdown
+            const selectElement = document.getElementById('chapter-select');
+            if (selectElement) {
+                for (let i = 0; i < selectElement.options.length; i++) {
+                    if (selectElement.options[i].value === currentPath) {
+                        selectElement.selectedIndex = i;
+                        break;
+                    }
+                }
+            }
+        }
+        
+        // Initialize the page
+        document.addEventListener('DOMContentLoaded', () => {
+            initTheme();
+            setActivePage();
+        });
+        
+        // Call init immediately (in case DOMContentLoaded already fired)
+        initTheme();
+    </script>
+</body>
+</html>
